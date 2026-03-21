@@ -4,7 +4,7 @@ import React, { ReactNode } from 'react'
 
 type ButtonProps = Omit<React.HTMLAttributes<HTMLButtonElement>, "type"> & {
     children: ReactNode,
-    variant?: "primary" | "outline",
+    variant?: "primary" | "outline" | "nav",
     className?: string,
     type?: "button" | "submit" | "reset",
     id?: string
@@ -13,6 +13,7 @@ type ButtonProps = Omit<React.HTMLAttributes<HTMLButtonElement>, "type"> & {
 const variants: Record<string, ClassValue> = {
     "primary": "text-white bg-(--primary) font-bold ",
     "outline": "bg-transparent border-2 border-(--primary) ",
+    "nav": "bg-(--card) active:brightness-80 active:translate-y-0.5! "
 
 }
 

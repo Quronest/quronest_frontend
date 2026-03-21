@@ -4,6 +4,7 @@
   --background: #070222;
   --foreground: #171717;
   --primary: #1DADC0;
+  --card:
 }
 
 @theme inline {
@@ -18,6 +19,7 @@
     --background: #06111B;
     --foreground: #ededed;
     --primary: #D8732B;
+    --card: #0d1a27;
   }
 }
 

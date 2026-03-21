@@ -51,12 +51,12 @@ const Input = ({ id, type = "text", value, onChange, placeholder, className, pla
     }, [value]);
 
     return (
-        <div className={clsx('w-full py-1 h-fit flex items-center relative border border-gray-400 focus-within:border-(--primary) focus-within:ring-(--accent) focus-within:ring-[1px] rounded-2xl transition-all duration-150 overflow-hidden', className)}>
+        <div className={clsx('w-full pt-4 h-fit flex items-center relative border border-gray-400 focus-within:border-(--primary) focus-within:ring-(--accent) focus-within:ring-[1px] rounded-2xl transition-all duration-150 overflow-hidden', className)}>
             <label
                 htmlFor={uid}
-                className={clsx("absolute ml-3 text-[1em] transition-all duration-200 cursor-text",
+                className={clsx("absolute top-4 ml-3 text-[1em] transition-all duration-200 cursor-text",
                     placeholderClass,
-                    (isFocused || input) && "text-[0.8em] -translate-y-6 bg-(--card) px-2 text-(--primary) ml-3")}>{
+                    (isFocused || input) && "text-[0.8em] -translate-y-4 bg-transparent px-2 text-(--primary) ml-3")}>{
                     placeholder}
             </label>
 

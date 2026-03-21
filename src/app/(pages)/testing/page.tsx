@@ -1,5 +1,6 @@
 import SideNavBar from '@/components/sideNavBar'
 import Button from '@/components/ui/button'
+import Input from '@/components/ui/input'
 import React from 'react'
 
 const TestingPage = () => {
@@ -13,6 +14,7 @@ const TestingPage = () => {
                 <Button variant='outline'>
                     outline
                 </Button>
+                <Input className='max-w-xl' placeholder="test me"/>
             </div>
         </div>
     )

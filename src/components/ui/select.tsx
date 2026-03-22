@@ -1,78 +1,158 @@
-"use client"
+"use client";
 
 import clsx from "clsx";
-import { useRef, useState, useEffect } from "react";
+import { ChevronDown } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 
-export const Select = ({ options, filter, onFilterChange }: { filter: string, options: Record<any, string>[], onFilterChange: (value: string) => void }) => {
-    const selectRef = useRef<HTMLDivElement | null>(null)
-    const [selectedOption, setSelectedOption] = useState(filter);
-    const [isOpen, setIsOpen] = useState(false);
-    const [focusIndex, setFocusIndex] = useState(Math.max(options.findIndex((e: any, i: number) => e.value === filter), 0));
+type Option = {
+  label: string;
+  value: string;
+  disabled?: boolean;
+};
 
-    const handleClick = (value: string, index: number) => {
-        onFilterChange(value);
-        setSelectedOption(value);
-        setFocusIndex(index);
+type SelectProps = {
+  options: Option[];
+  onChange: (value: string) => void;
+  value: string;
+};
+
+export const Select = ({ onChange, options, value }: SelectProps) => {
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [highlightedIndex, setHighlightedIndex] = useState<number>(0);
+
+  const containerRef = useRef<HTMLDivElement | null>(null);
+
+  //   deriving selected state
+  const selectedOption = options.find((option) => option.value === value);
+
+  useEffect(() => {
+    const index = options.findIndex((option) => option.value === value);
+    setHighlightedIndex(index >= 0 ? index : 0);
+  }, [value, options]);
+
+  //   handle outside click
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (!containerRef.current) return;
+
+      if (!containerRef.current.contains(e.target as Node)) {
         setIsOpen(false);
-    };
-    const handleClose = (e: any) => {
-        if (isOpen && selectRef.current && !selectRef.current.contains(e.target)) setIsOpen(false);
+      }
     };
 
-    const handleKeyDown = (e: any) => {
-        if (!isOpen) return
+    document.addEventListener("mousedown", handleClickOutside);
 
-        const key = e.key;
-        if (key === "Escape") {
-            e.preventDefault();
-            setIsOpen(false);
-        }
-        else if (key === "ArrowDown" && focusIndex < options.length - 1) {
-            e.preventDefault();
-            setFocusIndex(p => (p + 1));
-        }
-        else if (key === "ArrowUp" && focusIndex > 0) {
-            e.preventDefault();
-            setFocusIndex(p => ((p - 1)));
-        }
-        else if (key === "Enter") {
-            e.preventDefault();
-            handleClick(options[focusIndex].value, focusIndex);
-        }
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
+  // helper function to skip disabled option
+  const getNextEnabledIndex = (start: number, direction: 1 | -1) => {
+    let newIndex = start;
+
+    for (let i = 0; i < options.length; i++) {
+      newIndex = (newIndex + direction + options.length) % options.length;
+
+      if (!options[newIndex].disabled) {
+        return newIndex;
+      }
     }
 
-    useEffect(() => {
-        document.addEventListener('mousedown', handleClose);
-        document.addEventListener('keydown', handleKeyDown);
+    return start;
+  };
 
-        return () => {
-            document.removeEventListener('mousedown', handleClose);
-            document.removeEventListener('keydown', handleKeyDown);
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLButtonElement>) => {
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      setIsOpen(true);
+      setHighlightedIndex((prev) => getNextEnabledIndex(prev, 1));
+    }
 
+    if (e.key === "ArrowUp") {
+      e.preventDefault();
+      setIsOpen(true);
+      setHighlightedIndex((prev) => getNextEnabledIndex(prev, -1));
+    }
+
+    if (e.key === "Enter") {
+      e.preventDefault();
+
+      if (!isOpen) {
+        setIsOpen(true);
+      } else {
+        const option = options[highlightedIndex];
+        if (option && !option.disabled) {
+          onChange(option.value);
+          setIsOpen(false);
         }
-    })
+      }
+    }
 
-    const SelectedFilter = options.filter((e: any) => e.value === selectedOption);
-    return (
-        <div ref={selectRef} className="relative cursor-pointer">
-            <div
-                className="relative text-(--text-primary) bg-(--bg-main) rounded-md py-2 px-4 flex justify-between items-center w-50"
-                onClick={() => setIsOpen(!isOpen)}>
-                <span>{SelectedFilter[0].label}</span>
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-chevron-down-icon lucide-chevron-down"><path d="m6 9 6 6 6-6" /></svg>
-            </div>
-            {isOpen &&
-                <div className="flex flex-col gap-1 border border-(--accent) rounded-md absolute top-12 left-0 w-50 p-1 text-sm">
-                    {options.map((option: any, index: number) => {
-                        return (
-                            <div key={option.value} className={clsx(" px-4 py-2 rounded-sm hover:bg-text-600/50 ", (focusIndex === index) && "bg-gray-600/50", (selectedOption === option.value) && "bg-[#8564e2]! text-white")} onClick={() => handleClick(option.value, index)}>
-                                {option.label}
-                            </div>
-                        )
-                    })}
-                </div>
-            }
-        </div>
-    )
+    if (e.key === "Escape") {
+      setIsOpen(false);
+    }
+  };
+
+  return (
+    <div ref={containerRef} className="relative">
+      <button
+        type="button"
+        className={clsx(
+          "p-2 px-4 h-15 min-w-50 ",
+          "flex items-center justify-between",
+          "hover:bg-card border border-neutral rounded-lg outline-none",
+          isOpen && "border-primary/80 bg-card",
+        )}
+        aria-haspopup="listbox"
+        aria-expanded={isOpen}
+        onClick={() => setIsOpen((prev) => !prev)}
+        onKeyDown={(e: React.KeyboardEvent<HTMLButtonElement>) =>
+          handleKeyDown(e)
+        }
+      >
+        {selectedOption ? selectedOption.label : "Select..."}
+        <ChevronDown />
+      </button>
+
+      {isOpen && (
+        <ul
+          role="listbox"
+          className={clsx(
+            "min-w-50 p-2 ",
+            "absolute top-17 flex flex-col gap-2 ",
+            "rounded-md border border-primary/50 bg-background ",
+          )}
+        >
+          {options.map((option, index) => (
+            <li
+              role="option"
+              aria-selected={option.value === value}
+              key={option.value}
+              onClick={() => {
+                if (option.disabled) return;
+                onChange(option.value);
+                setIsOpen(false);
+              }}
+              onMouseEnter={() => {
+                !option.disabled && setHighlightedIndex(index);
+              }}
+              className={clsx(
+                "rounded-sm px-3 py-1 cursor-pointer",
+                option?.value === selectedOption?.value &&
+                  "bg-primary text-white font-semibold",
+                index === highlightedIndex &&
+                  option.value !== selectedOption?.value &&
+                  "bg-card-hover brightness-110",
+                option.disabled &&
+                  "opacity-50 brightness-75 cursor-not-allowed",
+              )}
+            >
+              {option.label}
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
 };

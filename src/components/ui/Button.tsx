@@ -38,7 +38,7 @@ const Button = ({
       id={id}
       type={type}
       className={clsx(
-        "flex items-center cursor-pointer ",
+        "flex items-center justify-center cursor-pointer ",
         `transition-all duration-400 hover:brightness-110 active:translate-y-1 active:brightness-80 
         disabled:brightness-75 disabled:cursor-not-allowed `,
         "border-transparent border",

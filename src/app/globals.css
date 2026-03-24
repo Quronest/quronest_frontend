@@ -12,6 +12,8 @@
   --color-primary: var(--primary);
   --color-card: var(--card);
   --color-neutral: var(--neutral);
+  --color-accent1: var(--accent1);
+  --color-accent2: var(--accent2);
   --color-card-hover: var(--card-hover);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
@@ -27,6 +29,8 @@
     --card-hover: #152230;
     --neutral: #a8a8a8;
     --shadow: #1e2f42;
+    --accent1: #8b5cf6;
+    --accent2: #2dd4bf;
   }
 }
 

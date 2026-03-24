@@ -56,7 +56,7 @@ const Input = ({
 
   // handle typing
   useEffect(() => {
-    if (value !== undefined && value !== input) setInput(value);
+    if (value && value !== input) setInput(value);
   }, [value]);
 
   return (

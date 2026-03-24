@@ -1,9 +1,9 @@
 "use client"
 
-import SideNavBar from "@/components/sideNavBar";
-import Button from "@/components/ui/button";
-import Input from "@/components/ui/input";
-import { Select } from "@/components/ui/select";
+import SideNavBar from "@/components/modules/layout/SideNavBar";
+import Button from "@/components/ui/Button";
+import Input from "@/components/ui/Input";
+import { Select } from "@/components/ui/Select";
 import React, { useState } from "react";
 
 type Option = {

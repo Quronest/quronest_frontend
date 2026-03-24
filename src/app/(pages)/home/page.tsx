@@ -1,14 +1,21 @@
-import { Card } from "@/components/ui/card";
-import { PageContainer } from "@/components/ui/pageContainer";
+import { CurrentTaskComponent } from "@/components/modules/homepage/CurrentTaskComponent";
+import { MockWeekProgress } from "@/components/modules/homepage/MockWeekProgress";
+import { WelcomeComponent } from "@/components/modules/homepage/WelcomeComponent";
+import Button from "@/components/ui/Button";
+import { Card } from "@/components/ui/Card";
+import { CircularProgress } from "@/components/ui/CircularProgress";
+import { PageContainer } from "@/components/ui/PageContainer";
+import { ProgressBar } from "@/components/ui/ProgressBar";
+import { Tag } from "@/components/ui/Tag";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 import React from "react";
 
 const HomePage = () => {
   return (
-    <PageContainer className="space-y-3">
-      <Card border="transparent" hoverEffect="move" className="max-w-100">
-        <h1>Welcome User!!</h1>
-        <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Illum quis facilis fugit consequatur corporis vero voluptatum, sit cupiditate officia nihil deserunt rerum asperiores ipsam nesciunt corrupti assumenda tenetur, laborum, adipisci inventore. Odio, facilis possimus harum architecto animi minus mollitia aspernatur voluptatum, provident nihil tenetur deleniti, magni ipsa voluptas? Assumenda, ipsum?</p>
-      </Card>
+    <PageContainer className="space-y-3 pt-20">
+      <WelcomeComponent />
+      <CurrentTaskComponent />
+      <MockWeekProgress />
     </PageContainer>
   );
 };

@@ -8,5 +8,5 @@ export const PageContainer = ({
   children: React.ReactNode;
   className?: string;
 }) => {
-  return <div className={clsx("max-w-7xl h-screen w-full mx-auto", className)}>{children}</div>;
+  return <div className={clsx("max-w-7xl h-screen w-full mx-auto pt-10", className)}>{children}</div>;
 };

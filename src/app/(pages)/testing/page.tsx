@@ -1,6 +1,6 @@
 "use client"
 
-import SideNavBar from "@/components/SideNavBar";
+import SideNavBar from "@/components/modules/layout/SideNavBar";
 import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
 import { Select } from "@/components/ui/Select";

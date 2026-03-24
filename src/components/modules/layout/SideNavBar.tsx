@@ -1,6 +1,6 @@
 import { Home, Settings, TreeDeciduous, User } from "lucide-react";
 import React, { ReactNode } from "react";
-import Button from "./ui/Button";
+import Button from "../../ui/Button";
 import clsx from "clsx";
 
 const navopts: Record<string, any>[] = [
@@ -23,7 +23,12 @@ const navopts: Record<string, any>[] = [
 
 const SideNavBar = ({ className }: { className?: string }) => {
   return (
-    <div className={clsx("h-screen border-r border-primary bg-card w-20 flex flex-col items-center gap-4 overflow-hidden", className)}>
+    <div
+      className={clsx(
+        "h-screen border-r border-primary bg-card w-20 flex flex-col items-center gap-4 overflow-hidden",
+        className,
+      )}
+    >
       <span className="font-bold text-primary bg-background flex items-center justify-center p-5">
         <TreeDeciduous size={50} />
       </span>

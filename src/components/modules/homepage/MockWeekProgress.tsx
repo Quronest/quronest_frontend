@@ -1,10 +1,10 @@
 import { CircularProgress } from "@/components/ui/CircularProgress";
-import { ArrowLeft, ArrowRight } from "lucide-react";
+import { ArrowLeft, ArrowRight, ChevronFirst, ChevronLast } from "lucide-react";
 
 export const MockWeekProgress = () => (
   <div className="flex items-center justify-between mx-auto max-w-4xl">
     <div>
-      <ArrowLeft />
+      <ChevronFirst />
     </div>
     <div className="flex items-center justify-center gap-10 my-10">
       <CircularProgress value={58} showLabel label="19" />
@@ -16,7 +16,7 @@ export const MockWeekProgress = () => (
       <CircularProgress value={28} showLabel label="25" />
     </div>
     <div>
-      <ArrowRight />
+      <ChevronLast />
     </div>
   </div>
 );

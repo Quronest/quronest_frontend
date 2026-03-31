@@ -1,3 +1,5 @@
+import clsx from "clsx";
+
 type ProgressBarProps = {
   value: number;
 };
@@ -11,7 +13,7 @@ export const ProgressBar = ({ value }: ProgressBarProps) => {
       </div>
       <div className="w-full h-2 bg-white/10 rounded-full overflow-hidden">
         <div
-          className="h-full bg-accent2 rounded-full transition-all duration-300"
+          className={clsx("h-full rounded-full transition-all duration-300", value===100? "bg-accent2": "bg-primary")}
           style={{ width: `${value}%` }}
         />
       </div>

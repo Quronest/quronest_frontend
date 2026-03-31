@@ -11,7 +11,7 @@ type CardProp = {
 };
 
 const hoverEffects: Record<HoverEffects, ClassValue> = {
-  move: "hover:-translate-1 hover:shadow-[10px_10px_20px_var(--shadow)]!",
+  move: "hover:-translate-1 hover:shadow-[5px_5px_30px_var(--shadow)]! bg-transparent!",
   light: "hover:bg-card-hover",
   none: "",
 };

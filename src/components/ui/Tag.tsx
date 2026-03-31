@@ -20,7 +20,7 @@ export const Tag = ({ label, tagType = "primary" }: TagType) => {
   return (
     <div
       className={clsx(
-        "rounded-full w-15 text-sm px-3 h-5 opacity-60 flex items-center justify-center bg-white/5 border border-white/10",
+        "rounded-full w-fit text-sm px-3 h-5 opacity-60 flex items-center justify-center bg-white/5 border border-white/10",
         tags[tagType],
       )}
     >

@@ -55,7 +55,10 @@ export const CircularProgress = ({
 
         {/* Progress */}
         <circle
-          className={clsx("text-primary", progressClassName)}
+          className={clsx(
+            safeValue === 100 ? "text-accent2" : "text-primary",
+            progressClassName,
+          )}
           stroke="currentColor"
           fill="transparent"
           strokeWidth={strokeWidth}

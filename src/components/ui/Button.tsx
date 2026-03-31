@@ -1,6 +1,9 @@
+"use client";
 import clsx from "clsx";
 import { ClassValue } from "clsx";
 import React, { ReactNode } from "react";
+import { createPortal } from "react-dom";
+import { PlacesType, Tooltip } from "react-tooltip";
 
 type ButtonProps = Omit<React.HTMLAttributes<HTMLButtonElement>, "type"> & {
   children: ReactNode;
@@ -9,6 +12,9 @@ type ButtonProps = Omit<React.HTMLAttributes<HTMLButtonElement>, "type"> & {
   type?: "button" | "submit" | "reset";
   id?: string;
   size?: "sm" | "md" | "lg";
+  tooltipId?: string;
+  tooltip?: string;
+  tooltipPlace?: PlacesType;
 };
 
 const sizes: Record<string, ClassValue> = {
@@ -20,8 +26,7 @@ const sizes: Record<string, ClassValue> = {
 const variants: Record<string, ClassValue> = {
   primary: "text-white bg-primary font-bold ",
   outline: "bg-card-hover !border-primary ",
-  nav: `bg-card w-14 h-14 p-1 text-primary flex flex-col! gap-1 justify-center 
-  active:translate-y-0.5! hover:bg-card-hover rounded-full! `,
+  nav: `bg-card w-12 h-12 p-2! text-neutral active:translate-y-0.5! hover:bg-card-hover rounded-xl! `,
 };
 
 const Button = ({
@@ -31,6 +36,9 @@ const Button = ({
   children,
   size = "sm",
   variant = "primary",
+  tooltip,
+  tooltipId = "button-tooltip",
+  tooltipPlace = "bottom",
   ...props
 }: ButtonProps) => {
   return (
@@ -46,9 +54,18 @@ const Button = ({
         variants[variant],
         sizes[size],
       )}
+      data-tooltip-id={tooltipId}
+      data-tooltip-content={tooltip}
+      data-tooltip-place={tooltipPlace}
       {...props}
     >
       {children}
+
+      {typeof document !== undefined &&
+        createPortal(
+          <Tooltip id={tooltipId} place={tooltipPlace} delayShow={500} />,
+          document.body,
+        )}
     </button>
   );
 };

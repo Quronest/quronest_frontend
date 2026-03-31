@@ -1,6 +1,6 @@
 import { IconImageType } from "@/types/IconImageType";
 
-export const GithubIcon = ({ size = 26, ...props }: IconImageType) => {
+export const GithubIcon = ({ size = 24, ...props }: IconImageType) => {
   return (
     <img
       src="/github-icon-logo.svg"

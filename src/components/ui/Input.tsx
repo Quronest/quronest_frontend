@@ -6,11 +6,10 @@ import React, { ChangeEvent, useEffect, useId, useRef, useState } from "react";
 
 type InputProps = Omit<
   React.InputHTMLAttributes<HTMLInputElement>,
-  "value" | "onChange"
+  "value" 
 > & {
   placeholderClass?: string;
   value?: string;
-  onChange?: (e: string) => void;
 };
 
 const Input = ({
@@ -36,7 +35,7 @@ const Input = ({
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value;
     setInput(val);
-    onChange?.(val);
+    onChange?.(e);
   };
 
   // handle focus and blur

@@ -5,11 +5,10 @@ import React, { ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { PlacesType, Tooltip } from "react-tooltip";
 
-type ButtonProps = Omit<React.HTMLAttributes<HTMLButtonElement>, "type"> & {
+interface ButtonProps extends React.ComponentProps<"button"> {
   children: ReactNode;
   variant?: "primary" | "outline" | "nav";
   className?: string;
-  type?: "button" | "submit" | "reset";
   id?: string;
   size?: "sm" | "md" | "lg";
   tooltipId?: string;
@@ -17,7 +16,7 @@ type ButtonProps = Omit<React.HTMLAttributes<HTMLButtonElement>, "type"> & {
   tooltipPlace?: PlacesType;
   hover?: boolean;
   active?: boolean;
-};
+}
 
 const sizes: Record<string, ClassValue> = {
   sm: "px-4 py-2 ",
@@ -33,7 +32,6 @@ const variants: Record<string, ClassValue> = {
 
 const Button = ({
   id,
-  type,
   className,
   children,
   size = "sm",
@@ -48,7 +46,6 @@ const Button = ({
   return (
     <button
       id={id}
-      type={type}
       className={clsx(
         "flex items-center justify-center cursor-pointer ",
         `transition-all duration-400 disabled:brightness-75 disabled:cursor-not-allowed `,

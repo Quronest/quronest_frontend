@@ -4,7 +4,12 @@ import React from "react";
 function FromCard({ children }: { children: React.ReactNode }) {
   return (
     <Card>
-      <form className="w-full min-w-md mx-auto space-y-5 p-3 rounded-xl shadow flex flex-col">
+      <form
+        className="w-full min-w-md mx-auto space-y-5 p-3 rounded-xl shadow flex flex-col"
+        onSubmit={(e) => {
+          e.preventDefault();
+        }}
+      >
         {children}
       </form>
     </Card>

@@ -1,15 +1,21 @@
 "use client";
-import { Home, Settings, TreeDeciduous, User } from "lucide-react";
+import { Home, LogOut, Settings, TreeDeciduous, User } from "lucide-react";
 import React, { ReactNode, useEffect, useState } from "react";
 import Button from "../../ui/Button";
 import clsx from "clsx";
 import { usePathname, useRouter } from "next/navigation";
+import { useAuth } from "@/hooks/useAuth";
 
 const navopts: Record<string, any>[] = [
   {
     label: "Home",
     key: "home",
     icon: <Home />,
+  },
+  {
+    label: "Logout",
+    key: "logout",
+    icon: <LogOut />,
   },
   {
     label: "Settings",
@@ -81,6 +87,7 @@ const NavIcon = ({
   const router = useRouter();
   const pathname = usePathname();
   const isSelected = pathname.includes(optKey);
+  const {logout} = useAuth();
 
   return (
     <Button
@@ -88,7 +95,7 @@ const NavIcon = ({
       className={clsx(isSelected && "text-primary! bg-background/30!")}
       tooltip={label}
       tooltipPlace="left"
-      onClick={() => router.push(`/${optKey}`)}
+      onClick={optKey !== "logout" ? () => router.push(`/${optKey}`) : () => {logout()}}
     >
       {icon}
     </Button>

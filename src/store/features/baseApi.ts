@@ -8,7 +8,7 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
 const rawBaseQuery = fetchBaseQuery({
   baseUrl: BASE_URL + "/backend/api/v1",
-  //   credentials: "include",
+    credentials: "include",
 });
 
 const baseQueryWithErrorHandling: BaseQueryFn = async (

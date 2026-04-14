@@ -17,25 +17,21 @@ export const useAuth = () => {
   const [registerUser, { isLoading: isSigningIn }] = useRegisterUserMutation();
 
   const login = async (credentials: any) => {
-    const [data, error] = await asyncHandler(() =>
+    const { data, error } = await asyncHandler(() =>
       loginUser(credentials).unwrap(),
     );
     return { data, error };
   };
 
   const logout = async () => {
-    const [data, error] = await asyncHandler(() => logoutUser().unwrap());
+    const { data, error } = await asyncHandler(() => logoutUser().unwrap());
     return { data, error };
   };
 
   const register = async (credentials: any) => {
-    const [data, error] = await asyncHandler(async () => {
-      console.log("req body: ", credentials);
+    const { data, error } = await asyncHandler(async () => {
       await registerUser(credentials).unwrap();
-      console.log("register complete");
-      await loginUser(credentials).unwrap();
-      console.log("Login complete");
-      router.push("/home");
+      await loginUser(credentials);
 
       return true;
     });

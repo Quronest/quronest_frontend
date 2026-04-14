@@ -2,13 +2,13 @@ import { toast } from "react-toastify";
 
 export async function asyncHandler<T>(
   fn: () => Promise<T>,
-): Promise<[T | null, any]> {
+): Promise<{ data: T | null; error: any }> {
   try {
     const data = await fn();
-    return [data, null];
+    return {data, error: null};
   } catch (error: any) {
     toast.error(error?.data?.errors[0] || "Something went wrong");
 
-    return [null, error];
+    return {data: null, error};
   }
 }

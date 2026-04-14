@@ -8,7 +8,7 @@ import TextLink from "@/components/ui/TextLink";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
 import { FieldValues, useForm } from "react-hook-form";
-import FormInput from "@/components/ui/FormInput";
+import Input from "@/components/ui/Input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { loginSchema, TLoginSchema } from "@/types/LoginFormType";
 
@@ -56,7 +56,7 @@ function LoginForm() {
       <h1 className="text-2xl font-semibold text-center">Log In</h1>
 
       <div>
-        <FormInput
+        <Input
           {...register("email")}
           type="email"
           placeholder="Email"
@@ -68,7 +68,7 @@ function LoginForm() {
       </div>
 
       <div>
-        <FormInput
+        <Input
           {...register("password")}
           type="password"
           placeholder="Password"

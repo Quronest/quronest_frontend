@@ -16,28 +16,17 @@ export const useAuth = () => {
   const [logoutUser, { isLoading: isLoggingOut }] = useLogoutUserMutation();
   const [registerUser, { isLoading: isSigningIn }] = useRegisterUserMutation();
 
-  const login = async (credentials: any) => {
-    const { data, error } = await asyncHandler(() =>
-      loginUser(credentials).unwrap(),
-    );
-    return { data, error };
-  };
+  const login = async (credentials: any) =>
+    await asyncHandler(() => loginUser(credentials).unwrap());
 
-  const logout = async () => {
-    const { data, error } = await asyncHandler(() => logoutUser().unwrap());
-    return { data, error };
-  };
+  const logout = async () => await asyncHandler(() => logoutUser().unwrap());
 
-  const register = async (credentials: any) => {
-    const { data, error } = await asyncHandler(async () => {
-      await registerUser(credentials).unwrap();
-      await loginUser(credentials);
-
-      return true;
+  const register = async (credentials: any) =>
+    await asyncHandler(async () => {
+      await registerUser(credentials)
+        .unwrap()
+        .then(async () => await login(credentials));
     });
-
-    return { data, error };
-  };
 
   return {
     user,

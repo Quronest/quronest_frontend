@@ -10,7 +10,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { signUpSchema, TSignUpSchema } from "@/types/SignUpFormType";
-import FormInput from "@/components/ui/FormInput";
+import Input from "@/components/ui/Input";
 
 function SignupForm() {
   const { register: registerUser, isSigningIn } = useAuth();
@@ -62,7 +62,7 @@ function SignupForm() {
 
       {/* Inputs */}
       <div>
-        <FormInput
+        <Input
           {...register("fullname")}
           placeholder="Full Name"
           disabled={isSigningIn}
@@ -73,7 +73,7 @@ function SignupForm() {
       </div>
 
       <div>
-        <FormInput
+        <Input
           {...register("username")}
           placeholder="Username"
           disabled={isSigningIn}
@@ -84,7 +84,7 @@ function SignupForm() {
       </div>
 
       <div>
-        <FormInput
+        <Input
           {...register("email")}
           type="email"
           placeholder="Email"
@@ -96,7 +96,7 @@ function SignupForm() {
       </div>
 
       <div>
-        <FormInput
+        <Input
           type="password"
           {...register("password")}
           placeholder="Password"
@@ -108,7 +108,7 @@ function SignupForm() {
       </div>
 
       <div>
-        <FormInput
+        <Input
           type="password"
           placeholder="Confirm Password"
           {...register("confirmPassword")}

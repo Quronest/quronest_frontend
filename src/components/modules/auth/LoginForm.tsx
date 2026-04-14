@@ -1,48 +1,92 @@
 "use client";
 
-import { useState } from "react";
-import Input from "@/components/ui/Input";
 import Button from "@/components/ui/Button";
 import { GithubIcon } from "@/components/icons/GithubIcon";
-import { GoogleIcon } from "@/components/icons/GoogleIcon";
 import { Separator } from "@/components/ui/Separator";
-import FromCard from "./FromCard";
+import FormCard from "./FormCard";
 import TextLink from "@/components/ui/TextLink";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/hooks/useAuth";
+import { FieldValues, useForm } from "react-hook-form";
+import Input from "@/components/ui/Input";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { loginSchema, TLoginSchema } from "@/types/LoginFormType";
 
 function LoginForm() {
-  const [form, setForm] = useState({
-    email: "",
-    password: "",
+  const { login, isLoggingIn } = useAuth();
+  const router = useRouter();
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+    reset,
+  } = useForm<TLoginSchema>({
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+    resolver: zodResolver(loginSchema),
   });
 
-  const handleChange = (field: string, value: string) => {
-    setForm((prev) => ({
-      ...prev,
-      [field]: value,
-    }));
+  // const [form, setForm] = useState({
+  //   email: "",
+  //   password: "",
+  // });
+
+  // const handleChange = (field: string, value: string) => {
+  //   setForm((prev) => ({
+  //     ...prev,
+  //     [field]: value,
+  //   }));
+  // };
+
+  const onSubmit = async (data: FieldValues) => {
+    await login(data);
+    router.push("/home");
   };
 
+  // const handleLogin = async () => {
+  //   await login({ data: form });
+  //   router.push("/home");
+  // };
+
   return (
-    <FromCard>
+    <FormCard onSubmit={handleSubmit(onSubmit)}>
       <h1 className="text-2xl font-semibold text-center">Log In</h1>
 
-      <Input
-        type="email"
-        placeholder="Email"
-        value={form.email}
-        onChange={(val) => handleChange("email", val)}
-      />
+      <div>
+        <Input
+          {...register("email")}
+          type="email"
+          placeholder="Email"
+          disabled={isLoggingIn}
+        />
+        {errors.email && (
+          <p className="text-red-500">{`${errors.email.message}`}</p>
+        )}
+      </div>
 
-      <Input
-        type="password"
-        placeholder="Password"
-        value={form.password}
-        onChange={(val) => handleChange("password", val)}
-      />
+      <div>
+        <Input
+          {...register("password")}
+          type="password"
+          placeholder="Password"
+          disabled={isLoggingIn}
+        />
+        {errors.password && (
+          <p className="text-red-500">{`${errors.password.message}`}</p>
+        )}
+      </div>
 
       {/* Login button */}
-      <Button type="submit" className="w-full justify-center" variant="primary">
-        Log In
+      <Button
+        type="submit"
+        className="w-full justify-center"
+        variant="primary"
+        disabled={isSubmitting}
+      >
+        {isLoggingIn ? "Logging In" : "Log in"}
       </Button>
 
       {/* line */}
@@ -52,19 +96,18 @@ function LoginForm() {
       <div className="flex gap-3">
         {/* Google */}
         <Button
-          type="button"
           variant="outline"
           className="w-full flex items-center justify-center gap-2"
+          disabled={isLoggingIn}
         >
-          <GoogleIcon className="w-5 h-5" />
-          <span className="text-md font-semibold">Google</span>
+          Log In
         </Button>
 
         {/* GitHub */}
         <Button
-          type="button"
           variant="outline"
           className="w-full flex items-center justify-center gap-2"
+          disabled={isLoggingIn}
         >
           <GithubIcon className="w-5 h-5 text-white" />
           <span className="text-md font-semibold">GitHub</span>
@@ -74,7 +117,7 @@ function LoginForm() {
         <p>Don't have an account?</p>
         <TextLink href="/signup">Sign Up</TextLink>
       </div>
-    </FromCard>
+    </FormCard>
   );
 }
 

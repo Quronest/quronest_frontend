@@ -1,13 +1,21 @@
-import { Home, Settings, TreeDeciduous, User } from "lucide-react";
-import React, { ReactNode } from "react";
+"use client";
+import { Home, LogOut, Settings, TreeDeciduous, User } from "lucide-react";
+import React, { ReactNode, useEffect, useState } from "react";
 import Button from "../../ui/Button";
 import clsx from "clsx";
+import { usePathname, useRouter } from "next/navigation";
+import { useAuth } from "@/hooks/useAuth";
 
 const navopts: Record<string, any>[] = [
   {
     label: "Home",
     key: "home",
     icon: <Home />,
+  },
+  {
+    label: "Logout",
+    key: "logout",
+    icon: <LogOut />,
   },
   {
     label: "Settings",
@@ -22,28 +30,74 @@ const navopts: Record<string, any>[] = [
 ];
 
 const SideNavBar = ({ className }: { className?: string }) => {
+  const router = useRouter();
   return (
     <div
       className={clsx(
-        "h-screen border-r border-primary bg-card w-20 flex flex-col items-center gap-4 overflow-hidden",
+        "h-screen border-r border-card-hover bg-card w-18 flex flex-col items-center gap-3 overflow-hidden pb-5",
         className,
       )}
     >
       <span className="font-bold text-primary bg-background flex items-center justify-center p-5">
         <TreeDeciduous size={50} />
       </span>
-      {navopts.map((opt, index) => (
-        <NavIcon key={index} label={opt.label} icon={opt.icon} />
-      ))}
+      <div className="flex flex-col justify-between items-center h-full">
+        <div className="space-y-2">
+          {navopts.map((opt, index) => {
+            if (index < 1)
+              return (
+                <NavIcon
+                  key={index}
+                  label={opt.label}
+                  icon={opt.icon}
+                  optKey={opt.key}
+                />
+              );
+            return null;
+          })}
+        </div>
+        <div className="space-y-2">
+          {navopts.map((opt, index) => {
+            if (index >= 1)
+              return (
+                <NavIcon
+                  key={index}
+                  label={opt.label}
+                  icon={opt.icon}
+                  optKey={opt.key}
+                />
+              );
+            return null;
+          })}
+        </div>
+      </div>
     </div>
   );
 };
 
-const NavIcon = ({ label, icon }: { label: string; icon: ReactNode }) => {
+const NavIcon = ({
+  label,
+  icon,
+  optKey,
+}: {
+  label: string;
+  icon: ReactNode;
+  optKey: string;
+}) => {
+  const router = useRouter();
+  const pathname = usePathname();
+  const isSelected = pathname.includes(optKey);
+  const {logout} = useAuth();
+
   return (
-    <Button variant="nav" className="">
-      <span>{icon}</span>
-      <span className="text-[10px]">{label}</span>
+    <Button
+      variant="nav"
+      className={clsx(isSelected && "text-primary! bg-background/30!")}
+      tooltip={label}
+      tooltipPlace="left"
+      onClick={optKey !== "logout" ? () => router.push(`/${optKey}`) : () => {logout()}}
+    >
+      {icon}
     </Button>
   );
 };

@@ -1,7 +1,7 @@
 import { Card } from "@/components/ui/Card";
 import React from "react";
 
-function FromCard({ children }: { children: React.ReactNode }) {
+function FormCard({ children }: { children: React.ReactNode }) {
   return (
     <Card>
       <form
@@ -16,4 +16,4 @@ function FromCard({ children }: { children: React.ReactNode }) {
   );
 }
 
-export default FromCard;
+export default FormCard;

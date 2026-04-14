@@ -6,7 +6,7 @@ import Button from "@/components/ui/Button";
 import { GithubIcon } from "@/components/icons/GithubIcon";
 import { GoogleIcon } from "@/components/icons/GoogleIcon";
 import { Separator } from "@/components/ui/Separator";
-import FromCard from "./FromCard";
+import FormCard from "./FormCard";
 import TextLink from "@/components/ui/TextLink";
 import { useAuth } from "@/hooks/useAuth";
 import { useForm } from "react-hook-form";
@@ -43,7 +43,7 @@ function SignupForm() {
   };
 
   return (
-    <FromCard>
+    <FormCard>
       <h1 className="text-2xl font-semibold text-center">Create Account</h1>
 
       {/* Inputs */}
@@ -112,7 +112,7 @@ function SignupForm() {
         <p>Already have an account?</p>
         <TextLink href="/login">Log In</TextLink>
       </div>
-    </FromCard>
+    </FormCard>
   );
 }
 

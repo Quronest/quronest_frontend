@@ -7,7 +7,7 @@ import { Card } from "@/components/ui/Card";
 import { GithubIcon } from "@/components/icons/GithubIcon";
 import { GoogleIcon } from "@/components/icons/GoogleIcon";
 import { Separator } from "@/components/ui/Separator";
-import FromCard from "./FromCard";
+import FormCard from "./FormCard";
 import TextLink from "@/components/ui/TextLink";
 import { redirect, useRouter } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
@@ -33,7 +33,7 @@ function LoginForm() {
   };
 
   return (
-    <FromCard>
+    <FormCard>
       <h1 className="text-2xl font-semibold text-center">Log In</h1>
 
       <Input
@@ -90,7 +90,7 @@ function LoginForm() {
         <p>Don't have an account?</p>
         <TextLink href="/signup">Sign Up</TextLink>
       </div>
-    </FromCard>
+    </FormCard>
   );
 }
 

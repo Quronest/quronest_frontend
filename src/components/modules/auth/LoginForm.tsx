@@ -1,63 +1,90 @@
 "use client";
 
-import { MouseEvent, useState } from "react";
-import Input from "@/components/ui/Input";
 import Button from "@/components/ui/Button";
-import { Card } from "@/components/ui/Card";
 import { GithubIcon } from "@/components/icons/GithubIcon";
-import { GoogleIcon } from "@/components/icons/GoogleIcon";
 import { Separator } from "@/components/ui/Separator";
 import FormCard from "./FormCard";
 import TextLink from "@/components/ui/TextLink";
-import { redirect, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
+import { FieldValues, useForm } from "react-hook-form";
+import FormInput from "@/components/ui/FormInput";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { loginSchema, TLoginSchema } from "@/types/LoginFormType";
 
 function LoginForm() {
+  const { login, isLoggingIn } = useAuth();
   const router = useRouter();
-  const [form, setForm] = useState({
-    email: "",
-    password: "",
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+    reset,
+  } = useForm<TLoginSchema>({
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+    resolver: zodResolver(loginSchema),
   });
 
-  const { login, isLoggingIn } = useAuth();
-  const handleChange = (field: string, value: string) => {
-    setForm((prev) => ({
-      ...prev,
-      [field]: value,
-    }));
-  };
+  // const [form, setForm] = useState({
+  //   email: "",
+  //   password: "",
+  // });
 
-  const handleLogin = async () => {
-    await login({ data: form });
+  // const handleChange = (field: string, value: string) => {
+  //   setForm((prev) => ({
+  //     ...prev,
+  //     [field]: value,
+  //   }));
+  // };
+
+  const onSubmit = async (data: FieldValues) => {
+    await login(data);
     router.push("/home");
   };
 
+  // const handleLogin = async () => {
+  //   await login({ data: form });
+  //   router.push("/home");
+  // };
+
   return (
-    <FormCard>
+    <FormCard onSubmit={handleSubmit(onSubmit)}>
       <h1 className="text-2xl font-semibold text-center">Log In</h1>
 
-      <Input
-        type="email"
-        placeholder="Email"
-        value={form.email}
-        onChange={(e) => handleChange("email", e.target.value)}
-        disabled={isLoggingIn}
-      />
+      <div>
+        <FormInput
+          {...register("email")}
+          type="email"
+          placeholder="Email"
+          disabled={isLoggingIn}
+        />
+        {errors.email && (
+          <p className="text-red-500">{`${errors.email.message}`}</p>
+        )}
+      </div>
 
-      <Input
-        type="password"
-        placeholder="Password"
-        value={form.password}
-        onChange={(e) => handleChange("password", e.target.value)}
-        disabled={isLoggingIn}
-      />
+      <div>
+        <FormInput
+          {...register("password")}
+          type="password"
+          placeholder="Password"
+          disabled={isLoggingIn}
+        />
+        {errors.password && (
+          <p className="text-red-500">{`${errors.password.message}`}</p>
+        )}
+      </div>
 
       {/* Login button */}
       <Button
+        type="submit"
         className="w-full justify-center"
         variant="primary"
-        disabled={isLoggingIn}
-        onClick={handleLogin}
+        disabled={isSubmitting}
       >
         {isLoggingIn ? "Logging In" : "Log in"}
       </Button>

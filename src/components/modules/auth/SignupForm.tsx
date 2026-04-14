@@ -1,7 +1,5 @@
 "use client";
 
-import { useState } from "react";
-import Input from "@/components/ui/Input";
 import Button from "@/components/ui/Button";
 import { GithubIcon } from "@/components/icons/GithubIcon";
 import { GoogleIcon } from "@/components/icons/GoogleIcon";
@@ -10,6 +8,9 @@ import FormCard from "./FormCard";
 import TextLink from "@/components/ui/TextLink";
 import { useAuth } from "@/hooks/useAuth";
 import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { signUpSchema, TSignUpSchema } from "@/types/SignUpFormType";
+import FormInput from "@/components/ui/FormInput";
 
 function SignupForm() {
   const { register: registerUser, isSigningIn } = useAuth();
@@ -19,65 +20,112 @@ function SignupForm() {
     handleSubmit,
     formState: { errors, isSubmitting },
     reset,
-    getValues,
-  } = useForm();
-
-  const [form, setForm] = useState({
-    fullname: "",
-    username: "",
-    email: "",
-    password: "",
-    confirmPassword: "",
+  } = useForm<TSignUpSchema>({
+    defaultValues: {
+      fullname: "",
+      username: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+    },
+    resolver: zodResolver(signUpSchema),
   });
 
-  const handleRegister = async () => {
-    const { confirmPassword, ...registerData } = form;
-    await registerUser({ data: registerData });
-  };
+  // const [form, setForm] = useState({
+  //   fullname: "",
+  //   username: "",
+  //   email: "",
+  //   password: "",
+  //   confirmPassword: "",
+  // });
 
-  const handleChange = (field: string, value: string) => {
-    setForm((prev) => ({
-      ...prev,
-      [field]: value,
-    }));
+  // const handleRegister = async () => {
+  //   const { confirmPassword, ...registerData } = form;
+  //   await registerUser({ data: registerData });
+  // };
+
+  // const handleChange = (field: string, value: string) => {
+  //   setForm((prev) => ({
+  //     ...prev,
+  //     [field]: value,
+  //   }));
+  // };
+
+  const onSubmit = async (data: TSignUpSchema) => {
+    await registerUser({ data });
+    reset();
   };
 
   return (
-    <FormCard>
+    <FormCard onSubmit={handleSubmit(onSubmit)}>
       <h1 className="text-2xl font-semibold text-center">Create Account</h1>
 
       {/* Inputs */}
-      <Input
-        {...register("fullname")}
-        placeholder="Full Name"
-        disabled={isSigningIn}
-        required
-      />
+      <div>
+        <FormInput
+          {...register("fullname")}
+          placeholder="Full Name"
+          disabled={isSigningIn}
+        />
+        {errors.fullname && (
+          <p className="text-red-500">{`${errors.fullname.message}`}</p>
+        )}
+      </div>
 
-      <Input placeholder="Username" disabled={isSigningIn} required />
+      <div>
+        <FormInput
+          {...register("username")}
+          placeholder="Username"
+          disabled={isSigningIn}
+        />
+        {errors.username && (
+          <p className="text-red-500">{`${errors.username.message}`}</p>
+        )}
+      </div>
 
-      <Input type="email" placeholder="Email" disabled={isSigningIn} required />
+      <div>
+        <FormInput
+          {...register("email")}
+          type="email"
+          placeholder="Email"
+          disabled={isSigningIn}
+        />
+        {errors.email && (
+          <p className="text-red-500">{`${errors.email.message}`}</p>
+        )}
+      </div>
 
-      <Input
-        type="password"
-        placeholder="Password"
-        disabled={isSigningIn}
-        required
-      />
+      <div>
+        <FormInput
+          type="password"
+          {...register("password")}
+          placeholder="Password"
+          disabled={isSigningIn}
+        />
+        {errors.password && (
+          <p className="text-red-500">{`${errors.password.message}`}</p>
+        )}
+      </div>
 
-      <Input
-        type="password"
-        placeholder="Confirm Password"
-        disabled={isSigningIn}
-        required
-      />
+      <div>
+        <FormInput
+          type="password"
+          placeholder="Confirm Password"
+          {...register("confirmPassword")}
+          disabled={isSigningIn}
+        />
+        {errors.confirmPassword && (
+          <p className="text-red-500">{`${errors.confirmPassword.message}`}</p>
+        )}
+      </div>
 
       {/* Signup button */}
       <Button
-        type="button"
+        type="submit"
         className="w-full justify-center"
         variant="primary"
-        onClick={handleRegister}
+        // onClick={handleRegister}
+        disabled={isSubmitting}
       >
         {isSigningIn ? "Signing In..." : "Sign Up"}
       </Button>

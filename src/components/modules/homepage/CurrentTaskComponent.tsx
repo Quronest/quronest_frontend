@@ -19,7 +19,7 @@ export const CurrentTaskComponent = () => {
       </div>
       <div className="flex items-center gap-5">
         <ProgressBar value={58} />
-        <Button className="font-bold shrink-0">Resume Work</Button>
+        <Button className="font-bold shrink-0 bg-accent2/80! ">Resume Work</Button>
       </div>
     </Card>
   );

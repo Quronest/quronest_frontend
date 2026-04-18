@@ -1,5 +1,5 @@
 "use client";
-import { Home, LogOut, Settings, TreeDeciduous, User } from "lucide-react";
+import { Home, IdCardLanyard, LogOut, Settings, TreeDeciduous, User } from "lucide-react";
 import React, { ReactNode, useEffect, useState } from "react";
 import Button from "../../ui/Button";
 import clsx from "clsx";
@@ -10,22 +10,27 @@ const navopts: Record<string, any>[] = [
   {
     label: "Home",
     key: "home",
-    icon: <Home />,
+    icon: <Home size={24}/>,
+  },
+  {
+    label: "Workspace",
+    key: "workspace",
+    icon: <IdCardLanyard size={24} />,
   },
   {
     label: "Logout",
     key: "logout",
-    icon: <LogOut />,
+    icon: <LogOut size={24}/>,
   },
   {
     label: "Settings",
     key: "settings",
-    icon: <Settings />,
+    icon: <Settings size={24}/>,
   },
   {
     label: "Profile",
     key: "profile",
-    icon: <User />,
+    icon: <User size={24}/>,
   },
 ];
 
@@ -34,7 +39,7 @@ const SideNavBar = ({ className }: { className?: string }) => {
   return (
     <div
       className={clsx(
-        "h-screen border-r border-card-hover bg-card w-18 flex flex-col items-center gap-3 overflow-hidden pb-5",
+        "h-screen border-r border-card-hover bg-background w-18 flex flex-col items-center gap-3 overflow-hidden pb-5",
         className,
       )}
     >
@@ -44,7 +49,7 @@ const SideNavBar = ({ className }: { className?: string }) => {
       <div className="flex flex-col justify-between items-center h-full">
         <div className="space-y-2">
           {navopts.map((opt, index) => {
-            if (index < 1)
+            if (index < 2)
               return (
                 <NavIcon
                   key={index}
@@ -58,7 +63,7 @@ const SideNavBar = ({ className }: { className?: string }) => {
         </div>
         <div className="space-y-2">
           {navopts.map((opt, index) => {
-            if (index >= 1)
+            if (index >= 2)
               return (
                 <NavIcon
                   key={index}

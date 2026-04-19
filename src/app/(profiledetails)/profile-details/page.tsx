@@ -1,9 +1,10 @@
 import ProfileDetailsForm from "@/components/forms/ProfileDetailsForm";
+import AuthFormContainer from "@/components/modules/auth/AuthFormContainer";
 
 export default function Page() {
   return (
-    <div className="min-w-2xl mx-auto p-6">
+    <AuthFormContainer>
       <ProfileDetailsForm />
-    </div>
+    </AuthFormContainer>
   );
 }

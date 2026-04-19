@@ -1,19 +1,36 @@
-import { UseFormRegister } from "react-hook-form";
+"use client";
+
+import { useForm } from "react-hook-form";
+
 import Input from "@/components/ui/Input";
+import Button from "@/components/ui/Button";
+import FormCard from "../auth/FormCard";
 
 type Props = {
-  register: UseFormRegister<any>;
+  onNext: () => void;
 };
 
-export default function AcademicForm({ register }: Props) {
+export default function AcademicForm({ onNext }: Props) {
+  const { register, handleSubmit } = useForm();
+
+  const onSubmit = () => {
+    onNext();
+  };
+
   return (
-    <div className=" flex flex-col justify-center items-center space-y-4">
-      <h2 className="text-lg font-semibold">Academic Data</h2>
+    <FormCard onSubmit={handleSubmit(onSubmit)}>
+      <h2 className="text-lg font-semibold text-center">Academic Details</h2>
 
       <Input placeholder="Institute Name" {...register("institute_name")} />
       <Input placeholder="Grade" {...register("grade")} />
       <Input placeholder="Course" {...register("course")} />
       <Input placeholder="Description" {...register("academic_description")} />
-    </div>
+
+      <div className="flex justify-end">
+        <Button type="submit" className="w-1/2">
+          Continue
+        </Button>
+      </div>
+    </FormCard>
   );
 }

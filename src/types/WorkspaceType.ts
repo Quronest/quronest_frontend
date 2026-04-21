@@ -1,7 +1,20 @@
 export type TabRefDataType = {
-  label?: string;
-  id?: string;
-  type?: "Notes" | "Discuss" | "code" | "Docs";
+  id: string;
+  label: string;
+  type: "Notes" | "Discuss" | "code" | "Docs";
+};
+
+export type Pane = {
+  tabs: TabRefDataType[];
+  activeTabId: string | null;
+};
+
+export type WorkspaceState = {
+  panes: {
+    left: Pane;
+    right?: Pane;
+  };
+  activePaneId: "left" | "right";
 };
 
 export const mockTabs: TabRefDataType[] = [

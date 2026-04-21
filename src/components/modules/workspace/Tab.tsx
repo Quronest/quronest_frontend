@@ -1,4 +1,4 @@
-import { TabRefDataType } from "@/types/TabRefDataType";
+import { TabRefDataType } from "@/types/WorkspaceType";
 import React from "react";
 
 export const Tab = ({ tab }: { tab: TabRefDataType }) => {

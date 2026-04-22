@@ -1,10 +1,11 @@
 import { TabRefDataType } from "@/types/WorkspaceType";
 import React from "react";
+import { NoteTab } from "../tabs/note/NoteTab";
 
 export const Tab = ({ tab }: { tab: TabRefDataType }) => {
   return (
-    <div className="flex items-center justify-center h-full">
-      Welcome to the tab component, tab id: {tab.id}
+    <div className="flex items-center h-full w-full">
+      <NoteTab />
     </div>
   );
 };

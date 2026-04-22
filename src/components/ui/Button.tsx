@@ -7,7 +7,7 @@ import { PlacesType, Tooltip } from "react-tooltip";
 
 interface ButtonProps extends React.ComponentProps<"button"> {
   children: ReactNode;
-  variant?: "primary" | "outline" | "nav" | "list";
+  variant?: "primary" | "outline" | "nav" | "list" | "icon";
   className?: string;
   id?: string;
   size?: "sm" | "md" | "lg";
@@ -29,6 +29,7 @@ const variants: Record<string, ClassValue> = {
   outline: "bg-card-hover !border-primary justify-center",
   nav: `bg-card w-12 h-12 p-2! text-neutral active:translate-y-0.5! hover:bg-card-hover justify-center`,
   list: `hover:bg-card-hover rounded-none! w-full text-left! text-sm py-1!`,
+  icon: `bg-card w-fit h-fit p-2! text-neutral active:translate-y-0.5! hover:bg-card-hover justify-center`, 
 };
 
 const Button = ({

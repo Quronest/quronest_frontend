@@ -22,7 +22,7 @@ const WorkSpacePage = () => {
     // </div>
 
     <Group>
-      <Panel defaultSize={50} >
+      <Panel defaultSize={50} minSize="30%">
         <Pane id="left" />
       </Panel>
 

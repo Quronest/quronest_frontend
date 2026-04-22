@@ -64,12 +64,13 @@ export const Pane = ({ id }: PaneProps) => {
                 )}
                 onClick={() => handleSwitchTab(tab.id!)}
               >
-                <span className="text-sm ml-2">{tab.label}</span>
+                <span className="text-sm ml-2 line-clamp-1">{tab.label}</span>
                 <Button
                   variant="nav"
                   className="w-fit! h-fit! bg-transparent! rounded-full! p-0.5! hover:bg-card-hover! mr-2"
                   onClick={(e) => {
                     e.stopPropagation();
+                    dispatch(setActivePane({ paneId: id }));
                     handleCloseTab(tab.id!);
                   }}
                 >

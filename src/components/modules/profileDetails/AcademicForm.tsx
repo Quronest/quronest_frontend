@@ -26,8 +26,8 @@ export default function AcademicForm({ onNext }: Props) {
       <Input placeholder="Course" {...register("course")} />
       <Input placeholder="Description" {...register("academic_description")} />
 
-      <div className="flex justify-end">
-        <Button type="submit" className="w-1/2">
+      <div className="flex justify-end w-full">
+        <Button type="submit" variant="primary" className="flex-1">
           Continue
         </Button>
       </div>

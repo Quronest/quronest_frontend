@@ -29,13 +29,12 @@ export default function PersonalForm({ onBack }: Props) {
       <Input placeholder="Primary Goal" {...register("primary_goal")} />
       <Input placeholder="Experience" {...register("experience")} />
       <Input placeholder="Description" {...register("personal_description")} />
-
-      <div className="flex gap-3">
-        <Button variant="outline" onClick={onBack} className="w-1/2">
+      <div className="flex gap-3 w-full">
+        <Button className="flex-1" variant="outline" onClick={onBack}>
           Back
         </Button>
 
-        <Button type="submit" className="w-1/2">
+        <Button className="flex-1" type="submit" variant="primary">
           Submit
         </Button>
       </div>

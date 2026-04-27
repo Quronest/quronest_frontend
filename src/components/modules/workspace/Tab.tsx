@@ -4,7 +4,7 @@ import { NoteTab } from "../tabs/note/NoteTab";
 
 export const Tab = ({ tab }: { tab: TabRefDataType }) => {
   return (
-    <div className="flex items-center h-full w-full">
+    <div className="h-full w-full">
       <NoteTab />
     </div>
   );

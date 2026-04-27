@@ -15,6 +15,7 @@ export type WorkspaceState = {
     right?: Pane;
   };
   activePaneId: "left" | "right";
+  isSidebarCollapsed: boolean;
 };
 
 export const mockTabs: TabRefDataType[] = [

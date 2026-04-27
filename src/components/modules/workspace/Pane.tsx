@@ -3,12 +3,13 @@ import { TabRefDataType } from "@/types/WorkspaceType";
 import React, { useState } from "react";
 import { Tab } from "./Tab";
 import Button from "@/components/ui/Button";
-import { PanelLeftClose, PanelRightClose, X } from "lucide-react";
+import { ChevronRight, PanelLeftClose, PanelRightClose, X } from "lucide-react";
 import clsx from "clsx";
 import { useAppSelector, useAppDispatch } from "@/store/hooks/hooks";
 import {
   closePane,
   closeTab,
+  openSidebar,
   setActivePane,
   switchTab,
 } from "@/store/features/workspace/workspaceSlice";
@@ -21,6 +22,9 @@ export const Pane = ({ id }: PaneProps) => {
   const dispatch = useAppDispatch();
 
   const panes = useAppSelector((state) => state.workspace.panes);
+  const isSidebarCollapsed = useAppSelector(
+    (state) => state.workspace.isSidebarCollapsed,
+  );
   const activePaneId = useAppSelector((state) => state.workspace.activePaneId);
   const pane = useAppSelector(
     (state) => state.workspace.panes[id as "left" | "right"],
@@ -42,58 +46,79 @@ export const Pane = ({ id }: PaneProps) => {
   return (
     <div
       className={clsx(
-        "flex flex-col h-full p-px",
-        panes.right && activePaneId === id && "ring-1 ring-primary ring-inset ",
+        "flex flex-col min-h-0 h-full p-px",
+        panes.right && activePaneId === id && "ring-1 ring-accent2 ring-inset ",
       )}
       onClick={() => dispatch(setActivePane({ paneId: id }))}
     >
-      {/* simple Tabslist */}
-      {tabList.length > 0 && (
-        <div className="flex items-center h-10 border-b-2 border-card-hover bg-card">
-          {/* Tabs container (takes full width) */}
-          <div className="flex items-center flex-1 overflow-hidden">
-            {tabList.map((tab) => (
-              <div
-                key={tab.id}
-                className={clsx(
-                  " justify-between border-r border-card-hover flex gap-5 items-center cursor-pointer",
-
-                  tab.id === activeTabId
-                    ? "bg-background border-background!"
-                    : " hover:bg-card-hover",
-                )}
-                onClick={() => handleSwitchTab(tab.id!)}
-              >
-                <span className="text-sm ml-2 line-clamp-1">{tab.label}</span>
-                <Button
-                  variant="nav"
-                  className="w-fit! h-fit! bg-transparent! rounded-full! p-0.5! hover:bg-card-hover! mr-2"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    dispatch(setActivePane({ paneId: id }));
-                    handleCloseTab(tab.id!);
-                  }}
-                >
-                  <X size={16} />
-                </Button>
-              </div>
-            ))}
-          </div>
-          {/* Close button (fixed at end) */}
-          {panes.right && (
+      <div className="flex items-center h-10 border-b-2 border-card-hover bg-card">
+        {/* open side bar option */}
+        {id === "left" && isSidebarCollapsed && (
+          <div className={clsx("relative m-1 mx-2 w-fit ")}>
             <Button
               variant="nav"
-              className="mr-2 shrink-0 w-8! h-8!"
-              onClick={() => dispatch(closePane({ paneId: id }))}
-              tooltip={id === "left" ? "Close left panel" : "Close right panel"}
-              tooltipPlace="left"
+              className=" justify-center p-1! w-fit! h-fit!"
+              onClick={(e) => {
+                e.stopPropagation();
+                dispatch(openSidebar());
+              }}
             >
-              {id === "left" ? <PanelLeftClose /> : <PanelRightClose />}
+              <ChevronRight size={16} />
             </Button>
-          )}
-        </div>
-      )}
-      <div className="flex-1">
+          </div>
+        )}
+
+        {/* simple Tabslist */}
+        {tabList.length > 0 && (
+          <React.Fragment>
+            {/* Tabs container (takes full width) */}
+            <div className="flex items-center flex-1 overflow-hidden">
+              {tabList.map((tab) => (
+                <div
+                  key={tab.id}
+                  className={clsx(
+                    " justify-between border-r border-card-hover flex gap-5 items-center cursor-pointer",
+
+                    tab.id === activeTabId
+                      ? "bg-background border-background!"
+                      : " hover:bg-card-hover",
+                  )}
+                  onClick={() => handleSwitchTab(tab.id!)}
+                >
+                  <span className="text-sm ml-2 line-clamp-1">{tab.label}</span>
+                  <Button
+                    variant="nav"
+                    className="w-fit! h-fit! bg-transparent! rounded-full! p-0.5! hover:bg-card-hover! mr-2"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      dispatch(setActivePane({ paneId: id }));
+                      handleCloseTab(tab.id!);
+                    }}
+                  >
+                    <X size={16} />
+                  </Button>
+                </div>
+              ))}
+            </div>
+            {/* Close button (fixed at end) */}
+            {panes.right && (
+              <Button
+                variant="nav"
+                className="mr-2 shrink-0 w-8! h-8!"
+                onClick={() => dispatch(closePane({ paneId: id }))}
+                tooltip={
+                  id === "left" ? "Close left panel" : "Close right panel"
+                }
+                tooltipPlace="left"
+              >
+                {id === "left" ? <PanelLeftClose /> : <PanelRightClose />}
+              </Button>
+            )}
+          </React.Fragment>
+        )}
+      </div>
+
+      <div className="flex-1 min-h-0">
         {activeTab ? (
           <Tab tab={activeTab} />
         ) : (

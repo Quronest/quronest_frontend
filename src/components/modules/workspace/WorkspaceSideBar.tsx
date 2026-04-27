@@ -2,9 +2,11 @@
 import Button from "@/components/ui/Button";
 import {
   addToPane,
+  closeSidebar,
+  openSidebar,
   openSplitPane,
 } from "@/store/features/workspace/workspaceSlice";
-import { useAppDispatch } from "@/store/hooks/hooks";
+import { useAppDispatch, useAppSelector } from "@/store/hooks/hooks";
 import { mockTabs } from "@/types/WorkspaceType";
 import clsx from "clsx";
 import {
@@ -17,7 +19,10 @@ import React, { useState } from "react";
 
 export const WorkspaceSideBar = () => {
   const dispatch = useAppDispatch();
-  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(true);
+  const isSidebarCollapsed = useAppSelector(
+    (state) => state.workspace.isSidebarCollapsed,
+  );
+  // const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(true);
 
   return (
     <React.Fragment>
@@ -52,7 +57,7 @@ export const WorkspaceSideBar = () => {
               <Button
                 variant="nav"
                 className=" justify-center p-1! w-fit! h-fit!"
-                onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
+                onClick={() => dispatch(closeSidebar())}
               >
                 <ChevronLeft size={16} />
               </Button>
@@ -71,18 +76,6 @@ export const WorkspaceSideBar = () => {
           </div>
         </div>
       </div>
-      {/* sidebar collapsed */}
-      {isSidebarCollapsed && (
-        <div className={clsx("relative m-1 mx-2 w-fit ")}>
-          <Button
-            variant="nav"
-            className=" justify-center p-1! w-fit! h-fit!"
-            onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
-          >
-            <ChevronRight size={16} />
-          </Button>
-        </div>
-      )}
     </React.Fragment>
   );
 };

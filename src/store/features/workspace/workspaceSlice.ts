@@ -9,12 +9,21 @@ const initialState: WorkspaceState = {
     },
   },
   activePaneId: "left",
+  isSidebarCollapsed: true,
 };
 
 const workspaceSlice = createSlice({
   name: "workspace",
   initialState,
   reducers: {
+    openSidebar: (state) => {
+      state.isSidebarCollapsed = false;
+    },
+
+    closeSidebar: (state) => {
+      state.isSidebarCollapsed = true;
+    },
+
     setActivePane: (
       state,
       action: PayloadAction<{ paneId: "left" | "right" }>,
@@ -88,6 +97,8 @@ export const {
   setActivePane,
   openSplitPane,
   closePane,
+  closeSidebar,
+  openSidebar,
 } = workspaceSlice.actions;
 
 export default workspaceSlice.reducer;

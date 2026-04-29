@@ -11,12 +11,12 @@ export const WorkspaceLayout = () => {
   return (
     <Group>
       <Panel defaultSize={50} minSize="30%">
-        <Pane id="left" />
+        <Pane paneId="left" />
       </Panel>
 
       {panes.right && (
         <Panel defaultSize={50} minSize="30%">
-          <Pane id="right" />
+          <Pane paneId="right" />
         </Panel>
       )}
     </Group>

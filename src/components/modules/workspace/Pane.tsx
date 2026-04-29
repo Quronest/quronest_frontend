@@ -1,56 +1,48 @@
 "use client";
-import { TabRefDataType } from "@/types/WorkspaceType";
-import React, { useState } from "react";
+import React from "react";
 import { TabPanel } from "./TabPanel";
 import Button from "@/components/ui/Button";
 import { ChevronRight, PanelLeftClose, PanelRightClose, X } from "lucide-react";
 import clsx from "clsx";
 import {
   closePane,
-  closeTab,
   openSidebar,
   selectWorkspace,
   setActivePane,
-  switchTab,
 } from "@/store/features/workspace/workspaceSlice";
 import { useAppDispatch, useAppSelector } from "@/store/store";
+import { TabItem } from "./TabItem";
 
 type PaneProps = {
-  id: "left" | "right";
+  paneId: "left" | "right";
 };
 
-export const Pane = ({ id }: PaneProps) => {
+export const Pane = ({ paneId }: PaneProps) => {
   const dispatch = useAppDispatch();
 
   const { panes, isSidebarCollapsed, activePaneId } =
     useAppSelector(selectWorkspace);
 
-  const pane = panes[id];
+  const pane = panes[paneId];
 
   if (!pane) return null;
 
   const { tabs: tabList, activeTabId } = pane;
   const activeTab = tabList.find((tab) => tab.id === activeTabId);
 
-  const handleSwitchTab = (id: string) => {
-    dispatch(switchTab({ tabId: id }));
-  };
-
-  const handleCloseTab = (id: string) => {
-    dispatch(closeTab({ tabId: id }));
-  };
-
   return (
     <div
       className={clsx(
         "flex flex-col min-h-0 h-full p-px",
-        panes.right && activePaneId === id && "ring-1 ring-accent2 ring-inset ",
+        panes.right &&
+          activePaneId === paneId &&
+          "ring-1 ring-accent2 ring-inset ",
       )}
-      onClick={() => dispatch(setActivePane({ paneId: id }))}
+      onClick={() => dispatch(setActivePane({ paneId: paneId }))}
     >
       <div className="flex items-center h-10 border-b-2 border-card-hover bg-card">
         {/* open side bar option */}
-        {id === "left" && isSidebarCollapsed && (
+        {paneId === "left" && isSidebarCollapsed && (
           <div className={clsx("relative m-1 mx-2 w-fit ")}>
             <Button
               variant="nav"
@@ -71,30 +63,12 @@ export const Pane = ({ id }: PaneProps) => {
             {/* Tabs container (takes full width) */}
             <div className="flex items-center flex-1 overflow-hidden">
               {tabList.map((tab) => (
-                <div
+                <TabItem
                   key={tab.id}
-                  className={clsx(
-                    " justify-between border-r border-card-hover flex gap-5 items-center cursor-pointer",
-
-                    tab.id === activeTabId
-                      ? "bg-background border-background!"
-                      : " hover:bg-card-hover",
-                  )}
-                  onClick={() => handleSwitchTab(tab.id!)}
-                >
-                  <span className="text-sm ml-2 line-clamp-1">{tab.label}</span>
-                  <Button
-                    variant="nav"
-                    className="w-fit! h-fit! bg-transparent! rounded-full! p-0.5! hover:bg-card-hover! mr-2"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      dispatch(setActivePane({ paneId: id }));
-                      handleCloseTab(tab.id!);
-                    }}
-                  >
-                    <X size={16} />
-                  </Button>
-                </div>
+                  tab={tab}
+                  activeTabId={activeTabId}
+                  paneId={paneId}
+                />
               ))}
             </div>
             {/* Close button (fixed at end) */}
@@ -102,13 +76,13 @@ export const Pane = ({ id }: PaneProps) => {
               <Button
                 variant="nav"
                 className="mr-2 shrink-0 w-8! h-8!"
-                onClick={() => dispatch(closePane({ paneId: id }))}
+                onClick={() => dispatch(closePane({ paneId: paneId }))}
                 tooltip={
-                  id === "left" ? "Close left panel" : "Close right panel"
+                  paneId === "left" ? "Close left panel" : "Close right panel"
                 }
                 tooltipPlace="left"
               >
-                {id === "left" ? <PanelLeftClose /> : <PanelRightClose />}
+                {paneId === "left" ? <PanelLeftClose /> : <PanelRightClose />}
               </Button>
             )}
           </React.Fragment>

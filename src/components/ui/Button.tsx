@@ -1,13 +1,21 @@
 "use client";
 import clsx from "clsx";
 import { ClassValue } from "clsx";
-import React, { ReactNode } from "react";
+import React, { ReactNode, useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { PlacesType, Tooltip } from "react-tooltip";
+import { set } from "zod";
 
 interface ButtonProps extends React.ComponentProps<"button"> {
   children: ReactNode;
-  variant?: "primary" | "outline" | "nav" | "list" | "icon" | "editIcon" | "deleteIcon";
+  variant?:
+    | "primary"
+    | "outline"
+    | "nav"
+    | "list"
+    | "icon"
+    | "editIcon"
+    | "deleteIcon";
   className?: string;
   id?: string;
   size?: "sm" | "md" | "lg";
@@ -47,6 +55,11 @@ const Button = ({
   active = true,
   ...props
 }: ButtonProps) => {
+  const [renderTooltip, setRenderTooltip] = useState(false);
+  useEffect(() => {
+    setRenderTooltip(true);
+  }, []);
+
   return (
     <button
       id={id}
@@ -68,6 +81,7 @@ const Button = ({
       {children}
 
       {typeof document !== undefined &&
+        renderTooltip &&
         createPortal(
           <Tooltip
             id={tooltipId}

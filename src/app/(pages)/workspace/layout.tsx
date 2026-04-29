@@ -1,5 +1,4 @@
 import { WorkspaceSideBar } from "@/components/modules/workspace/WorkspaceSideBar";
-import { PageContainer } from "@/components/ui/PageContainer";
 import { ReactNode } from "react";
 
 const layout = ({ children }: { children: ReactNode }) => {

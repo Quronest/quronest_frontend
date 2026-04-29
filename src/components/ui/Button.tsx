@@ -1,13 +1,21 @@
 "use client";
 import clsx from "clsx";
 import { ClassValue } from "clsx";
-import React, { ReactNode } from "react";
+import React, { ReactNode, useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { PlacesType, Tooltip } from "react-tooltip";
+import { set } from "zod";
 
 interface ButtonProps extends React.ComponentProps<"button"> {
   children: ReactNode;
-  variant?: "primary" | "outline" | "nav";
+  variant?:
+    | "primary"
+    | "outline"
+    | "nav"
+    | "list"
+    | "icon"
+    | "editIcon"
+    | "deleteIcon";
   className?: string;
   id?: string;
   size?: "sm" | "md" | "lg";
@@ -25,9 +33,13 @@ const sizes: Record<string, ClassValue> = {
 };
 
 const variants: Record<string, ClassValue> = {
-  primary: "text-white bg-primary font-bold ",
-  outline: "bg-card-hover !border-primary ",
-  nav: `bg-card w-12 h-12 p-2! text-neutral active:translate-y-0.5! hover:bg-card-hover `,
+  primary: "text-white bg-primary font-bold justify-center",
+  outline: "bg-card-hover !border-primary justify-center",
+  nav: `bg-card w-12 h-12 p-2! text-neutral active:translate-y-0.5! hover:bg-card-hover justify-center`,
+  list: `hover:bg-card-hover rounded-none! w-full text-left! text-sm py-1!`,
+  icon: `bg-card w-fit h-fit p-2! text-neutral active:translate-y-0.5! hover:bg-card-hover justify-center`,
+  editIcon: `bg-card w-fit h-fit p-2! text-neutral active:translate-y-0.5! hover:bg-card-hover justify-center rounded-full! border border-primary/20 bg-background/60 text-primary!`,
+  deleteIcon: `bg-card w-fit h-fit p-2! text-neutral active:translate-y-0.5! hover:bg-card-hover justify-center rounded-full! border border-red-400/15 bg-background/60 text-red-300!`,
 };
 
 const Button = ({
@@ -43,11 +55,16 @@ const Button = ({
   active = true,
   ...props
 }: ButtonProps) => {
+  const [renderTooltip, setRenderTooltip] = useState(false);
+  useEffect(() => {
+    setRenderTooltip(true);
+  }, []);
+
   return (
     <button
       id={id}
       className={clsx(
-        "flex items-center justify-center cursor-pointer ",
+        "flex items-center cursor-pointer ",
         `transition-all duration-400 disabled:brightness-75 disabled:cursor-not-allowed `,
         "border-transparent border rounded-lg",
         hover && "hover:brightness-110",
@@ -64,8 +81,14 @@ const Button = ({
       {children}
 
       {typeof document !== undefined &&
+        renderTooltip &&
         createPortal(
-          <Tooltip id={tooltipId} place={tooltipPlace} delayShow={500} />,
+          <Tooltip
+            id={tooltipId}
+            place={tooltipPlace}
+            delayShow={500}
+            style={{ zIndex: 9999 }}
+          />,
           document.body,
         )}
     </button>

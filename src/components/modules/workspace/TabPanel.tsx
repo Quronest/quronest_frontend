@@ -1,0 +1,11 @@
+import { TabRefDataType } from "@/types/WorkspaceType";
+import React from "react";
+import { NoteTab } from "../tabs/note/NoteTab";
+
+export const TabPanel = ({ tab }: { tab: TabRefDataType }) => {
+  return (
+    <div className="h-full w-full">
+      <NoteTab />
+    </div>
+  );
+};

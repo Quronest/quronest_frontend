@@ -37,8 +37,8 @@ export const TasklistItemComponent = ({ task }: TaskItemType) => {
         <Button
           className="justify-center"
           size="sm"
-          hover={false}
-          active={false}
+          hover={true}
+          active={true}
         >
           <CircularProgress
             value={task?.progress}

@@ -1,18 +1,19 @@
 "use client";
 import { TabRefDataType } from "@/types/WorkspaceType";
 import React, { useState } from "react";
-import { Tab } from "./Tab";
+import { TabPanel } from "./TabPanel";
 import Button from "@/components/ui/Button";
 import { ChevronRight, PanelLeftClose, PanelRightClose, X } from "lucide-react";
 import clsx from "clsx";
-import { useAppSelector, useAppDispatch } from "@/store/hooks/hooks";
 import {
   closePane,
   closeTab,
   openSidebar,
+  selectWorkspace,
   setActivePane,
   switchTab,
 } from "@/store/features/workspace/workspaceSlice";
+import { useAppDispatch, useAppSelector } from "@/store/store";
 
 type PaneProps = {
   id: "left" | "right";
@@ -21,14 +22,10 @@ type PaneProps = {
 export const Pane = ({ id }: PaneProps) => {
   const dispatch = useAppDispatch();
 
-  const panes = useAppSelector((state) => state.workspace.panes);
-  const isSidebarCollapsed = useAppSelector(
-    (state) => state.workspace.isSidebarCollapsed,
-  );
-  const activePaneId = useAppSelector((state) => state.workspace.activePaneId);
-  const pane = useAppSelector(
-    (state) => state.workspace.panes[id as "left" | "right"],
-  );
+  const { panes, isSidebarCollapsed, activePaneId } =
+    useAppSelector(selectWorkspace);
+
+  const pane = panes[id];
 
   if (!pane) return null;
 
@@ -120,7 +117,7 @@ export const Pane = ({ id }: PaneProps) => {
 
       <div className="flex-1 min-h-0">
         {activeTab ? (
-          <Tab tab={activeTab} />
+          <TabPanel tab={activeTab} />
         ) : (
           <div className="flex items-center justify-center h-full text-neutral">
             No tabs open

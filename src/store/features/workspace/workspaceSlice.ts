@@ -90,6 +90,8 @@ const workspaceSlice = createSlice({
   },
 });
 
+export const selectWorkspace = (state: { workspace: WorkspaceState }) => state.workspace;
+
 export const {
   addToPane,
   switchTab,

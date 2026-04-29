@@ -7,6 +7,8 @@ import Button from "@/components/ui/Button";
 import { Plus } from "lucide-react";
 import { ScrollArea } from "@/components/ui/ScrollArea";
 import { TextArea } from "@/components/ui/TextArea";
+import { TabHeader } from "../ui/TabHeader";
+import { TabContainer } from "../ui/TabContainer";
 
 const TEXTAREA_BASE_HEIGHT = 96;
 const TEXTAREA_MAX_HEIGHT = 144;
@@ -15,23 +17,18 @@ export const NoteTab = () => {
   const [draft, setDraft] = useState("");
 
   return (
-    <section className="flex h-full w-full min-h-0 flex-col p-2">
-      {/* <div className="border-b border-card-hover/80 px-6 py-5"> */}
-      <div className=" items-start space-y-2 border-b border-card-hover/80 px-6 py-5">
-        <p className="text-xl font-semibold uppercase tracking-[0.28em] text-primary/80">
-          Notes
-        </p>
-        <h2 className="text-md font-semibold text-foreground">
-          Capture ideas without losing your place
-        </h2>
-      </div>
-      {/* </div> */}
+    <TabContainer>
+      <TabHeader
+        title="Notes"
+        subtitle="Capture ideas without losing your place"
+      />
 
       <ScrollArea className="flex-1 space-y-3 px-6! py-5!">
         {mockNotes.map((note) => (
           <Note key={note.id} note={note} />
         ))}
       </ScrollArea>
+
       <div className="rounded-3xl flex gap-3  my-5 mx-6">
         <TextArea
           value={draft}
@@ -48,6 +45,6 @@ export const NoteTab = () => {
           <span>Save Note</span>
         </Button>
       </div>
-    </section>
+    </TabContainer>
   );
 };

@@ -1,28 +1,21 @@
 "use client";
 import Button from "@/components/ui/Button";
+import { ScrollArea } from "@/components/ui/ScrollArea";
 import {
   addToPane,
   closeSidebar,
-  openSidebar,
   openSplitPane,
+  selectWorkspace,
 } from "@/store/features/workspace/workspaceSlice";
-import { useAppDispatch, useAppSelector } from "@/store/hooks/hooks";
+import { useAppDispatch, useAppSelector } from "@/store/store";
 import { mockTabs } from "@/types/WorkspaceType";
 import clsx from "clsx";
-import {
-  ChevronLeft,
-  ChevronRight,
-  Menu,
-  SquareSplitHorizontal,
-} from "lucide-react";
-import React, { useState } from "react";
+import { ChevronLeft, SquareSplitHorizontal } from "lucide-react";
+import React from "react";
 
 export const WorkspaceSideBar = () => {
   const dispatch = useAppDispatch();
-  const isSidebarCollapsed = useAppSelector(
-    (state) => state.workspace.isSidebarCollapsed,
-  );
-  // const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(true);
+  const { isSidebarCollapsed } = useAppSelector(selectWorkspace);
 
   return (
     <React.Fragment>
@@ -63,7 +56,7 @@ export const WorkspaceSideBar = () => {
               </Button>
             </div>
           </div>
-          <div className="space-y-0 py-2">
+          <ScrollArea className="space-y-0 py-2">
             {mockTabs.map((tab) => (
               <Button
                 key={tab.id}
@@ -73,7 +66,7 @@ export const WorkspaceSideBar = () => {
                 {tab.label}
               </Button>
             ))}
-          </div>
+          </ScrollArea>
         </div>
       </div>
     </React.Fragment>

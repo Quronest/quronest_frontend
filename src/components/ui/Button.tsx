@@ -7,7 +7,7 @@ import { PlacesType, Tooltip } from "react-tooltip";
 
 interface ButtonProps extends React.ComponentProps<"button"> {
   children: ReactNode;
-  variant?: "primary" | "outline" | "nav" | "list" | "icon";
+  variant?: "primary" | "outline" | "nav" | "list" | "icon" | "editIcon" | "deleteIcon";
   className?: string;
   id?: string;
   size?: "sm" | "md" | "lg";
@@ -29,7 +29,9 @@ const variants: Record<string, ClassValue> = {
   outline: "bg-card-hover !border-primary justify-center",
   nav: `bg-card w-12 h-12 p-2! text-neutral active:translate-y-0.5! hover:bg-card-hover justify-center`,
   list: `hover:bg-card-hover rounded-none! w-full text-left! text-sm py-1!`,
-  icon: `bg-card w-fit h-fit p-2! text-neutral active:translate-y-0.5! hover:bg-card-hover justify-center`, 
+  icon: `bg-card w-fit h-fit p-2! text-neutral active:translate-y-0.5! hover:bg-card-hover justify-center`,
+  editIcon: `bg-card w-fit h-fit p-2! text-neutral active:translate-y-0.5! hover:bg-card-hover justify-center rounded-full! border border-primary/20 bg-background/60 text-primary!`,
+  deleteIcon: `bg-card w-fit h-fit p-2! text-neutral active:translate-y-0.5! hover:bg-card-hover justify-center rounded-full! border border-red-400/15 bg-background/60 text-red-300!`,
 };
 
 const Button = ({
@@ -67,7 +69,12 @@ const Button = ({
 
       {typeof document !== undefined &&
         createPortal(
-          <Tooltip id={tooltipId} place={tooltipPlace} delayShow={500}  style={{ zIndex: 9999 }}/>,
+          <Tooltip
+            id={tooltipId}
+            place={tooltipPlace}
+            delayShow={500}
+            style={{ zIndex: 9999 }}
+          />,
           document.body,
         )}
     </button>

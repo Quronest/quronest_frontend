@@ -2,6 +2,7 @@
 
 import { X } from "lucide-react";
 import { useModal } from "./Modal";
+import Button from "./Button";
 
 type Props = {
   title: string;
@@ -12,7 +13,7 @@ export default function ModalHeader({ title, subtitle }: Props) {
   const { onClose } = useModal();
 
   return (
-    <div className="flex items-start justify-between px-4 py-3 border-b border-white/10">
+    <div className="flex items-start justify-between px-4 py-3 border-b border-(--color-card-hover)">
       <div>
         {title && (
           <h2 className="text-lg font-semibold text-(--color-foreground)">
@@ -24,12 +25,12 @@ export default function ModalHeader({ title, subtitle }: Props) {
         )}
       </div>
 
-      <button
+      <Button
         onClick={onClose}
         className="p-1 rounded-md hover:bg-(--color-card-hover) transition"
       >
         <X size={18} />
-      </button>
+      </Button>
     </div>
   );
 }

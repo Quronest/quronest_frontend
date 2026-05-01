@@ -27,7 +27,7 @@ export default function ModalHeader({ title, subtitle }: Props) {
 
       <Button
         onClick={onClose}
-        className="p-1 rounded-md hover:bg-(--color-card-hover) transition"
+        variant="outline"
       >
         <X size={18} />
       </Button>

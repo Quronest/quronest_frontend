@@ -73,7 +73,7 @@ export default function Modal({
           onClick={(e) => e.stopPropagation()}
           className={clsx(
             "w-full max-w-md rounded-xl shadow-xl border transform transition-all duration-200",
-            "bg-(--color-card) border-white/10",
+            "bg-card border-(--border)",
             closing
               ? "opacity-0 scale-95 translate-y-4"
               : "opacity-100 scale-100 translate-y-0",

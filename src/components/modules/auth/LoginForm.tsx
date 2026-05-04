@@ -74,6 +74,11 @@ function LoginForm() {
           placeholder="Password"
           disabled={isLoggingIn}
         />
+
+        <div className="text-right mt-1">
+          <TextLink href="/forgot-password">Forgot Password?</TextLink>
+        </div>
+
         {errors.password && (
           <p className="text-red-500">{`${errors.password.message}`}</p>
         )}

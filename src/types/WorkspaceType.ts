@@ -22,12 +22,12 @@ export const mockTabs: TabRefDataType[] = [
   {
     id: "tab-1",
     label: "Create Next App",
-    type: "code",
+    type: "Notes",
   },
   {
     id: "tab-2",
     label: "Frontend Guidance",
-    type: "Docs",
+    type: "Notes",
   },
   {
     id: "tab-3",
@@ -37,11 +37,11 @@ export const mockTabs: TabRefDataType[] = [
   {
     id: "tab-4",
     label: "Discussion Thread",
-    type: "Discuss",
+    type: "Docs",
   },
   {
     id: "tab-5",
     label: "API Integration",
-    type: "code",
+    type: "Docs",
   },
 ];

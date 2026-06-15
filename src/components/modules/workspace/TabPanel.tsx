@@ -7,7 +7,7 @@ import { ScrollArea } from "@/components/ui/ScrollArea";
 export const TabPanel = ({ tab }: { tab: TabRefDataType }) => {
   return (
     <ScrollArea className="h-full w-full">
-      {tab.type === "Notes" && <NoteTab />}\
+      {tab.type === "Notes" && <NoteTab />}
       {tab.type === "Docs" && <ResourceTab />}
     </ScrollArea>
   );

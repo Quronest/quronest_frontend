@@ -9,6 +9,11 @@ React Hooks let you use state and lifecycle features inside function components.
 const [count, setCount] = useState(0);
 \`\`\`
 
+\`\`\`py
+if (a==b):
+    print("Hello")
+\`\`\`
+
 ## Benefits
 
 - Simpler code

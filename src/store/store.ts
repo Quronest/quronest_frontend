@@ -2,12 +2,14 @@ import { configureStore } from "@reduxjs/toolkit";
 import { baseApi } from "./features/baseApi";
 import { setupListeners } from "@reduxjs/toolkit/query";
 import workspaceReducer from "./features/workspace/workspaceSlice";
+import noteReducer from "./features/notes/noteSlice";
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 
 export const store = configureStore({
   reducer: {
     [baseApi.reducerPath]: baseApi.reducer,
     workspace: workspaceReducer,
+    note: noteReducer
   },
   middleware: (gdm) => gdm().concat(baseApi.middleware),
 });

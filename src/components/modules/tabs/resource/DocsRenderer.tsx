@@ -2,9 +2,11 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeHighlight from "rehype-highlight";
 
-import { H1 } from "./markdown/Heading";
+import { Heading } from "./markdown/Heading";
 import { Paragraph } from "./markdown/Paragraph";
 import { BlockQuote } from "./markdown/BlockQuote";
+import { CodeBlock } from "./markdown/CodeBlock";
+import { PreBlock } from "./markdown/PreBlock";
 
 type SelectionInfo = {
   text: string;
@@ -39,16 +41,28 @@ export const DocsRenderer = ({ markdown, onSelection }: DocsRendererProps) => {
 
   return (
     <div
-      className="prose prose-invert w-full max-w-2xl mx-auto"
+      className="
+        prose 
+        prose-invert 
+        max-w-3xl
+
+        prose-pre:bg-transparent
+        prose-pre:p-0
+        prose-pre:m-0
+  "
       onMouseUp={handleMouseUp}
     >
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
         rehypePlugins={[rehypeHighlight]}
         components={{
-          h1: H1,
+          h1: (props) => <Heading level={1} {...props} />,
+          h2: (props) => <Heading level={2} {...props} />,
+          h3: (props) => <Heading level={3} {...props} />,
           p: Paragraph,
           blockquote: BlockQuote,
+          code: CodeBlock,
+          pre: PreBlock,
         }}
       >
         {markdown}

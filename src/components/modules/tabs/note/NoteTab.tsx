@@ -16,10 +16,15 @@ const TEXTAREA_MAX_HEIGHT = 128;
 type NoteTabProps = {
   resourceId: string;
   notes: NoteType[];
-}
+  referenceText?: string;
+};
 
-export const NoteTab = () => {
-  const [draft, setDraft] = useState("");
+export const NoteTab = ({ resourceId, notes, referenceText }: NoteTabProps) => {
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  useEffect(() => {
+    textareaRef.current?.focus();
+  }, []);
+  const [draftNote, setDraftNote] = useState("");
 
   return (
     <TabContainer>
@@ -54,8 +59,9 @@ export const NoteTab = () => {
         )}
 
         <TextArea
-          value={draft}
-          onChange={(event) => setDraft(event.target.value)}
+          ref={textareaRef}
+          value={draftNote}
+          onChange={(event) => setDraftNote(event.target.value)}
           placeholder="Write a note, thought, or reminder..."
           className="max-h-30 border-none! bg-card! p-0! pl-2!"
         />
@@ -64,7 +70,7 @@ export const NoteTab = () => {
           <Button
             size="sm"
             className="gap-2 shadow-[0_10px_25px_rgba(29,173,192,0.2)]"
-            disabled={!draft.trim()}
+            disabled={!draftNote.trim()}
           >
             <Plus size={16} />
             <span>Save Note</span>

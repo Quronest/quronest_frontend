@@ -4,7 +4,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 const initialState: WorkspaceState = {
   panes: {
     left: {
-      tabs: [],
+      tabs: [] as TabRefDataType[],
       activeTabId: null,
     },
   },

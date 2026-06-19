@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 type Note = {
   id: string;
-  selectedText: string;
+  referenceText: string;
   content: string;
   createdAt: string;
 };

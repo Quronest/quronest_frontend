@@ -2,6 +2,14 @@ export type TabRefDataType = {
   id: string;
   label: string;
   type: "Notes" | "Discuss" | "code" | "Docs";
+
+};
+
+export type TabDataType <T> = {
+  id: string;
+  label: string;
+  type: "Notes" | "Discuss" | "code" | "Docs";
+  content: T;
 };
 
 export type Pane = {

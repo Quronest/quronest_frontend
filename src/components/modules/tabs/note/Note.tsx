@@ -40,7 +40,7 @@ export const Note = ({ note }: { note: NoteType }) => {
         </CardActions>
       </div>
 
-      <HighlightBox text={note.selectedText} />
+      <HighlightBox text={note.referenceText} />
 
       <div
         className={clsx(

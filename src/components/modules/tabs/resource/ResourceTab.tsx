@@ -5,13 +5,12 @@ import { useEffect, useState } from "react";
 import { SelectionToolBar } from "./SelectionToolBar";
 import { extractHeadings } from "./contentTable/extractHeadings";
 import { TOC } from "./contentTable/TOC";
+import { ResourceSelection, ResourceTabType } from "@/types/WorkspaceType";
 
-export const ResourceTab = () => {
-  const [selectionInfo, setSelectionInfo] = useState<{
-    text: string;
-    x: number;
-    y: number;
-  } | null>(null);
+export const ResourceTab = ({ id, markdown }: ResourceTabType) => {
+  const [selectionInfo, setSelectionInfo] = useState<ResourceSelection | null>(
+    null,
+  );
 
   useEffect(() => {
     const handleSelectionChange = () => {
@@ -30,8 +29,6 @@ export const ResourceTab = () => {
   }, []);
 
   const headings = extractHeadings(mockMarkdown);
-  console.log("ResourceTab Render");
-  console.log(selectionInfo);
 
   return (
     <>
@@ -41,6 +38,7 @@ export const ResourceTab = () => {
             <DocsRenderer
               markdown={mockMarkdown}
               onSelection={setSelectionInfo}
+              resourceId={id}
             />
           </div>
           <div className="sticky top-5 w-64 shrink-0">
@@ -48,14 +46,7 @@ export const ResourceTab = () => {
           </div>
         </div>
 
-        {selectionInfo && (
-          <SelectionToolBar
-            text={selectionInfo.text}
-            x={selectionInfo.x}
-            y={selectionInfo.y}
-          />
-         
-        )}
+        {selectionInfo && <SelectionToolBar selection={selectionInfo} />}
       </TabContainer>
     </>
   );

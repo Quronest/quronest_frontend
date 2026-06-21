@@ -1,34 +1,51 @@
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeHighlight from "rehype-highlight";
+import rehypeRaw from "rehype-raw";
 
 import { Heading } from "./markdown/Heading";
 import { Paragraph } from "./markdown/Paragraph";
 import { BlockQuote } from "./markdown/BlockQuote";
 import { CodeBlock } from "./markdown/CodeBlock";
 import { PreBlock } from "./markdown/PreBlock";
-import { TOC } from "./contentTable/TOC";
-import { extractHeadings } from "./contentTable/extractHeadings";
 
-type SelectionInfo = {
-  text: string;
-  x: number;
-  y: number;
-};
+import { applyHighlights } from "./helper";
+import { useAppSelector } from "@/store/store";
+import { selectHighlight } from "@/store/features/highlights/highlightSlice";
+import { ResourceSelection } from "@/types/WorkspaceType";
 
 type DocsRendererProps = {
   markdown: string;
-  onSelection?: (selection: SelectionInfo | null) => void;
+  onSelection?: (selection: ResourceSelection | null) => void;
+  resourceId: string;
 };
 
-export const DocsRenderer = ({ markdown, onSelection }: DocsRendererProps) => {
+export const DocsRenderer = ({
+  markdown,
+  onSelection,
+  resourceId,
+}: DocsRendererProps) => {
+  const { highlights } = useAppSelector(selectHighlight);
+  const resourceHighlights = highlights.filter(
+    (highlight) => highlight.resourceId === resourceId,
+  );
+
   const handleMouseUp = () => {
     const selection = window.getSelection();
 
     if (!selection) return;
 
+    const range = selection.getRangeAt(0);
+
+    console.log(range.startContainer.parentElement);
+
     const rect = selection?.getRangeAt(0).getBoundingClientRect();
     const text = selection.toString().trim();
+
+    // multi node selection feature not required as of now
+    if (range.startContainer !== range.endContainer) {
+      return;
+    }
 
     if (!text) {
       onSelection?.(null);
@@ -36,19 +53,21 @@ export const DocsRenderer = ({ markdown, onSelection }: DocsRendererProps) => {
     }
 
     onSelection?.({
+      resourceId,
       text,
-      x: rect.left + rect.width / 2,
-      y: rect.top,
+
+      position: {
+        x: rect.left + rect.width / 2,
+        y: rect.top,
+      },
+
+      range,
     });
   };
 
-  // const handleMouseUp = () => {
-  //   const selection = window.getSelection();
+  // apply highlights
 
-  //   const text = selection?.toString().trim();
-
-  //   console.log(text);
-  // };
+  const markdownWithHighlights = applyHighlights(markdown, resourceHighlights);
 
   return (
     <div
@@ -66,7 +85,7 @@ export const DocsRenderer = ({ markdown, onSelection }: DocsRendererProps) => {
     >
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
-        rehypePlugins={[rehypeHighlight]}
+        rehypePlugins={[rehypeHighlight, rehypeRaw]}
         components={{
           h1: (props) => <Heading level={1} {...props} />,
           h2: (props) => <Heading level={2} {...props} />,
@@ -75,9 +94,14 @@ export const DocsRenderer = ({ markdown, onSelection }: DocsRendererProps) => {
           blockquote: BlockQuote,
           code: CodeBlock,
           pre: PreBlock,
+          mark: ({ children }) => (
+            <mark className="rounded bg-yellow-400/30 px-1 text-foreground">
+              {children}
+            </mark>
+          ),
         }}
       >
-        {markdown}
+        {markdownWithHighlights}
       </ReactMarkdown>
     </div>
   );

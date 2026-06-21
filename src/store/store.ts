@@ -3,13 +3,15 @@ import { baseApi } from "./features/baseApi";
 import { setupListeners } from "@reduxjs/toolkit/query";
 import workspaceReducer from "./features/workspace/workspaceSlice";
 import noteReducer from "./features/notes/noteSlice";
+import highlightReducer from "./features/highlights/highlightSlice";
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 
 export const store = configureStore({
   reducer: {
     [baseApi.reducerPath]: baseApi.reducer,
     workspace: workspaceReducer,
-    note: noteReducer
+    note: noteReducer,
+    highlight: highlightReducer,
   },
   middleware: (gdm) => gdm().concat(baseApi.middleware),
 });

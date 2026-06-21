@@ -1,17 +1,3 @@
-export type TabRefDataType = {
-  id: string;
-  label: string;
-  type: "Notes" | "Discuss" | "code" | "Docs";
-
-};
-
-export type TabDataType <T> = {
-  id: string;
-  label: string;
-  type: "Notes" | "Discuss" | "code" | "Docs";
-  content: T;
-};
-
 export type Pane = {
   tabs: TabRefDataType[];
   activeTabId: string | null;
@@ -24,6 +10,37 @@ export type WorkspaceState = {
   };
   activePaneId: "left" | "right";
   isSidebarCollapsed: boolean;
+};
+
+export type TabRefDataType = {
+  id: string;
+  label: string;
+  type: "Notes" | "Discuss" | "code" | "Resource";
+};
+
+export type TabDataType<T> = {
+  id: string;
+  label: string;
+  type: "Notes" | "Discuss" | "code" | "Resource";
+  content: T;
+};
+
+export type ResourceTabType = {
+  id: string;
+  markdown: string;
+};
+
+export type ResourceSelection = {
+  resourceId: string;
+
+  text: string;
+
+  position: {
+    x: number;
+    y: number;
+  };
+
+  range: Range;
 };
 
 export const mockTabs: TabRefDataType[] = [
@@ -45,11 +62,11 @@ export const mockTabs: TabRefDataType[] = [
   {
     id: "tab-4",
     label: "Discussion Thread",
-    type: "Docs",
+    type: "Resource",
   },
   {
     id: "tab-5",
     label: "API Integration",
-    type: "Docs",
+    type: "Resource",
   },
 ];

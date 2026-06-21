@@ -37,7 +37,6 @@ export const PreBlock = ({ children, ...props }: PreBlockProps) => {
     }, 2000);
   };
 
-  console.log(codeElement.props.children);
 
   return (
     <div className="my-4 overflow-hidden rounded-xl border border-card-hover bg-card">

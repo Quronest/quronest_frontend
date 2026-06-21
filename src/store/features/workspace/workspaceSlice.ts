@@ -68,7 +68,7 @@ const workspaceSlice = createSlice({
 
     switchTab: (state, action: PayloadAction<{ tabId: string }>) => {
       const activePaneId = state.activePaneId;
-      const pane = state.panes[state.activePaneId];
+      const pane = state.panes[activePaneId];
 
       if (!pane) return;
       pane.activeTabId = action.payload.tabId;

@@ -7,10 +7,13 @@ import { Paragraph } from "./markdown/Paragraph";
 import { BlockQuote } from "./markdown/BlockQuote";
 import { CodeBlock } from "./markdown/CodeBlock";
 import { PreBlock } from "./markdown/PreBlock";
+import { TOC } from "./contentTable/TOC";
+import { extractHeadings } from "./contentTable/extractHeadings";
 
 type SelectionInfo = {
   text: string;
-  rect: DOMRect;
+  x: number;
+  y: number;
 };
 
 type DocsRendererProps = {
@@ -24,6 +27,7 @@ export const DocsRenderer = ({ markdown, onSelection }: DocsRendererProps) => {
 
     if (!selection) return;
 
+    const rect = selection?.getRangeAt(0).getBoundingClientRect();
     const text = selection.toString().trim();
 
     if (!text) {
@@ -31,13 +35,20 @@ export const DocsRenderer = ({ markdown, onSelection }: DocsRendererProps) => {
       return;
     }
 
-    const rect = selection.getRangeAt(0).getBoundingClientRect();
-
     onSelection?.({
       text,
-      rect,
+      x: rect.left + rect.width / 2,
+      y: rect.top,
     });
   };
+
+  // const handleMouseUp = () => {
+  //   const selection = window.getSelection();
+
+  //   const text = selection?.toString().trim();
+
+  //   console.log(text);
+  // };
 
   return (
     <div
@@ -45,6 +56,7 @@ export const DocsRenderer = ({ markdown, onSelection }: DocsRendererProps) => {
         prose 
         prose-invert 
         max-w-3xl
+        py-12
 
         prose-pre:bg-transparent
         prose-pre:p-0

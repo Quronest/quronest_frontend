@@ -22,7 +22,7 @@ export const WorkspaceSideBar = () => {
       {/* sidebar open */}
       <div
         className={clsx(
-          ` lg:sticky top-0 left-17 z-50 h-screen shrink-0`,
+          ` lg:sticky top-0 left-0 z-50 h-screen shrink-0`,
           ` bg-card transition-all duration-300 overflow-x-hidden `,
           isSidebarCollapsed ? "w-0 p-0" : "w-80 ",
         )}

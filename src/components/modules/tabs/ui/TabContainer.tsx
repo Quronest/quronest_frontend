@@ -14,7 +14,7 @@ export const TabContainer = ({
 }: TabContainerProps) => {
   return (
     <div
-      className={clsx("flex h-full w-full min-h-0 flex-col p-2", className)}
+      className={clsx("flex h-full w-full min-h-0 min-w-0 flex-col p-5", className)}
       {...props}
     >
       {children}

@@ -9,14 +9,18 @@ export const WorkspaceLayout = () => {
   const { panes } = useAppSelector(selectWorkspace);
 
   return (
-    <Group>
+    <Group className="h-full w-full min-w-0">
       <Panel defaultSize={50} minSize="30%">
-        <Pane paneId="left" />
+        <div className="h-full min-w-0">
+          <Pane paneId="left" />
+        </div>
       </Panel>
 
       {panes.right && (
         <Panel defaultSize={50} minSize="30%">
-          <Pane paneId="right" />
+          <div className="h-full min-w-0">
+            <Pane paneId="right" />
+          </div>
         </Panel>
       )}
     </Group>

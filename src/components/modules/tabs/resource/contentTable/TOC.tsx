@@ -1,12 +1,22 @@
 import clsx from "clsx";
 import { HeadingItem } from "../types";
+import { useAppSelector } from "@/store/store";
+import { selectWorkspace } from "@/store/features/workspace/workspaceSlice";
 
 type TOCProps = {
   headings: HeadingItem[];
+  tabId: string;
 };
 
-export const TOC = ({ headings }: TOCProps) => {
+export const TOC = ({ headings, tabId }: TOCProps) => {
+  const { activePaneId, panes } = useAppSelector(selectWorkspace);
   const handleScroll = (id: string) => {
+    console.log(
+      panes[activePaneId]?.activeTabId !== tabId,
+      panes[activePaneId]?.activeTabId,
+      tabId,
+    );
+    if (panes[activePaneId]?.activeTabId !== tabId) return;
     document.getElementById(id)?.scrollIntoView({
       behavior: "smooth",
       block: "start",

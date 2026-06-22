@@ -42,7 +42,7 @@ export const ResourceTab = ({ id, markdown }: ResourceTabType) => {
             />
           </div>
           <div className="sticky top-5 w-64 shrink-0">
-            <TOC headings={headings} />
+            <TOC headings={headings} tabId={id} />
           </div>
         </div>
 

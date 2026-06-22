@@ -30,10 +30,24 @@ export type ResourceTabType = {
   markdown: string;
 };
 
-export type ResourceSelection = {
+export type SelectionAnchor = {
   resourceId: string;
 
-  text: string;
+  block: {
+    startOffset: number;
+    endOffset: number;
+  };
+
+  selection: {
+    startOffset: number;
+    endOffset: number;
+  };
+
+  selectedText: string;
+};
+
+export type ResourceSelection = {
+  anchor: SelectionAnchor;
 
   position: {
     x: number;

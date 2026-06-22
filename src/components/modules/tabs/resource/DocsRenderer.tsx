@@ -9,7 +9,6 @@ import { BlockQuote } from "./markdown/BlockQuote";
 import { CodeBlock } from "./markdown/CodeBlock";
 import { PreBlock } from "./markdown/PreBlock";
 
-import { applyHighlights } from "./helper";
 import { useAppSelector } from "@/store/store";
 import { selectHighlight } from "@/store/features/highlights/highlightSlice";
 import { ResourceSelection } from "@/types/WorkspaceType";
@@ -27,7 +26,7 @@ export const DocsRenderer = ({
 }: DocsRendererProps) => {
   const { highlights } = useAppSelector(selectHighlight);
   const resourceHighlights = highlights.filter(
-    (highlight) => highlight.resourceId === resourceId,
+    (highlight) => highlight.anchor?.resourceId === resourceId,
   );
 
   const handleMouseUp = () => {
@@ -37,7 +36,22 @@ export const DocsRenderer = ({
 
     const range = selection.getRangeAt(0);
 
-    console.log(range.startContainer.parentElement);
+    let element =
+      range.commonAncestorContainer.nodeType === Node.TEXT_NODE
+        ? range.commonAncestorContainer.parentElement
+        : (range.commonAncestorContainer as HTMLElement);
+
+    const blockElement = element?.closest("[data-block-start]");
+    const blockText = blockElement?.textContent ?? "";
+    const nodeText = range.startContainer.textContent ?? "";
+    const nodeStart = blockText.indexOf(nodeText);
+    const absoluteStart = nodeStart + range.startOffset;
+
+    const absoluteEnd = nodeStart + range.endOffset;
+
+    const startOffset = Number(blockElement?.getAttribute("data-block-start"));
+
+    const endOffset = Number(blockElement?.getAttribute("data-block-end"));
 
     const rect = selection?.getRangeAt(0).getBoundingClientRect();
     const text = selection.toString().trim();
@@ -53,8 +67,18 @@ export const DocsRenderer = ({
     }
 
     onSelection?.({
-      resourceId,
-      text,
+      anchor: {
+        selectedText: text,
+        resourceId: resourceId,
+        block: {
+          startOffset,
+          endOffset,
+        },
+        selection: {
+          endOffset: absoluteEnd,
+          startOffset: absoluteStart,
+        },
+      },
 
       position: {
         x: rect.left + rect.width / 2,
@@ -66,8 +90,6 @@ export const DocsRenderer = ({
   };
 
   // apply highlights
-
-  const markdownWithHighlights = applyHighlights(markdown, resourceHighlights);
 
   return (
     <div
@@ -87,11 +109,21 @@ export const DocsRenderer = ({
         remarkPlugins={[remarkGfm]}
         rehypePlugins={[rehypeHighlight, rehypeRaw]}
         components={{
-          h1: (props) => <Heading level={1} {...props} />,
-          h2: (props) => <Heading level={2} {...props} />,
-          h3: (props) => <Heading level={3} {...props} />,
-          p: Paragraph,
-          blockquote: BlockQuote,
+          h1: (props) => (
+            <Heading level={1} {...props} highlights={resourceHighlights} />
+          ),
+          h2: (props) => (
+            <Heading level={2} {...props} highlights={resourceHighlights} />
+          ),
+          h3: (props) => (
+            <Heading level={3} {...props} highlights={resourceHighlights} />
+          ),
+          p: (props) => (
+            <Paragraph {...props} highlights={resourceHighlights} />
+          ),
+          blockquote: (props) => (
+            <BlockQuote highlights={resourceHighlights} {...props} />
+          ),
           code: CodeBlock,
           pre: PreBlock,
           mark: ({ children }) => (
@@ -101,7 +133,7 @@ export const DocsRenderer = ({
           ),
         }}
       >
-        {markdownWithHighlights}
+        {markdown}
       </ReactMarkdown>
     </div>
   );

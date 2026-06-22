@@ -1,9 +1,9 @@
+import { SelectionAnchor } from "@/types/WorkspaceType";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export type HighlightText = {
   id: string;
-  text: string;
-  resourceId: string;
+  anchor: SelectionAnchor;
 };
 
 export type HighlightState = {
@@ -20,7 +20,9 @@ const highlightSlice = createSlice({
   reducers: {
     addHighlight: (state, action: PayloadAction<HighlightText>) => {
       const exists = state.highlights.some(
-        (highlight) => highlight.text === action.payload.text,
+        (highlight) =>
+          highlight.anchor?.selectedText ===
+          action.payload.anchor?.selectedText,
       );
 
       if (exists) return;

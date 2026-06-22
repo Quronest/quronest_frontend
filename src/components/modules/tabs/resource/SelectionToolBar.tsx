@@ -34,12 +34,10 @@ export const SelectionToolBar = ({ selection }: SelectionToolBarProps) => {
   };
 
   const handleHighlight = () => {
-  
     dispatch(
       addHighlight({
         id: crypto.randomUUID(),
-        text: selection.text,
-        resourceId: selection.resourceId,
+        anchor: selection.anchor,
       }),
     );
   };

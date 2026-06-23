@@ -1,13 +1,12 @@
 import { DocsRenderer } from "./DocsRenderer";
-import { mockMarkdown } from "./mockMarkdown";
 import { TabContainer } from "../ui/TabContainer";
 import { useEffect, useState } from "react";
 import { SelectionToolBar } from "./SelectionToolBar";
 import { extractHeadings } from "./contentTable/extractHeadings";
-import { TOC } from "./contentTable/TOC";
-import { ResourceSelection, ResourceTabType } from "@/types/WorkspaceType";
+import { TOC } from "./contentTable/TableOfContents";
+import { ResourceSelection, ResourceTabDataType } from "@/types/WorkspaceType";
 
-export const ResourceTab = ({ id, markdown }: ResourceTabType) => {
+export const ResourceTab = ({id,markdown}: ResourceTabDataType) => {
   const [selectionInfo, setSelectionInfo] = useState<ResourceSelection | null>(
     null,
   );
@@ -28,7 +27,7 @@ export const ResourceTab = ({ id, markdown }: ResourceTabType) => {
     };
   }, []);
 
-  const headings = extractHeadings(mockMarkdown);
+  const headings = extractHeadings(markdown);
 
   return (
     <>
@@ -36,7 +35,7 @@ export const ResourceTab = ({ id, markdown }: ResourceTabType) => {
         <div className="flex h-full gap-6 overflow-y-auto">
           <div className="min-w-0 flex-1 ">
             <DocsRenderer
-              markdown={mockMarkdown}
+              markdown={markdown}
               onSelection={setSelectionInfo}
               resourceId={id}
             />

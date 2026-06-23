@@ -2,11 +2,10 @@
 import React from "react";
 import { Pane } from "@/components/modules/workspace/Pane";
 import { Group, Panel } from "react-resizable-panels";
-import { useAppSelector } from "@/store/store";
-import { selectWorkspace } from "@/store/features/workspace/workspaceSlice";
+import { useWorkspace } from "@/hooks/useWorkspace";
 
 export const WorkspaceLayout = () => {
-  const { panes } = useAppSelector(selectWorkspace);
+  const { panes } = useWorkspace();
 
   return (
     <Group className="h-full w-full min-w-0">

@@ -1,4 +1,5 @@
 import Button from "@/components/ui/Button";
+import { useWorkspace } from "@/hooks/useWorkspace";
 import {
   addHighlight,
   selectHighlight,
@@ -6,10 +7,10 @@ import {
 import {
   addToPane,
   openSplitPane,
-  selectWorkspace,
   setActivePane,
 } from "@/store/features/workspace/workspaceSlice";
 import { useAppDispatch, useAppSelector } from "@/store/store";
+import { mockNotes } from "@/types/NoteType";
 import { ResourceSelection } from "@/types/WorkspaceType";
 
 type SelectionToolBarProps = {
@@ -18,18 +19,24 @@ type SelectionToolBarProps = {
 
 export const SelectionToolBar = ({ selection }: SelectionToolBarProps) => {
   const dispatch = useAppDispatch();
-  const { panes, activePaneId } = useAppSelector(selectWorkspace);
-  const { highlights } = useAppSelector(selectHighlight);
+  const { activePaneId, isSplitView } = useWorkspace();
 
   const handleAddNote = () => {
-    if (panes["right"]) {
+    if (isSplitView) {
       if (activePaneId == "right") dispatch(setActivePane({ paneId: "left" }));
       else dispatch(setActivePane({ paneId: "right" }));
     } else {
       dispatch(openSplitPane());
     }
     dispatch(
-      addToPane({ tab: { id: "abcd", label: "MockTab", type: "Notes" } }),
+      addToPane({
+        tab: {
+          id: "abcd",
+          label: "MockTab",
+          type: "Notes",
+          data: { notes: mockNotes },
+        },
+      }),
     );
   };
 

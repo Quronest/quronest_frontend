@@ -1,10 +1,10 @@
-import { TabRefDataType, WorkspaceState } from "@/types/WorkspaceType";
+import { TabData, WorkspaceState } from "@/types/WorkspaceType";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 const initialState: WorkspaceState = {
   panes: {
     left: {
-      tabs: [] as TabRefDataType[],
+      tabs: [] as TabData<unknown>[],
       activeTabId: null,
     },
   },
@@ -54,7 +54,7 @@ const workspaceSlice = createSlice({
       }
     },
 
-    addToPane: (state, action: PayloadAction<{ tab: TabRefDataType }>) => {
+    addToPane: (state, action: PayloadAction<{ tab: TabData<unknown> }>) => {
       const activePaneId = state.activePaneId;
       const pane = state.panes[activePaneId];
       if (!pane) return;
@@ -90,7 +90,8 @@ const workspaceSlice = createSlice({
   },
 });
 
-export const selectWorkspace = (state: { workspace: WorkspaceState }) => state.workspace;
+export const selectWorkspace = (state: { workspace: WorkspaceState }) =>
+  state.workspace;
 
 export const {
   addToPane,

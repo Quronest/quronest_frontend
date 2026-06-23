@@ -9,17 +9,12 @@ import { ScrollArea } from "@/components/ui/ScrollArea";
 import { TextArea } from "@/components/ui/TextArea";
 import { TabHeader } from "../ui/TabHeader";
 import { TabContainer } from "../ui/TabContainer";
+import { NoteTabDataType } from "@/types/WorkspaceType";
 
 const TEXTAREA_BASE_HEIGHT = 96;
 const TEXTAREA_MAX_HEIGHT = 128;
 
-type NoteTabProps = {
-  resourceId: string;
-  notes: NoteType[];
-  referenceText?: string;
-};
-
-export const NoteTab = ({ resourceId, notes, referenceText }: NoteTabProps) => {
+export const NoteTab = ({ resourceId, notes, referenceText }: NoteTabDataType) => {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   useEffect(() => {
     textareaRef.current?.focus();
@@ -34,7 +29,7 @@ export const NoteTab = ({ resourceId, notes, referenceText }: NoteTabProps) => {
       />
 
       <ScrollArea className="flex-1 space-y-3 px-6! py-5!">
-        {mockNotes.map((note) => (
+        {notes.map((note) => (
           <Note key={note.id} note={note} />
         ))}
       </ScrollArea>
@@ -43,13 +38,12 @@ export const NoteTab = ({ resourceId, notes, referenceText }: NoteTabProps) => {
         {true && (
           <div className="mb-3 rounded-2xl bg-card-hover p-3">
             <div className="mb-1 text-xs font-medium uppercase tracking-wider text-primary">
-              Referenced Text
+              Reference Text
             </div>
 
             <div className="flex items-center justify-between gap-3">
               <p className="line-clamp-3 text-sm text-foreground/90">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                Quisquam
+                {!!referenceText? referenceText : "This is a reference Text" }
               </p>
               <Button variant="nav" className="bg-transparent!">
                 <X />

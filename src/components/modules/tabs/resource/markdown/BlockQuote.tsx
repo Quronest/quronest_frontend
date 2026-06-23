@@ -2,7 +2,8 @@ import { HighlightState } from "@/store/features/highlights/highlightSlice";
 import clsx from "clsx";
 import React from "react";
 import { ExtraProps } from "react-markdown";
-import { getBlockHighlights, renderHighlightedText } from "../helper";
+import { getBlockHighlights } from "../helper/getBlockHighlights";
+import { renderHighlightedText } from "../helper/renderHighlightedText";
 
 type BlockQuoteProps = React.ComponentPropsWithoutRef<"blockquote"> &
   ExtraProps &

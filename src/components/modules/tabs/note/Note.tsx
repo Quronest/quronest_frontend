@@ -10,14 +10,14 @@ import CardActions from "./CardActions";
 import { HighlightBox } from "./HighlightBox";
 
 export const Note = ({ note }: { note: NoteType }) => {
-  const formattedDate = formatDate(note.createdAt.toISOString());
+  const formattedDate = formatDate(note.createdAt);
 
   return (
     <NoteCard>
       <div className="relative flex items-start justify-between gap-4">
         <div className="flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.24em] text-neutral/80">
           <span className="h-1 w-1 rounded-full bg-primary/70" />
-          <time dateTime={note.createdAt.toISOString()}>
+          <time dateTime={note.createdAt}>
             {formattedDate.dateTime}
           </time>
         </div>

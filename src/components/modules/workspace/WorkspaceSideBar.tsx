@@ -1,13 +1,13 @@
 "use client";
 import Button from "@/components/ui/Button";
 import { ScrollArea } from "@/components/ui/ScrollArea";
+import { useWorkspace } from "@/hooks/useWorkspace";
 import {
   addToPane,
   closeSidebar,
   openSplitPane,
-  selectWorkspace,
 } from "@/store/features/workspace/workspaceSlice";
-import { useAppDispatch, useAppSelector } from "@/store/store";
+import { useAppDispatch } from "@/store/store";
 import { mockTabs } from "@/types/WorkspaceType";
 import clsx from "clsx";
 import { ChevronLeft, SquareSplitHorizontal } from "lucide-react";
@@ -15,7 +15,7 @@ import React from "react";
 
 export const WorkspaceSideBar = () => {
   const dispatch = useAppDispatch();
-  const { isSidebarCollapsed } = useAppSelector(selectWorkspace);
+  const { isSidebarCollapsed } = useWorkspace();
 
   return (
     <React.Fragment>

@@ -7,11 +7,11 @@ import clsx from "clsx";
 import {
   closePane,
   openSidebar,
-  selectWorkspace,
   setActivePane,
 } from "@/store/features/workspace/workspaceSlice";
 import { useAppDispatch, useAppSelector } from "@/store/store";
 import { TabItem } from "./TabItem";
+import { useWorkspace } from "@/hooks/useWorkspace";
 
 type PaneProps = {
   paneId: "left" | "right";
@@ -20,8 +20,7 @@ type PaneProps = {
 export const Pane = ({ paneId }: PaneProps) => {
   const dispatch = useAppDispatch();
 
-  const { panes, isSidebarCollapsed, activePaneId } =
-    useAppSelector(selectWorkspace);
+  const { panes, isSidebarCollapsed, activePaneId } = useWorkspace();
 
   const pane = panes[paneId];
 

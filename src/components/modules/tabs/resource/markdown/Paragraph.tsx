@@ -3,8 +3,8 @@ import clsx from "clsx";
 import React from "react";
 import { ExtraProps } from "react-markdown";
 
-import { getBlockHighlights } from "../helper";
-import { renderHighlightedText } from "../helper";
+import { getBlockHighlights } from "../helper/getBlockHighlights";
+import { renderHighlightedText } from "../helper/renderHighlightedText";
 
 type ParagraphProps = React.ComponentPropsWithoutRef<"p"> &
   ExtraProps &

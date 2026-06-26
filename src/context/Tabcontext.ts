@@ -1,8 +1,11 @@
+import { createContext, RefObject } from "react";
 import { TabData } from "@/types/WorkspaceType";
-import { createContext } from "react";
 
-type TabContextType<T> = {} & TabData<unknown>;
+export type TabContextType = {
+  tab: TabData<unknown>;
+  containerRef: RefObject<HTMLDivElement | null>;
+};
 
-const TabContext = createContext<TabContextType<unknown> | undefined>(
+export const TabContext = createContext<TabContextType | undefined>(
   undefined,
 );

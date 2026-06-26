@@ -10,8 +10,8 @@ import FormCard from "../FormCard";
 
 import {
   forgotPasswordSchema,
-  ForgotPasswordFormData,
-} from "@/schemas/authSchemas/ForgotPasswordSchema";
+  ForgotPasswordFormDataSchemaType,
+} from "@/schemas/ForgotPasswordSchema";
 
 export default function ForgotPasswordForm() {
   const [sent, setSent] = useState(false);
@@ -20,11 +20,11 @@ export default function ForgotPasswordForm() {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<ForgotPasswordFormData>({
+  } = useForm<ForgotPasswordFormDataSchemaType>({
     resolver: zodResolver(forgotPasswordSchema),
   });
 
-  const onSubmit = async (data: ForgotPasswordFormData) => {
+  const onSubmit = async (data: ForgotPasswordFormDataSchemaType) => {
     console.log(data);
     setSent(true);
   };

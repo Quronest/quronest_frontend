@@ -12,8 +12,8 @@ import Input from "@/components/ui/Input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   loginSchema,
-  TLoginSchema,
-} from "@/schemas/authSchemas/LoginFormSchema";
+  LoginFormSchemaType,
+} from "@/schemas/LoginFormSchema";
 
 function LoginForm() {
   const { login, isLoggingIn } = useAuth();
@@ -24,7 +24,7 @@ function LoginForm() {
     handleSubmit,
     formState: { errors, isSubmitting },
     reset,
-  } = useForm<TLoginSchema>({
+  } = useForm<LoginFormSchemaType>({
     defaultValues: {
       email: "",
       password: "",

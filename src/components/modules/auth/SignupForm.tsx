@@ -11,8 +11,8 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   signUpSchema,
-  TSignUpSchema,
-} from "@/schemas/authSchemas/SignUpFormSchema";
+  SignUpFormSchemaType,
+} from "@/schemas/SignUpFormSchema";
 import Input from "@/components/ui/Input";
 
 function SignupForm() {
@@ -23,7 +23,7 @@ function SignupForm() {
     handleSubmit,
     formState: { errors, isSubmitting },
     reset,
-  } = useForm<TSignUpSchema>({
+  } = useForm<SignUpFormSchemaType>({
     defaultValues: {
       fullname: "",
       username: "",
@@ -54,7 +54,7 @@ function SignupForm() {
   //   }));
   // };
 
-  const onSubmit = async (data: TSignUpSchema) => {
+  const onSubmit = async (data: SignUpFormSchemaType) => {
     await registerUser({ data });
     reset();
   };

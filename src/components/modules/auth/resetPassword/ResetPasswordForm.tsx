@@ -10,8 +10,8 @@ import FormCard from "../FormCard";
 
 import {
   resetPasswordSchema,
-  ResetPasswordFormData,
-} from "@/schemas/authSchemas/ResetPasswordSchema";
+  ResetPasswordFormDataSchemaType,
+} from "@/schemas/ResetPasswordSchema";
 
 export default function ResetPasswordForm() {
   const params = useSearchParams();
@@ -21,11 +21,11 @@ export default function ResetPasswordForm() {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<ResetPasswordFormData>({
+  } = useForm<ResetPasswordFormDataSchemaType>({
     resolver: zodResolver(resetPasswordSchema),
   });
 
-  const onSubmit = async (data: ResetPasswordFormData) => {
+  const onSubmit = async (data: ResetPasswordFormDataSchemaType) => {
     console.log({
       token,
       password: data.password,

@@ -9,7 +9,10 @@ import TextLink from "@/components/ui/TextLink";
 import { useAuth } from "@/hooks/useAuth";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { signUpSchema, TSignUpSchema } from "@/types/SignUpFormType";
+import {
+  signUpSchema,
+  SignUpFormSchemaType,
+} from "@/schemas/SignUpFormSchema";
 import Input from "@/components/ui/Input";
 
 function SignupForm() {
@@ -20,7 +23,7 @@ function SignupForm() {
     handleSubmit,
     formState: { errors, isSubmitting },
     reset,
-  } = useForm<TSignUpSchema>({
+  } = useForm<SignUpFormSchemaType>({
     defaultValues: {
       fullname: "",
       username: "",
@@ -51,7 +54,7 @@ function SignupForm() {
   //   }));
   // };
 
-  const onSubmit = async (data: TSignUpSchema) => {
+  const onSubmit = async (data: SignUpFormSchemaType) => {
     await registerUser({ data });
     reset();
   };
@@ -66,10 +69,8 @@ function SignupForm() {
           {...register("fullname")}
           placeholder="Full Name"
           disabled={isSigningIn}
+          error={errors.fullname?.message}
         />
-        {errors.fullname && (
-          <p className="text-red-500">{`${errors.fullname.message}`}</p>
-        )}
       </div>
 
       <div>
@@ -77,10 +78,8 @@ function SignupForm() {
           {...register("username")}
           placeholder="Username"
           disabled={isSigningIn}
+          error={errors.username?.message}
         />
-        {errors.username && (
-          <p className="text-red-500">{`${errors.username.message}`}</p>
-        )}
       </div>
 
       <div>
@@ -89,10 +88,8 @@ function SignupForm() {
           type="email"
           placeholder="Email"
           disabled={isSigningIn}
+          error={errors.email?.message}
         />
-        {errors.email && (
-          <p className="text-red-500">{`${errors.email.message}`}</p>
-        )}
       </div>
 
       <div>
@@ -101,10 +98,8 @@ function SignupForm() {
           {...register("password")}
           placeholder="Password"
           disabled={isSigningIn}
+          error={errors.password?.message}
         />
-        {errors.password && (
-          <p className="text-red-500">{`${errors.password.message}`}</p>
-        )}
       </div>
 
       <div>
@@ -113,10 +108,8 @@ function SignupForm() {
           placeholder="Confirm Password"
           {...register("confirmPassword")}
           disabled={isSigningIn}
+          error={errors.confirmPassword?.message}
         />
-        {errors.confirmPassword && (
-          <p className="text-red-500">{`${errors.confirmPassword.message}`}</p>
-        )}
       </div>
 
       {/* Signup button */}

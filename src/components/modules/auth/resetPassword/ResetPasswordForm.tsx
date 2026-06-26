@@ -1,30 +1,35 @@
 "use client";
 
-import { useForm } from "react-hook-form";
 import { useSearchParams } from "next/navigation";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+
 import Input from "@/components/ui/Input";
 import Button from "@/components/ui/Button";
 import FormCard from "../FormCard";
 
-type FormData = {
-  password: string;
-  confirm: string;
-};
+import {
+  resetPasswordSchema,
+  ResetPasswordFormData,
+} from "@/schemas/authSchemas/ResetPasswordSchema";
 
 export default function ResetPasswordForm() {
-  const { register, handleSubmit } = useForm<FormData>();
   const params = useSearchParams();
+  const token = params.get("token");
 
-  const token = params.get("token"); 
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<ResetPasswordFormData>({
+    resolver: zodResolver(resetPasswordSchema),
+  });
 
-  const onSubmit = async (data: FormData) => {
-    if (data.password !== data.confirm) {
-      alert("Passwords do not match");
-      return;
-    }
-
-   
-    console.log({ token, ...data });
+  const onSubmit = async (data: ResetPasswordFormData) => {
+    console.log({
+      token,
+      password: data.password,
+    });
   };
 
   return (
@@ -35,12 +40,14 @@ export default function ResetPasswordForm() {
         {...register("password")}
         type="password"
         placeholder="New Password"
+        error={errors.password?.message}
       />
 
       <Input
         {...register("confirm")}
         type="password"
         placeholder="Confirm Password"
+        error={errors.confirm?.message}
       />
 
       <Button type="submit" className="w-full">

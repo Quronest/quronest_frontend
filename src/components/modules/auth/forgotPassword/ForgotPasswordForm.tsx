@@ -2,22 +2,30 @@
 
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+
 import Input from "@/components/ui/Input";
 import Button from "@/components/ui/Button";
 import FormCard from "../FormCard";
 
-type FormData = {
-  email: string;
-};
+import {
+  forgotPasswordSchema,
+  ForgotPasswordFormData,
+} from "@/schemas/authSchemas/ForgotPasswordSchema";
 
 export default function ForgotPasswordForm() {
-  const { register, handleSubmit } = useForm<FormData>();
   const [sent, setSent] = useState(false);
 
-  const onSubmit = async (data: FormData) => {
-    
-    console.log(data);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<ForgotPasswordFormData>({
+    resolver: zodResolver(forgotPasswordSchema),
+  });
 
+  const onSubmit = async (data: ForgotPasswordFormData) => {
+    console.log(data);
     setSent(true);
   };
 
@@ -42,6 +50,7 @@ export default function ForgotPasswordForm() {
         {...register("email")}
         type="email"
         placeholder="Enter your email"
+        error={errors.email?.message}
       />
 
       <Button type="submit" className="w-full">

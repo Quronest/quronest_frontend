@@ -93,8 +93,8 @@ export const Pane = ({ paneId }: PaneProps) => {
 
       <div className="flex-1 min-h-0">
         {activeTab ? (
-          <TabContext.Provider value={{ tab: activeTab, containerRef }}>
-            <TabPanel tab={activeTab} ref={containerRef}/>
+          <TabContext.Provider value={{ tabData: activeTab, containerRef }}>
+            <TabPanel tab={activeTab} ref={containerRef} />
           </TabContext.Provider>
         ) : (
           <div className="flex items-center justify-center h-full text-neutral">

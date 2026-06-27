@@ -6,21 +6,16 @@ import { TabContext } from "@/context/Tabcontext";
 
 type TOCProps = {
   headings: HeadingItem[];
-  tabId: string;
 };
 
 export const TOC = ({ headings }: TOCProps) => {
   const tabContext = useContext(TabContext);
-  const tabId = tabContext?.tab.id;
   if (!tabContext) {
     throw new Error("Must be used within TabContext.Provider");
   }
   const { containerRef } = tabContext;
-  const { activeFocusedTab } = useWorkspace();
+
   const handleScroll = (id: string) => {
-    console.log("containerRef ", containerRef.current);
-    console.log(activeFocusedTab?.id !== tabId, activeFocusedTab?.id, tabId);
-    if (activeFocusedTab?.id !== tabId) return;
     containerRef.current?.querySelector(`#${CSS.escape(id)}`)?.scrollIntoView({
       behavior: "smooth",
       block: "start",

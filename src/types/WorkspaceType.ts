@@ -1,5 +1,5 @@
 import { tabTypes } from "@/enums/TabEnums";
-import { mockNotes, NoteType } from "./NoteType";
+import { NoteType } from "./NoteType";
 import { ValueOf } from "next/dist/shared/lib/constants";
 import { mockMarkdown } from "@/components/modules/tabs/resource/mockMarkdown";
 
@@ -29,19 +29,25 @@ export type TabData<T> = {
 };
 
 export type ResourceTabDataType = {
-  id: string;
+  resourceId: string;
   markdown: string;
 };
 
-export type ResourceTabType = TabData<ResourceTabDataType>;
+type ResourceTabType = TabData<ResourceTabDataType> & {
+  type: typeof tabTypes.RESOURCE;
+};
+
+type NoteTabType = TabData<NoteTabDataType> & {
+  type: typeof tabTypes.NOTE;
+};
 
 export type NoteTabDataType = {
   resourceId: string;
-  notes: NoteType[];
-  referenceText?: string;
-};
 
-export type NoteTabType = TabData<NoteTabDataType>;
+  activeNoteId: string | null;
+
+  draftNote?: NoteType;
+};
 
 export type SelectionAnchor = {
   resourceId: string;
@@ -75,13 +81,17 @@ export const mockTabs: TabData<any>[] = [
     id: "tab-1",
     label: "Create Next App",
     type: tabTypes.NOTE,
-    data: { resourceId: "hibcicdoniaos", notes: mockNotes , referenceText:"this is the reference text"},
+    data: {
+      resourceId: "hibcicdoniaos",
+      notes: [],
+      referenceText: "this is the reference text",
+    },
   },
   {
     id: "tab-2",
     label: "Frontend Guidance",
     type: tabTypes.NOTE,
-    data: { resourceId: "hibcicdoniaos", notes: mockNotes },
+    data: { resourceId: "hibcicdoniaos", notes: [] },
   },
   {
     id: "tab-3",
@@ -89,7 +99,7 @@ export const mockTabs: TabData<any>[] = [
     type: tabTypes.NOTE,
     data: {
       resourceId: "hibcicdoniaos",
-      notes: mockNotes,
+      notes: [],
     },
   },
   {
@@ -97,7 +107,7 @@ export const mockTabs: TabData<any>[] = [
     label: "Discussion Thread",
     type: tabTypes.RESOURCE,
     data: {
-      id: "abcjkddvio",
+      resourceId: "scvhbv",
       markdown: mockMarkdown,
     },
   },
@@ -106,7 +116,7 @@ export const mockTabs: TabData<any>[] = [
     label: "API Integration",
     type: tabTypes.RESOURCE,
     data: {
-      id: "abcjkdjkbdvio",
+      resourceId: "scvhbciubvuv",
       markdown: mockMarkdown,
     },
   },

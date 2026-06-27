@@ -11,19 +11,18 @@ import { PreBlock } from "./markdown/PreBlock";
 
 import { useAppSelector } from "@/store/store";
 import { selectHighlight } from "@/store/features/highlights/highlightSlice";
-import { ResourceSelection } from "@/types/WorkspaceType";
+import { ResourceSelection, ResourceTabDataType } from "@/types/WorkspaceType";
+import { useContext } from "react";
+import { TabContext } from "@/context/Tabcontext";
+import { useTab } from "@/hooks/useTab";
 
 type DocsRendererProps = {
-  markdown: string;
   onSelection?: (selection: ResourceSelection | null) => void;
-  resourceId: string;
 };
 
-export const DocsRenderer = ({
-  markdown,
-  onSelection,
-  resourceId,
-}: DocsRendererProps) => {
+export const DocsRenderer = ({ onSelection }: DocsRendererProps) => {
+  const { tabData } = useTab();
+  const { resourceId, markdown } = tabData as ResourceTabDataType;
   const { highlights } = useAppSelector(selectHighlight);
   const resourceHighlights = highlights.filter(
     (highlight) => highlight.anchor?.resourceId === resourceId,

@@ -1,43 +1,66 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { NoteType } from "@/types/NoteType";
+import { SelectionAnchor } from "@/types/WorkspaceType";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-type Note = {
-  id: string;
-  referenceText: string;
-  content: string;
-  createdAt: string;
-};
-
-const initialState: { notes: Note[] } = {
+const initialState: { notes: NoteType[]; activeNoteId: string | null } = {
   notes: [],
+  activeNoteId: null,
 };
 
 const noteSlice = createSlice({
   name: "notes",
   initialState,
   reducers: {
-    addNote: (state, action) => {
+    addNote: (state, action: PayloadAction<NoteType>) => {
       state.notes.push(action.payload);
     },
 
-    deleteNote: (state, action) => {
-      state.notes = state.notes.filter(note => note.id !== action.payload);
+    updateNoteContent: (
+      state,
+      action: PayloadAction<{
+        id: string;
+        content: string;
+      }>,
+    ) => {
+      const note = state.notes.find((note) => note.id === action.payload.id);
+
+      if (!note) return;
+
+      note.content = action.payload.content;
+      note.updatedAt = new Date().toISOString();
     },
 
-    editNote: (state, action) => {
-      const { id, content } = action.payload;
-      const note = state.notes.find(note => note.id === id);
-      if (note) {
-        note.content = content;
-      }
+    deleteNote: (state, action: PayloadAction<string>) => {
+      state.notes = state.notes.filter((note) => note.id !== action.payload);
     },
 
-    printNotes: (state) => {
-      console.log(state.notes);
-    }
+    updateNoteAnchor: (
+      state,
+      action: PayloadAction<{
+        id: string;
+        anchor: SelectionAnchor;
+      }>,
+    ) => {
+      const note = state.notes.find((note) => note.id === action.payload.id);
 
+      if (!note) return;
+
+      note.anchor = action.payload.anchor;
+      note.updatedAt = new Date().toISOString();
+    },
+
+    setActiveNote: (state, action: PayloadAction<string | null>) => {
+      state.activeNoteId = action.payload;
+    },
   },
 });
 
-export const { addNote, deleteNote, editNote, printNotes } = noteSlice.actions;
+export const {
+  addNote,
+  deleteNote,
+  updateNoteAnchor,
+  updateNoteContent,
+  setActiveNote,
+} = noteSlice.actions;
 
 export default noteSlice.reducer;

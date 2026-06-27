@@ -4,7 +4,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 const initialState: WorkspaceState = {
   panes: {
     left: {
-      tabs: [] as TabData<unknown>[],
+      tabs: [] as TabData<any>[],
       activeTabId: null,
     },
   },
@@ -54,7 +54,7 @@ const workspaceSlice = createSlice({
       }
     },
 
-    addToPane: (state, action: PayloadAction<{ tab: TabData<unknown> }>) => {
+    addToPane: (state, action: PayloadAction<{ tab: TabData<any> }>) => {
       const activePaneId = state.activePaneId;
       const pane = state.panes[activePaneId];
       if (!pane) return;
@@ -87,6 +87,27 @@ const workspaceSlice = createSlice({
         pane.activeTabId = nextTab?.id || null;
       }
     },
+    updateTabData: (
+      state,
+      action: PayloadAction<{
+        tabId: string;
+        data: Partial<TabData<unknown>["data"]>;
+      }>,
+    ) => {
+      const { tabId, data } = action.payload;
+
+      for (const pane of Object.values(state.panes)) {
+        const tab = pane.tabs.find((tab) => tab.id === tabId);
+
+        if (tab) {
+          tab.data = {
+            ...(tab.data as object),
+            ...(data as object),
+          };
+          return;
+        }
+      }
+    },
   },
 });
 
@@ -97,6 +118,7 @@ export const {
   addToPane,
   switchTab,
   closeTab,
+  updateTabData,
   setActivePane,
   openSplitPane,
   closePane,

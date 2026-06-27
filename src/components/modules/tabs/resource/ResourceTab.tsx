@@ -1,12 +1,15 @@
 import { DocsRenderer } from "./DocsRenderer";
 import { TabContainer } from "../ui/TabContainer";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { SelectionToolBar } from "./SelectionToolBar";
 import { extractHeadings } from "./contentTable/extractHeadings";
 import { TOC } from "./contentTable/TableOfContents";
 import { ResourceSelection, ResourceTabDataType } from "@/types/WorkspaceType";
+import { TabContext } from "@/context/Tabcontext";
+import { tabTypes } from "@/enums/TabEnums";
+import { useTab } from "@/hooks/useTab";
 
-export const ResourceTab = ({id,markdown}: ResourceTabDataType) => {
+export const ResourceTab = () => {
   const [selectionInfo, setSelectionInfo] = useState<ResourceSelection | null>(
     null,
   );
@@ -27,6 +30,9 @@ export const ResourceTab = ({id,markdown}: ResourceTabDataType) => {
     };
   }, []);
 
+  const { tabData } = useTab();
+  const { markdown, resourceId } = tabData as ResourceTabDataType;
+
   const headings = extractHeadings(markdown);
 
   return (
@@ -34,14 +40,10 @@ export const ResourceTab = ({id,markdown}: ResourceTabDataType) => {
       <TabContainer>
         <div className="flex h-full gap-6 overflow-y-auto">
           <div className="min-w-0 flex-1 ">
-            <DocsRenderer
-              markdown={markdown}
-              onSelection={setSelectionInfo}
-              resourceId={id}
-            />
+            <DocsRenderer onSelection={setSelectionInfo} />
           </div>
           <div className="sticky top-5 w-64 shrink-0">
-            <TOC headings={headings} tabId={id} />
+            <TOC headings={headings} />
           </div>
         </div>
 

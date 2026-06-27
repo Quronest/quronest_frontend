@@ -1,17 +1,26 @@
 import Button from "@/components/ui/Button";
+import { tabTypes } from "@/enums/TabEnums";
+import { useTab } from "@/hooks/useTab";
 import { useWorkspace } from "@/hooks/useWorkspace";
 import {
   addHighlight,
   selectHighlight,
 } from "@/store/features/highlights/highlightSlice";
+import { addNote } from "@/store/features/notes/noteSlice";
 import {
   addToPane,
   openSplitPane,
   setActivePane,
+  switchTab,
+  updateTabData,
 } from "@/store/features/workspace/workspaceSlice";
 import { useAppDispatch, useAppSelector } from "@/store/store";
-import { mockNotes } from "@/types/NoteType";
-import { ResourceSelection } from "@/types/WorkspaceType";
+import { NoteType } from "@/types/NoteType";
+import {
+  NoteTabDataType,
+  ResourceSelection,
+  ResourceTabDataType,
+} from "@/types/WorkspaceType";
 
 type SelectionToolBarProps = {
   selection: ResourceSelection;
@@ -19,25 +28,66 @@ type SelectionToolBarProps = {
 
 export const SelectionToolBar = ({ selection }: SelectionToolBarProps) => {
   const dispatch = useAppDispatch();
-  const { activePaneId, isSplitView } = useWorkspace();
+  const { panes, activePaneId, isSplitView } = useWorkspace();
 
   const handleAddNote = () => {
+    let targetPane = panes["right"] ?? undefined;
+    const draftNote: NoteType = {
+      id: crypto.randomUUID(),
+      anchor: selection.anchor,
+      content: "",
+      createdAt: new Date().toISOString(),
+    };
     if (isSplitView) {
-      if (activePaneId == "right") dispatch(setActivePane({ paneId: "left" }));
-      else dispatch(setActivePane({ paneId: "right" }));
+      if (activePaneId == "right") {
+        dispatch(setActivePane({ paneId: "left" }));
+        targetPane = panes["left"];
+      } else {
+        dispatch(setActivePane({ paneId: "right" }));
+        targetPane = panes["right"];
+      }
     } else {
       dispatch(openSplitPane());
+      targetPane = undefined;
     }
-    dispatch(
-      addToPane({
-        tab: {
-          id: "abcd",
-          label: "MockTab",
-          type: "Notes",
-          data: { notes: mockNotes },
-        },
-      }),
+    const notesTab = targetPane?.tabs.find(
+      (tab) =>
+        tab.type === tabTypes.NOTE &&
+        (tab.data as NoteTabDataType).resourceId ===
+          selection.anchor.resourceId,
     );
+    if (notesTab) {
+      dispatch(
+        updateTabData({
+          tabId: notesTab.id,
+          data: {
+            activeNoteId: draftNote.id,
+            draftNote,
+          },
+        }),
+      );
+
+      dispatch(
+        switchTab({
+          tabId: notesTab.id,
+        }),
+      );
+    } else {
+      dispatch(
+        addToPane({
+          tab: {
+            id: crypto.randomUUID(),
+            label: "Notes",
+            type: tabTypes.NOTE,
+            data: {
+              resourceId: selection.anchor.resourceId,
+              activeNoteId: draftNote.id,
+              draftNote,
+            },
+          },
+        }),
+      );
+    }
   };
 
   const handleHighlight = () => {

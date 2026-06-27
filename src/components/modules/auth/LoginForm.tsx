@@ -10,7 +10,10 @@ import { useAuth } from "@/hooks/useAuth";
 import { FieldValues, useForm } from "react-hook-form";
 import Input from "@/components/ui/Input";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { loginSchema, TLoginSchema } from "@/types/LoginFormType";
+import {
+  loginSchema,
+  LoginFormSchemaType,
+} from "@/schemas/LoginFormSchema";
 
 function LoginForm() {
   const { login, isLoggingIn } = useAuth();
@@ -21,7 +24,7 @@ function LoginForm() {
     handleSubmit,
     formState: { errors, isSubmitting },
     reset,
-  } = useForm<TLoginSchema>({
+  } = useForm<LoginFormSchemaType>({
     defaultValues: {
       email: "",
       password: "",
@@ -61,10 +64,8 @@ function LoginForm() {
           type="email"
           placeholder="Email"
           disabled={isLoggingIn}
+          error={errors.email?.message}
         />
-        {errors.email && (
-          <p className="text-red-500">{`${errors.email.message}`}</p>
-        )}
       </div>
 
       <div>
@@ -73,10 +74,12 @@ function LoginForm() {
           type="password"
           placeholder="Password"
           disabled={isLoggingIn}
+          error={errors.password?.message}
         />
-        {errors.password && (
-          <p className="text-red-500">{`${errors.password.message}`}</p>
-        )}
+
+        <div className="text-right mt-1">
+          <TextLink href="/forgot-password">Forgot Password?</TextLink>
+        </div>
       </div>
 
       {/* Login button */}

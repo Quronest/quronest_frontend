@@ -6,13 +6,13 @@ import {
   switchTab,
 } from "@/store/features/workspace/workspaceSlice";
 import { useAppDispatch } from "@/store/store";
-import { TabRefDataType } from "@/types/WorkspaceType";
+import { TabData } from "@/types/WorkspaceType";
 import clsx from "clsx";
 import { X } from "lucide-react";
 import React from "react";
 
 type TabItemProps = {
-  tab: TabRefDataType;
+  tab: TabData<any>;
   activeTabId: string | null;
   paneId: "left" | "right";
 };

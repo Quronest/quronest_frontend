@@ -2,21 +2,24 @@
 import React from "react";
 import { Pane } from "@/components/modules/workspace/Pane";
 import { Group, Panel } from "react-resizable-panels";
-import { useAppSelector } from "@/store/store";
-import { selectWorkspace } from "@/store/features/workspace/workspaceSlice";
+import { useWorkspace } from "@/hooks/useWorkspace";
 
 export const WorkspaceLayout = () => {
-  const { panes } = useAppSelector(selectWorkspace);
+  const { panes } = useWorkspace();
 
   return (
-    <Group>
+    <Group className="h-full w-full min-w-0">
       <Panel defaultSize={50} minSize="30%">
-        <Pane paneId="left" />
+        <div className="h-full min-w-0">
+          <Pane paneId="left" />
+        </div>
       </Panel>
 
       {panes.right && (
         <Panel defaultSize={50} minSize="30%">
-          <Pane paneId="right" />
+          <div className="h-full min-w-0">
+            <Pane paneId="right" />
+          </div>
         </Panel>
       )}
     </Group>

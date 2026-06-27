@@ -2,19 +2,43 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import { Note } from "./Note";
-import { mockNotes } from "@/types/NoteType";
+import { NoteType } from "@/types/NoteType";
 import Button from "@/components/ui/Button";
-import { Plus } from "lucide-react";
+import { Plus, X } from "lucide-react";
 import { ScrollArea } from "@/components/ui/ScrollArea";
 import { TextArea } from "@/components/ui/TextArea";
 import { TabHeader } from "../ui/TabHeader";
 import { TabContainer } from "../ui/TabContainer";
+import { NoteTabDataType } from "@/types/WorkspaceType";
+import { useAppDispatch, useAppSelector } from "@/store/store";
+import { useTab } from "@/hooks/useTab";
+import { addNote } from "@/store/features/notes/noteSlice";
 
 const TEXTAREA_BASE_HEIGHT = 96;
-const TEXTAREA_MAX_HEIGHT = 144;
+const TEXTAREA_MAX_HEIGHT = 128;
 
 export const NoteTab = () => {
-  const [draft, setDraft] = useState("");
+  const dispatch = useAppDispatch();
+  const { tabData } = useTab();
+  const { resourceId, activeNoteId, draftNote } = tabData as NoteTabDataType;
+
+  const notes = useAppSelector((state) =>
+    state.note.notes.filter((note) => note.anchor.resourceId === resourceId),
+  );
+  const activeNote = notes.find((note) => note.id === activeNoteId);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  useEffect(() => {
+    textareaRef.current?.focus();
+  }, []);
+
+  const [noteData, setNoteData] = useState<NoteType | undefined>(draftNote);
+
+  useEffect(() => setNoteData(draftNote), [draftNote]);
+
+  const handleAddNote = () => {
+    dispatch(addNote(noteData!));
+    setNoteData(undefined);
+  };
 
   return (
     <TabContainer>
@@ -24,26 +48,52 @@ export const NoteTab = () => {
       />
 
       <ScrollArea className="flex-1 space-y-3 px-6! py-5!">
-        {mockNotes.map((note) => (
+        {notes.map((note) => (
           <Note key={note.id} note={note} />
         ))}
       </ScrollArea>
 
-      <div className="rounded-3xl flex gap-3  my-5 mx-6">
+      <div className="mx-auto w-full max-w-4xl my-5 rounded-3xl border border-card-hover bg-card p-3">
+        {!!noteData?.anchor.selectedText && (
+          <div className="mb-3 rounded-2xl bg-card-hover p-3">
+            <div className="mb-1 text-xs font-medium uppercase tracking-wider text-primary">
+              Reference Text
+            </div>
+            <div className="flex items-center justify-between gap-3">
+              <p className="line-clamp-3 text-sm text-foreground/90">
+                {noteData.anchor.selectedText}
+              </p>
+              <Button variant="nav" className="bg-transparent!">
+                <X />
+              </Button>
+            </div>
+          </div>
+        )}
+
         <TextArea
-          value={draft}
-          onChange={(event) => setDraft(event.target.value)}
+          ref={textareaRef}
+          value={noteData?.content ?? ""}
+          onChange={(event) =>
+            setNoteData((noteData) => {
+              if (!noteData) return noteData;
+              return { ...noteData, content: event.target.value };
+            })
+          }
           placeholder="Write a note, thought, or reminder..."
-          className="max-h-36 flex-1 p-3 bg-card/50! border border-neutral"
+          className="max-h-30 border-none! bg-card! p-0! pl-2!"
         />
-        <Button
-          size="sm"
-          className="gap-2 h-fit! shrink-0 self-end shadow-[0_10px_25px_rgba(29,173,192,0.2)]"
-          disabled={!draft.trim()}
-        >
-          <Plus size={16} />
-          <span>Save Note</span>
-        </Button>
+
+        <div className="mt-3 flex justify-end">
+          <Button
+            size="sm"
+            className="gap-2 shadow-[0_10px_25px_rgba(29,173,192,0.2)]"
+            onClick={handleAddNote}
+            disabled={!noteData?.content.trim()}
+          >
+            <Plus size={16} />
+            <span>Save Note</span>
+          </Button>
+        </div>
       </div>
     </TabContainer>
   );

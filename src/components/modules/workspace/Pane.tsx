@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useRef } from "react";
 import { TabPanel } from "./TabPanel";
 import Button from "@/components/ui/Button";
 import { ChevronRight, PanelLeftClose, PanelRightClose, X } from "lucide-react";
@@ -7,11 +7,12 @@ import clsx from "clsx";
 import {
   closePane,
   openSidebar,
-  selectWorkspace,
   setActivePane,
 } from "@/store/features/workspace/workspaceSlice";
 import { useAppDispatch, useAppSelector } from "@/store/store";
 import { TabItem } from "./TabItem";
+import { useWorkspace } from "@/hooks/useWorkspace";
+import { TabContext } from "@/context/Tabcontext";
 
 type PaneProps = {
   paneId: "left" | "right";
@@ -20,8 +21,9 @@ type PaneProps = {
 export const Pane = ({ paneId }: PaneProps) => {
   const dispatch = useAppDispatch();
 
-  const { panes, isSidebarCollapsed, activePaneId } =
-    useAppSelector(selectWorkspace);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  const { panes, isSidebarCollapsed, activePaneId } = useWorkspace();
 
   const pane = panes[paneId];
 
@@ -91,7 +93,9 @@ export const Pane = ({ paneId }: PaneProps) => {
 
       <div className="flex-1 min-h-0">
         {activeTab ? (
-          <TabPanel tab={activeTab} />
+          <TabContext.Provider value={{ tabData: activeTab, containerRef }}>
+            <TabPanel tab={activeTab} ref={containerRef} />
+          </TabContext.Provider>
         ) : (
           <div className="flex items-center justify-center h-full text-neutral">
             No tabs open

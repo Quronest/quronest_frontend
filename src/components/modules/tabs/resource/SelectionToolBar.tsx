@@ -33,7 +33,7 @@ export const SelectionToolBar = ({ selection }: SelectionToolBarProps) => {
   const handleAddNote = () => {
     let targetPane = panes["right"] ?? undefined;
     const draftNote: NoteType = {
-      id: crypto.randomUUID(),
+      id: "",
       anchor: selection.anchor,
       content: "",
       createdAt: new Date().toISOString(),

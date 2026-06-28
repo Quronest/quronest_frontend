@@ -17,9 +17,7 @@ export const Note = ({ note }: { note: NoteType }) => {
       <div className="relative flex items-start justify-between gap-4">
         <div className="flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.24em] text-neutral/80">
           <span className="h-1 w-1 rounded-full bg-primary/70" />
-          <time dateTime={note.createdAt}>
-            {formattedDate.dateTime}
-          </time>
+          <time dateTime={note.createdAt}>{formattedDate.dateTime}</time>
         </div>
 
         <CardActions>
@@ -40,7 +38,9 @@ export const Note = ({ note }: { note: NoteType }) => {
         </CardActions>
       </div>
 
-      <HighlightBox text={note.referenceText} />
+      {note.anchor.selectedText && (
+        <HighlightBox text={note.anchor.selectedText} />
+      )}
 
       <div
         className={clsx(

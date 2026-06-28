@@ -15,6 +15,7 @@ import { ResourceSelection, ResourceTabDataType } from "@/types/WorkspaceType";
 import { useContext } from "react";
 import { TabContext } from "@/context/Tabcontext";
 import { useTab } from "@/hooks/useTab";
+import { MarkdownRenderer } from "./MarkdownRenderer";
 
 type DocsRendererProps = {
   onSelection?: (selection: ResourceSelection | null) => void;
@@ -104,36 +105,7 @@ export const DocsRenderer = ({ onSelection }: DocsRendererProps) => {
   "
       onMouseUp={handleMouseUp}
     >
-      <ReactMarkdown
-        remarkPlugins={[remarkGfm]}
-        rehypePlugins={[rehypeHighlight, rehypeRaw]}
-        components={{
-          h1: (props) => (
-            <Heading level={1} {...props} highlights={resourceHighlights} />
-          ),
-          h2: (props) => (
-            <Heading level={2} {...props} highlights={resourceHighlights} />
-          ),
-          h3: (props) => (
-            <Heading level={3} {...props} highlights={resourceHighlights} />
-          ),
-          p: (props) => (
-            <Paragraph {...props} highlights={resourceHighlights} />
-          ),
-          blockquote: (props) => (
-            <BlockQuote highlights={resourceHighlights} {...props} />
-          ),
-          code: CodeBlock,
-          pre: PreBlock,
-          mark: ({ children }) => (
-            <mark className="rounded bg-yellow-400/30 px-1 text-foreground">
-              {children}
-            </mark>
-          ),
-        }}
-      >
-        {markdown}
-      </ReactMarkdown>
+      <MarkdownRenderer markdown={markdown} highlights={resourceHighlights} />
     </div>
   );
 };

@@ -2,13 +2,13 @@
 import Button from "@/components/ui/Button";
 import { ScrollArea } from "@/components/ui/ScrollArea";
 import { useWorkspace } from "@/hooks/useWorkspace";
+import { mockTabs } from "@/mockData/mocktabs";
 import {
   addToPane,
   closeSidebar,
   openSplitPane,
 } from "@/store/features/workspace/workspaceSlice";
 import { useAppDispatch } from "@/store/store";
-import { mockTabs } from "@/types/WorkspaceType";
 import clsx from "clsx";
 import { ChevronLeft, SquareSplitHorizontal } from "lucide-react";
 import React from "react";

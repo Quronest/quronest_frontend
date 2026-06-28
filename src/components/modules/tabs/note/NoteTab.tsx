@@ -23,21 +23,36 @@ export const NoteTab = () => {
   const { resourceId, activeNoteId, draftNote } = tabData as NoteTabDataType;
 
   const notes = useAppSelector((state) =>
-    state.note.notes.filter((note) => note.anchor.resourceId === resourceId),
+    state.note.notes.filter((note) => note?.anchor?.resourceId === resourceId),
   );
-  const activeNote = notes.find((note) => note.id === activeNoteId);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   useEffect(() => {
     textareaRef.current?.focus();
-  }, []);
+  }, [draftNote]);
+  const emptyNoteData: NoteType = {
+    id: "",
+    content: "",
+    createdAt: new Date().toISOString(),
+    anchor: {
+      resourceId: resourceId,
+    },
+  };
+  const draftNoteData = draftNote ?? emptyNoteData;
+  const [noteData, setNoteData] = useState<NoteType>(draftNoteData);
 
-  const [noteData, setNoteData] = useState<NoteType | undefined>(draftNote);
-
-  useEffect(() => setNoteData(draftNote), [draftNote]);
+  useEffect(() => {
+    if (draftNote) {
+      setNoteData(draftNote);
+    }
+  }, [draftNote]);
 
   const handleAddNote = () => {
-    dispatch(addNote(noteData!));
-    setNoteData(undefined);
+    const finalNote = {
+      ...noteData,
+      id: crypto.randomUUID()
+    }
+    dispatch(addNote(finalNote));
+    setNoteData(emptyNoteData);
   };
 
   return (
@@ -54,7 +69,7 @@ export const NoteTab = () => {
       </ScrollArea>
 
       <div className="mx-auto w-full max-w-4xl my-5 rounded-3xl border border-card-hover bg-card p-3">
-        {!!noteData?.anchor.selectedText && (
+        {!!noteData?.anchor?.selectedText && (
           <div className="mb-3 rounded-2xl bg-card-hover p-3">
             <div className="mb-1 text-xs font-medium uppercase tracking-wider text-primary">
               Reference Text
@@ -75,8 +90,7 @@ export const NoteTab = () => {
           value={noteData?.content ?? ""}
           onChange={(event) =>
             setNoteData((noteData) => {
-              if (!noteData) return noteData;
-              return { ...noteData, content: event.target.value };
+              return { ...noteData!, content: event.target.value };
             })
           }
           placeholder="Write a note, thought, or reminder..."

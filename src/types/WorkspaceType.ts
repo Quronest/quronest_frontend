@@ -1,7 +1,7 @@
 import { tabTypes } from "@/enums/TabEnums";
 import { NoteType } from "./NoteType";
 import { ValueOf } from "next/dist/shared/lib/constants";
-import { mockMarkdown } from "@/components/modules/tabs/resource/mockMarkdown";
+import { mockMarkdown } from "@/mockData/mockMarkdown";
 
 export type Pane = {
   tabs: TabData<any>[];
@@ -41,6 +41,10 @@ type NoteTabType = TabData<NoteTabDataType> & {
   type: typeof tabTypes.NOTE;
 };
 
+export type DiscussTabType = TabData<DiscussTabDataType> & {
+  type: typeof tabTypes.DISCUSS;
+};
+
 export type NoteTabDataType = {
   resourceId: string;
 
@@ -49,20 +53,25 @@ export type NoteTabDataType = {
   draftNote?: NoteType;
 };
 
+export type DiscussTabDataType = {
+  resourceId: string;
+  discussionId: string;
+};
+
 export type SelectionAnchor = {
   resourceId: string;
 
-  block: {
+  block?: {
     startOffset: number;
     endOffset: number;
   };
 
-  selection: {
+  selection?: {
     startOffset: number;
     endOffset: number;
   };
 
-  selectedText: string;
+  selectedText?: string;
 };
 
 export type ResourceSelection = {
@@ -76,48 +85,17 @@ export type ResourceSelection = {
   range: Range;
 };
 
-export const mockTabs: TabData<any>[] = [
-  {
-    id: "tab-1",
-    label: "Create Next App",
-    type: tabTypes.NOTE,
-    data: {
-      resourceId: "hibcicdoniaos",
-      notes: [],
-      referenceText: "this is the reference text",
-    },
-  },
-  {
-    id: "tab-2",
-    label: "Frontend Guidance",
-    type: tabTypes.NOTE,
-    data: { resourceId: "hibcicdoniaos", notes: [] },
-  },
-  {
-    id: "tab-3",
-    label: "Learning Roadmap",
-    type: tabTypes.NOTE,
-    data: {
-      resourceId: "hibcicdoniaos",
-      notes: [],
-    },
-  },
-  {
-    id: "tab-4",
-    label: "Discussion Thread",
-    type: tabTypes.RESOURCE,
-    data: {
-      resourceId: "scvhbv",
-      markdown: mockMarkdown,
-    },
-  },
-  {
-    id: "tab-5",
-    label: "API Integration",
-    type: tabTypes.RESOURCE,
-    data: {
-      resourceId: "scvhbciubvuv",
-      markdown: mockMarkdown,
-    },
-  },
-];
+export type DiscussionSelection = {
+  discussionId: string;
+
+  messageId: string;
+
+  selectedText: string;
+
+  position: {
+    x: number;
+    y: number;
+  };
+
+  range: Range;
+};

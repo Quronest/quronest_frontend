@@ -2,6 +2,7 @@ import Button from "@/components/ui/Button";
 import { tabTypes } from "@/enums/TabEnums";
 import { useTab } from "@/hooks/useTab";
 import { useWorkspace } from "@/hooks/useWorkspace";
+import { addDiscussion } from "@/store/features/discussion/discussionSlice";
 import {
   addHighlight,
   selectHighlight,
@@ -15,6 +16,7 @@ import {
   updateTabData,
 } from "@/store/features/workspace/workspaceSlice";
 import { useAppDispatch, useAppSelector } from "@/store/store";
+import { DiscussionType, MessageRole } from "@/types/DiscussionType";
 import { NoteType } from "@/types/NoteType";
 import {
   NoteTabDataType,
@@ -22,82 +24,22 @@ import {
   ResourceTabDataType,
 } from "@/types/WorkspaceType";
 
-type SelectionToolBarProps = {
-  selection: ResourceSelection;
+export type SelectionToolBarProps = {
+  selection?: ResourceSelection;
+  onHighlight?: (selection: ResourceSelection | null) => void;
+  onAddNote?: (selection: ResourceSelection | null) => void;
+  onAskDoubt?: (selection: ResourceSelection | null) => void;
 };
 
-export const SelectionToolBar = ({ selection }: SelectionToolBarProps) => {
-  const dispatch = useAppDispatch();
-  const { panes, activePaneId, isSplitView } = useWorkspace();
-
-  const handleAddNote = () => {
-    let targetPane = panes["right"] ?? undefined;
-    const draftNote: NoteType = {
-      id: "",
-      anchor: selection.anchor,
-      content: "",
-      createdAt: new Date().toISOString(),
-    };
-    if (isSplitView) {
-      if (activePaneId == "right") {
-        dispatch(setActivePane({ paneId: "left" }));
-        targetPane = panes["left"];
-      } else {
-        dispatch(setActivePane({ paneId: "right" }));
-        targetPane = panes["right"];
-      }
-    } else {
-      dispatch(openSplitPane());
-      targetPane = undefined;
-    }
-    const notesTab = targetPane?.tabs.find(
-      (tab) =>
-        tab.type === tabTypes.NOTE &&
-        (tab.data as NoteTabDataType).resourceId ===
-          selection.anchor.resourceId,
-    );
-    if (notesTab) {
-      dispatch(
-        updateTabData({
-          tabId: notesTab.id,
-          data: {
-            activeNoteId: draftNote.id,
-            draftNote,
-          },
-        }),
-      );
-
-      dispatch(
-        switchTab({
-          tabId: notesTab.id,
-        }),
-      );
-    } else {
-      dispatch(
-        addToPane({
-          tab: {
-            id: crypto.randomUUID(),
-            label: "Notes",
-            type: tabTypes.NOTE,
-            data: {
-              resourceId: selection.anchor.resourceId,
-              activeNoteId: draftNote.id,
-              draftNote,
-            },
-          },
-        }),
-      );
-    }
-  };
-
-  const handleHighlight = () => {
-    dispatch(
-      addHighlight({
-        id: crypto.randomUUID(),
-        anchor: selection.anchor,
-      }),
-    );
-  };
+export const SelectionToolBar = ({
+  selection,
+  onHighlight,
+  onAddNote,
+  onAskDoubt,
+}: SelectionToolBarProps) => {
+  if (!selection) {
+    return null;
+  }
 
   return (
     <div
@@ -107,15 +49,21 @@ export const SelectionToolBar = ({ selection }: SelectionToolBarProps) => {
         top: selection.position.y - 50,
       }}
     >
-      <Button variant="list" onClick={handleHighlight}>
-        Highlight
-      </Button>
-      <Button variant="list" onClick={handleAddNote}>
-        Add Note
-      </Button>
-      <Button variant="list" className="">
-        Ask Doubt
-      </Button>
+      {onHighlight && (
+        <Button variant="list" onClick={() => onHighlight}>
+          Highlight
+        </Button>
+      )}
+      {onAddNote && (
+        <Button variant="list" onClick={() => onAddNote}>
+          Add Note
+        </Button>
+      )}
+      {onAskDoubt && (
+        <Button variant="list" className="" onClick={() => onAskDoubt}>
+          Ask Doubt
+        </Button>
+      )}
     </div>
   );
 };

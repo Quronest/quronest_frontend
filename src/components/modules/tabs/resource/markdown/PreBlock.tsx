@@ -54,7 +54,7 @@ export const PreBlock = ({ children, ...props }: PreBlockProps) => {
         </Button>
       </div>
 
-      <pre ref={preRef} className="m-0 overflow-x-auto p-4" {...props}>
+      <pre ref={preRef} className="m-0 overflow-x-auto p-0" {...props}>
         {children}
       </pre>
     </div>

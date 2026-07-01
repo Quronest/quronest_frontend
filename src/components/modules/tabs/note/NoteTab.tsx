@@ -27,6 +27,9 @@ export const NoteTab = () => {
   );
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   useEffect(() => {
+    if (draftNote) {
+      setNoteData(draftNote);
+    }
     textareaRef.current?.focus();
   }, [draftNote]);
   const emptyNoteData: NoteType = {
@@ -40,17 +43,12 @@ export const NoteTab = () => {
   const draftNoteData = draftNote ?? emptyNoteData;
   const [noteData, setNoteData] = useState<NoteType>(draftNoteData);
 
-  useEffect(() => {
-    if (draftNote) {
-      setNoteData(draftNote);
-    }
-  }, [draftNote]);
 
   const handleAddNote = () => {
     const finalNote = {
       ...noteData,
-      id: crypto.randomUUID()
-    }
+      id: crypto.randomUUID(),
+    };
     dispatch(addNote(finalNote));
     setNoteData(emptyNoteData);
   };

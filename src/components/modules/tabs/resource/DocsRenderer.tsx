@@ -9,103 +9,195 @@ import { BlockQuote } from "./markdown/BlockQuote";
 import { CodeBlock } from "./markdown/CodeBlock";
 import { PreBlock } from "./markdown/PreBlock";
 
-import { useAppSelector } from "@/store/store";
-import { selectHighlight } from "@/store/features/highlights/highlightSlice";
-import { ResourceSelection, ResourceTabDataType } from "@/types/WorkspaceType";
-import { useContext } from "react";
+import { useAppDispatch, useAppSelector } from "@/store/store";
+import {
+  addHighlight,
+  selectHighlight,
+} from "@/store/features/highlights/highlightSlice";
+import {
+  NoteTabDataType,
+  ResourceSelection,
+  ResourceTabDataType,
+} from "@/types/WorkspaceType";
+import { useContext, useState } from "react";
 import { TabContext } from "@/context/Tabcontext";
 import { useTab } from "@/hooks/useTab";
 import { MarkdownRenderer } from "./MarkdownRenderer";
+import { useWorkspace } from "@/hooks/useWorkspace";
+import { NoteType } from "@/types/NoteType";
+import {
+  addToPane,
+  openSplitPane,
+  setActivePane,
+  switchTab,
+  updateTabData,
+} from "@/store/features/workspace/workspaceSlice";
+import { tabTypes } from "@/enums/TabEnums";
+import { DiscussionType, MessageRole } from "@/types/DiscussionType";
+import { addDiscussion } from "@/store/features/discussion/discussionSlice";
+import { SelectableMarkdown } from "./markdown/SelectableMarkdown";
+import { SelectionToolBar } from "./SelectionToolBar";
 
-type DocsRendererProps = {
-  onSelection?: (selection: ResourceSelection | null) => void;
-};
 
-export const DocsRenderer = ({ onSelection }: DocsRendererProps) => {
+
+export const DocsRenderer = () => {
   const { tabData } = useTab();
   const { resourceId, markdown } = tabData as ResourceTabDataType;
   const { highlights } = useAppSelector(selectHighlight);
   const resourceHighlights = highlights.filter(
     (highlight) => highlight.anchor?.resourceId === resourceId,
   );
+  const dispatch = useAppDispatch();
+  const { panes, activePaneId, isSplitView } = useWorkspace();
 
-  const handleMouseUp = () => {
-    const selection = window.getSelection();
-
+  const handleHighlight = (selection: ResourceSelection | null) => {
     if (!selection) return;
-
-    const range = selection.getRangeAt(0);
-
-    let element =
-      range.commonAncestorContainer.nodeType === Node.TEXT_NODE
-        ? range.commonAncestorContainer.parentElement
-        : (range.commonAncestorContainer as HTMLElement);
-
-    const blockElement = element?.closest("[data-block-start]");
-    const blockText = blockElement?.textContent ?? "";
-    const nodeText = range.startContainer.textContent ?? "";
-    const nodeStart = blockText.indexOf(nodeText);
-    const absoluteStart = nodeStart + range.startOffset;
-
-    const absoluteEnd = nodeStart + range.endOffset;
-
-    const startOffset = Number(blockElement?.getAttribute("data-block-start"));
-
-    const endOffset = Number(blockElement?.getAttribute("data-block-end"));
-
-    const rect = selection?.getRangeAt(0).getBoundingClientRect();
-    const text = selection.toString().trim();
-
-    // multi node selection feature not required as of now
-    if (range.startContainer !== range.endContainer) {
-      return;
-    }
-
-    if (!text) {
-      onSelection?.(null);
-      return;
-    }
-
-    onSelection?.({
-      anchor: {
-        selectedText: text,
-        resourceId: resourceId,
-        block: {
-          startOffset,
-          endOffset,
-        },
-        selection: {
-          endOffset: absoluteEnd,
-          startOffset: absoluteStart,
-        },
-      },
-
-      position: {
-        x: rect.left + rect.width / 2,
-        y: rect.top,
-      },
-
-      range,
-    });
+    dispatch(
+      addHighlight({
+        id: crypto.randomUUID(),
+        anchor: selection.anchor,
+      }),
+    );
   };
 
-  // apply highlights
+  const handleAddNote = (selection: ResourceSelection | null) => {
+    if (!selection) return;
+    let targetPane = panes["right"] ?? undefined;
+    const draftNote: NoteType = {
+      id: "",
+      anchor: selection!.anchor,
+      content: "",
+      createdAt: new Date().toISOString(),
+    };
+    if (isSplitView) {
+      if (activePaneId == "right") {
+        dispatch(setActivePane({ paneId: "left" }));
+        targetPane = panes["left"];
+      } else {
+        dispatch(setActivePane({ paneId: "right" }));
+        targetPane = panes["right"];
+      }
+    } else {
+      dispatch(openSplitPane());
+      targetPane = undefined;
+    }
+    const notesTab = targetPane?.tabs.find(
+      (tab) =>
+        tab.type === tabTypes.NOTE &&
+        (tab.data as NoteTabDataType).resourceId ===
+          selection.anchor.resourceId,
+    );
+    if (notesTab) {
+      dispatch(
+        updateTabData({
+          tabId: notesTab.id,
+          data: {
+            activeNoteId: draftNote.id,
+            draftNote,
+          },
+        }),
+      );
+
+      dispatch(
+        switchTab({
+          tabId: notesTab.id,
+        }),
+      );
+    } else {
+      dispatch(
+        addToPane({
+          tab: {
+            id: crypto.randomUUID(),
+            label: "Notes",
+            type: tabTypes.NOTE,
+            data: {
+              resourceId: selection.anchor.resourceId,
+              activeNoteId: draftNote.id,
+              draftNote,
+            },
+          },
+        }),
+      );
+    }
+  };
+
+  const handleAskDoubt = (selection: ResourceSelection | null) => {
+    if (!selection) return;
+    let targetPane = panes["right"] ?? undefined;
+    if (isSplitView) {
+      if (activePaneId == "right") {
+        dispatch(setActivePane({ paneId: "left" }));
+        targetPane = panes["left"];
+      } else {
+        dispatch(setActivePane({ paneId: "right" }));
+        targetPane = panes["right"];
+      }
+    } else {
+      dispatch(openSplitPane());
+      targetPane = undefined;
+    }
+    const draftMessage = {
+      id: "",
+      anchor: selection?.anchor,
+      content: "",
+      createdAt: new Date().toISOString(),
+      role: "user" as MessageRole,
+    };
+    const newDiscussion: DiscussionType = {
+      id: crypto.randomUUID(),
+      title: "New Discussion",
+      reference: selection?.anchor,
+      messages: [],
+      createdAt: new Date().toISOString(),
+    };
+    dispatch(addDiscussion(newDiscussion));
+    const discussionTab = targetPane?.tabs.find(
+      (tab) =>
+        tab.type === tabTypes.DISCUSS &&
+        (tab.data as ResourceTabDataType).resourceId ===
+          selection.anchor.resourceId,
+    );
+    if (discussionTab) {
+      dispatch(
+        updateTabData({
+          tabId: discussionTab.id,
+          data: {
+            resourceId: selection.anchor.resourceId,
+            activeDiscussionId: newDiscussion.id,
+            draftMessage,
+          },
+        }),
+      );
+    } else {
+      dispatch(
+        addToPane({
+          tab: {
+            id: newDiscussion.id,
+            label: "Discussion Tab",
+            type: tabTypes.DISCUSS,
+            data: {
+              draftMessage,
+              resourceId: selection.anchor.resourceId,
+              activeDiscussionId: newDiscussion.id,
+            },
+          },
+        }),
+      );
+    }
+  };
 
   return (
-    <div
-      className="
-        prose 
-        prose-invert 
-        max-w-3xl
-        py-12
-
-        prose-pre:bg-transparent
-        prose-pre:p-0
-        prose-pre:m-0
-  "
-      onMouseUp={handleMouseUp}
-    >
-      <MarkdownRenderer markdown={markdown} highlights={resourceHighlights} />
-    </div>
+    <SelectableMarkdown
+      resourceId={resourceId}
+      markdown={markdown}
+      highlights={resourceHighlights}
+      selectionToolBar={
+        <SelectionToolBar
+          onHighlight={handleHighlight}
+          onAddNote={handleAddNote}
+          onAskDoubt={handleAskDoubt}
+        />
+      }
+    />
   );
 };

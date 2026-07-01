@@ -10,7 +10,7 @@ import { CodeBlock } from "./markdown/CodeBlock";
 import { PreBlock } from "./markdown/PreBlock";
 import { HighlightText } from "@/store/features/highlights/highlightSlice";
 
-type MarkdownRendererProps = {
+export type MarkdownProps = {
   markdown: string;
   highlights?: HighlightText[];
 };
@@ -18,7 +18,7 @@ type MarkdownRendererProps = {
 export const MarkdownRenderer = ({
   markdown,
   highlights = [],
-}: MarkdownRendererProps) => {
+}: MarkdownProps) => {
   return (
     <ReactMarkdown
       remarkPlugins={[remarkGfm]}

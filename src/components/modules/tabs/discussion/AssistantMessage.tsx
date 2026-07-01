@@ -7,7 +7,11 @@ type AssistantMessageProps = {
 
 export const AssistantMessage = ({ message }: AssistantMessageProps) => {
   return (
-    <div className="space-y-2">
+    <div
+      className="space-y-2"
+      id={`message-${message.id}`}
+      data-message-id={message.id}
+    >
       <span className="text-xs font-medium uppercase tracking-wider text-primary">
         AI Response
       </span>

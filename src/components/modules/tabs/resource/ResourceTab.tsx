@@ -40,7 +40,7 @@ export const ResourceTab = () => {
       <TabContainer>
         <div className="flex h-full gap-6 overflow-y-auto">
           <div className="min-w-0 flex-1 ">
-            <DocsRenderer onSelection={setSelectionInfo} />
+            <DocsRenderer />
           </div>
           <div className="sticky top-5 w-64 shrink-0">
             <TOC headings={headings} />

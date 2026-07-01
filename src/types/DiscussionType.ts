@@ -19,7 +19,12 @@ export type DiscussionType = {
 
   title: string;
 
-  resourceId: string;
+  reference?: SelectionAnchor;
 
   messages: MessageType[];
+
+  createdAt: string;
+  updatedAt?: string;
 };
+
+

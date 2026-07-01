@@ -2,6 +2,7 @@ import { tabTypes } from "@/enums/TabEnums";
 import { NoteType } from "./NoteType";
 import { ValueOf } from "next/dist/shared/lib/constants";
 import { mockMarkdown } from "@/mockData/mockMarkdown";
+import { MessageType } from "./DiscussionType";
 
 export type Pane = {
   tabs: TabData<any>[];
@@ -33,11 +34,11 @@ export type ResourceTabDataType = {
   markdown: string;
 };
 
-type ResourceTabType = TabData<ResourceTabDataType> & {
+export type ResourceTabType = TabData<ResourceTabDataType> & {
   type: typeof tabTypes.RESOURCE;
 };
 
-type NoteTabType = TabData<NoteTabDataType> & {
+export type NoteTabType = TabData<NoteTabDataType> & {
   type: typeof tabTypes.NOTE;
 };
 
@@ -55,7 +56,8 @@ export type NoteTabDataType = {
 
 export type DiscussTabDataType = {
   resourceId: string;
-  discussionId: string;
+  activeDiscussionId: string;
+  draftMessage?: MessageType;
 };
 
 export type SelectionAnchor = {
@@ -86,8 +88,6 @@ export type ResourceSelection = {
 };
 
 export type DiscussionSelection = {
-  discussionId: string;
-
   messageId: string;
 
   selectedText: string;

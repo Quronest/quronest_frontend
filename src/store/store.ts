@@ -4,6 +4,7 @@ import { setupListeners } from "@reduxjs/toolkit/query";
 import workspaceReducer from "./features/workspace/workspaceSlice";
 import noteReducer from "./features/notes/noteSlice";
 import highlightReducer from "./features/highlights/highlightSlice";
+import discussionReducer from "./features/discussion/discussionSlice";
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 
 export const store = configureStore({
@@ -12,6 +13,7 @@ export const store = configureStore({
     workspace: workspaceReducer,
     note: noteReducer,
     highlight: highlightReducer,
+    discussion: discussionReducer,
   },
   middleware: (gdm) => gdm().concat(baseApi.middleware),
 });

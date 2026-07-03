@@ -20,15 +20,15 @@ import { DiscussionType, MessageRole } from "@/types/DiscussionType";
 import { NoteType } from "@/types/NoteType";
 import {
   NoteTabDataType,
-  ResourceSelection,
+  TextSelection,
   ResourceTabDataType,
 } from "@/types/WorkspaceType";
 
 export type SelectionToolBarProps = {
-  selection?: ResourceSelection;
-  onHighlight?: (selection: ResourceSelection | null) => void;
-  onAddNote?: (selection: ResourceSelection | null) => void;
-  onAskDoubt?: (selection: ResourceSelection | null) => void;
+  selection: TextSelection | null;
+  onHighlight?: (selection: TextSelection | null) => void;
+  onAddNote?: (selection: TextSelection | null) => void;
+  onAskDoubt?: (selection: TextSelection | null) => void;
 };
 
 export const SelectionToolBar = ({
@@ -50,17 +50,17 @@ export const SelectionToolBar = ({
       }}
     >
       {onHighlight && (
-        <Button variant="list" onClick={() => onHighlight}>
+        <Button variant="list" onClick={() => onHighlight(selection)}>
           Highlight
         </Button>
       )}
       {onAddNote && (
-        <Button variant="list" onClick={() => onAddNote}>
+        <Button variant="list" onClick={() => onAddNote(selection)}>
           Add Note
         </Button>
       )}
       {onAskDoubt && (
-        <Button variant="list" className="" onClick={() => onAskDoubt}>
+        <Button variant="list" className="" onClick={() => onAskDoubt(selection)}>
           Ask Doubt
         </Button>
       )}

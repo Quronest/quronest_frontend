@@ -10,26 +10,6 @@ import { tabTypes } from "@/enums/TabEnums";
 import { useTab } from "@/hooks/useTab";
 
 export const ResourceTab = () => {
-  const [selectionInfo, setSelectionInfo] = useState<ResourceSelection | null>(
-    null,
-  );
-
-  useEffect(() => {
-    const handleSelectionChange = () => {
-      const selection = window.getSelection();
-
-      if (!selection?.toString().trim()) {
-        setSelectionInfo(null);
-      }
-    };
-
-    document.addEventListener("selectionchange", handleSelectionChange);
-
-    return () => {
-      document.removeEventListener("selectionchange", handleSelectionChange);
-    };
-  }, []);
-
   const { tabData } = useTab();
   const { markdown, resourceId } = tabData as ResourceTabDataType;
 
@@ -46,8 +26,6 @@ export const ResourceTab = () => {
             <TOC headings={headings} />
           </div>
         </div>
-
-        {selectionInfo && <SelectionToolBar selection={selectionInfo} />}
       </TabContainer>
     </>
   );

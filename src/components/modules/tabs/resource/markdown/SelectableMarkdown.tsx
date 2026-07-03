@@ -1,36 +1,36 @@
 import React, { createContext, useEffect, useState } from "react";
 import { MarkdownProps, MarkdownRenderer } from "../MarkdownRenderer";
 import { useTab } from "@/hooks/useTab";
-import { ResourceSelection, ResourceTabDataType } from "@/types/WorkspaceType";
+import { TextSelection, ResourceTabDataType } from "@/types/WorkspaceType";
 import { useAppSelector } from "@/store/store";
 import { selectHighlight } from "@/store/features/highlights/highlightSlice";
 import { SelectionToolBarProps } from "../SelectionToolBar";
 
 const SelectableMarkdownContext = createContext<{
-  selection: ResourceSelection | null;
+  selection: TextSelection | null;
 }>({
   selection: null,
 });
 
 type SelectableMarkdownType = {
-  resourceId: string;
-  selectionToolBar: React.ReactElement<Partial<SelectionToolBarProps>>;
-  onSelect?: (selectionData: ResourceSelection | null) => void;
+  referenceId: string;
+  selectionToolBar: React.ReactNode;
+  onSelect?: (selectionData: TextSelection | null) => void;
 } & MarkdownProps;
 
 export const SelectableMarkdown = ({
-  resourceId,
-  selectionToolBar: ToolBar,
+  referenceId,
+  selectionToolBar: toolBar,
   onSelect,
   ...markdownProps
 }: SelectableMarkdownType) => {
-  const [selectionInfo, setSelectionInfo] = useState<ResourceSelection | null>(
+  const [selectionInfo, setSelectionInfo] = useState<TextSelection | null>(
     null,
   );
 
   const handleMouseUp = () => {
     const selection = window.getSelection();
-
+    console.log("from mouse up",selection);
     if (!selection) return;
 
     const range = selection.getRangeAt(0);
@@ -65,19 +65,8 @@ export const SelectableMarkdown = ({
       onSelect?.(null);
       return;
     }
-    const selectionData = {
-      anchor: {
-        selectedText: text,
-        resourceId: resourceId,
-        block: {
-          startOffset,
-          endOffset,
-        },
-        selection: {
-          endOffset: absoluteEnd,
-          startOffset: absoluteStart,
-        },
-      },
+    const selectionData: TextSelection = {
+      selectedText: text,
 
       position: {
         x: rect.left + rect.width / 2,
@@ -85,7 +74,32 @@ export const SelectableMarkdown = ({
       },
 
       range,
+
+      blockOffset: {
+        start: startOffset,
+        end: endOffset,
+      },
+
+      selectionOffset: {
+        start: absoluteStart,
+        end: absoluteEnd,
+      },
+
+      createAnchor: (referenceId) => ({
+        reference: referenceId,
+        blockOffset: {
+          start: startOffset,
+          end: endOffset,
+        },
+
+        selectionOffset: {
+          start: absoluteStart,
+          end: absoluteEnd,
+        },
+        selectedText: text,
+      }),
     };
+    console.log("Selection Data from mouse up ",selectionData)
     setSelectionInfo(selectionData);
     onSelect?.(selectionData);
   };
@@ -113,8 +127,7 @@ export const SelectableMarkdown = ({
         className="prose prose-invert w-full prose-pre:bg-transparent prose-pre:p-0 prose-pre:m-0"
       >
         <MarkdownRenderer {...markdownProps} />
-        {selectionInfo &&
-          React.cloneElement(ToolBar, { selection: selectionInfo })}
+        {selectionInfo && toolBar}
       </div>
     </SelectableMarkdownContext.Provider>
   );

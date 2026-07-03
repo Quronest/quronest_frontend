@@ -16,7 +16,7 @@ import {
 } from "@/store/features/highlights/highlightSlice";
 import {
   NoteTabDataType,
-  ResourceSelection,
+  TextSelection,
   ResourceTabDataType,
 } from "@/types/WorkspaceType";
 import { useContext, useState } from "react";
@@ -38,34 +38,39 @@ import { addDiscussion } from "@/store/features/discussion/discussionSlice";
 import { SelectableMarkdown } from "./markdown/SelectableMarkdown";
 import { SelectionToolBar } from "./SelectionToolBar";
 
-
-
 export const DocsRenderer = () => {
   const { tabData } = useTab();
   const { resourceId, markdown } = tabData as ResourceTabDataType;
   const { highlights } = useAppSelector(selectHighlight);
   const resourceHighlights = highlights.filter(
-    (highlight) => highlight.anchor?.resourceId === resourceId,
+    (highlight) => highlight.anchor?.reference === resourceId,
   );
   const dispatch = useAppDispatch();
   const { panes, activePaneId, isSplitView } = useWorkspace();
 
-  const handleHighlight = (selection: ResourceSelection | null) => {
+  const [selectionInfo, setSelectionInfo] = useState<TextSelection | null>(
+    null,
+  );
+
+  const handleHighlight = (selection: TextSelection | null) => {
     if (!selection) return;
+    const anchor = selection?.createAnchor(resourceId);
     dispatch(
       addHighlight({
         id: crypto.randomUUID(),
-        anchor: selection.anchor,
+        anchor,
       }),
     );
   };
 
-  const handleAddNote = (selection: ResourceSelection | null) => {
+  const handleAddNote = (selection: TextSelection | null) => {
+    console.log("from add note", selection);
     if (!selection) return;
+    const anchor = selection?.createAnchor(resourceId);
     let targetPane = panes["right"] ?? undefined;
     const draftNote: NoteType = {
       id: "",
-      anchor: selection!.anchor,
+      anchor,
       content: "",
       createdAt: new Date().toISOString(),
     };
@@ -84,8 +89,7 @@ export const DocsRenderer = () => {
     const notesTab = targetPane?.tabs.find(
       (tab) =>
         tab.type === tabTypes.NOTE &&
-        (tab.data as NoteTabDataType).resourceId ===
-          selection.anchor.resourceId,
+        (tab.data as NoteTabDataType).resourceId === anchor.reference,
     );
     if (notesTab) {
       dispatch(
@@ -111,7 +115,7 @@ export const DocsRenderer = () => {
             label: "Notes",
             type: tabTypes.NOTE,
             data: {
-              resourceId: selection.anchor.resourceId,
+              resourceId: anchor.reference,
               activeNoteId: draftNote.id,
               draftNote,
             },
@@ -121,8 +125,9 @@ export const DocsRenderer = () => {
     }
   };
 
-  const handleAskDoubt = (selection: ResourceSelection | null) => {
+  const handleAskDoubt = (selection: TextSelection | null) => {
     if (!selection) return;
+    const anchor = selection?.createAnchor(resourceId);
     let targetPane = panes["right"] ?? undefined;
     if (isSplitView) {
       if (activePaneId == "right") {
@@ -138,7 +143,7 @@ export const DocsRenderer = () => {
     }
     const draftMessage = {
       id: "",
-      anchor: selection?.anchor,
+      anchor,
       content: "",
       createdAt: new Date().toISOString(),
       role: "user" as MessageRole,
@@ -146,7 +151,7 @@ export const DocsRenderer = () => {
     const newDiscussion: DiscussionType = {
       id: crypto.randomUUID(),
       title: "New Discussion",
-      reference: selection?.anchor,
+      reference: anchor,
       messages: [],
       createdAt: new Date().toISOString(),
     };
@@ -154,15 +159,14 @@ export const DocsRenderer = () => {
     const discussionTab = targetPane?.tabs.find(
       (tab) =>
         tab.type === tabTypes.DISCUSS &&
-        (tab.data as ResourceTabDataType).resourceId ===
-          selection.anchor.resourceId,
+        (tab.data as ResourceTabDataType).resourceId === anchor.reference,
     );
     if (discussionTab) {
       dispatch(
         updateTabData({
           tabId: discussionTab.id,
           data: {
-            resourceId: selection.anchor.resourceId,
+            resourceId: anchor.reference,
             activeDiscussionId: newDiscussion.id,
             draftMessage,
           },
@@ -177,7 +181,7 @@ export const DocsRenderer = () => {
             type: tabTypes.DISCUSS,
             data: {
               draftMessage,
-              resourceId: selection.anchor.resourceId,
+              resourceId: anchor.reference,
               activeDiscussionId: newDiscussion.id,
             },
           },
@@ -188,11 +192,13 @@ export const DocsRenderer = () => {
 
   return (
     <SelectableMarkdown
-      resourceId={resourceId}
+      referenceId={resourceId}
       markdown={markdown}
       highlights={resourceHighlights}
+      onSelect={setSelectionInfo}
       selectionToolBar={
         <SelectionToolBar
+          selection={selectionInfo}
           onHighlight={handleHighlight}
           onAddNote={handleAddNote}
           onAskDoubt={handleAskDoubt}

@@ -61,16 +61,15 @@ export type DiscussTabDataType = {
 };
 
 export type SelectionAnchor = {
-  resourceId: string;
-
-  block?: {
-    startOffset: number;
-    endOffset: number;
+  reference: string;
+  blockOffset: {
+    start: number;
+    end: number;
   };
 
-  selection?: {
-    startOffset: number;
-    endOffset: number;
+  selectionOffset: {
+    start: number;
+    end: number;
   };
 
   selectedText?: string;
@@ -98,4 +97,27 @@ export type DiscussionSelection = {
   };
 
   range: Range;
+};
+
+export type TextSelection = {
+  selectedText: string;
+
+  position: {
+    x: number;
+    y: number;
+  };
+
+  range: Range;
+
+  blockOffset: {
+    start: number;
+    end: number;
+  };
+
+  selectionOffset: {
+    start: number;
+    end: number;
+  };
+
+  createAnchor: (reference: string) => SelectionAnchor;
 };

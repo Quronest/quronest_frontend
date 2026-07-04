@@ -1,11 +1,6 @@
-import React from 'react'
+import ProfilePage from "@/components/profile/ProfilePage";
+import { profileMockData } from "@/data/profileMockData";
 
-const ProfilePage = () => {
-  return (
-    <div>
-      Welcome to Profile page
-    </div>
-  )
+export default function Page() {
+  return <ProfilePage profile={profileMockData} />;
 }
-
-export default ProfilePage

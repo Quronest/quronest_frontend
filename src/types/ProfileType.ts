@@ -1,10 +1,10 @@
-export interface SocialLinks {
-  github?: string;
-  linkedin?: string;
-  twitter?: string;
-  portfolio?: string;
-  website?: string;
-}
+import type { SocialLinkType } from "./SocialLinkType.enum";
+
+export type SocialLink = {
+  type: SocialLinkType;
+  link: string;
+  title: string;
+};
 
 export interface UserStats {
   group: string;
@@ -45,7 +45,7 @@ export interface UserProfile {
 
   skills: string[];
 
-  social: SocialLinks;
+  social: SocialLink[];
 
   stats: UserStats;
 

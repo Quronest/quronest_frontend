@@ -1,6 +1,7 @@
 "use client";
 
-import { Award, Code2, Flame, Users } from "lucide-react";
+import clsx from "clsx";
+import { Award, Flame, Users } from "lucide-react";
 
 import { Card } from "@/components/ui/Card";
 
@@ -18,20 +19,15 @@ const StatsSection = ({ stats }: StatsSectionProps) => {
       subtitle: "Elite Cohort",
       icon: Users,
       color: "text-cyan-400",
+      bg: "bg-cyan-500/10",
     },
     {
-      title: "Level",
+      title: "Phase",
       value: stats.level,
-      subtitle: "Advanced",
+      subtitle: "Current Progress",
       icon: Award,
       color: "text-amber-400",
-    },
-    {
-      title: "Current Stack",
-      value: stats.techStack,
-      subtitle: "Full Stack",
-      icon: Code2,
-      color: "text-green-400",
+      bg: "bg-amber-500/10",
     },
     {
       title: "Current Streak",
@@ -39,11 +35,12 @@ const StatsSection = ({ stats }: StatsSectionProps) => {
       subtitle: "Days",
       icon: Flame,
       color: "text-orange-400",
+      bg: "bg-orange-500/10",
     },
   ];
 
   return (
-    <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-4">
+    <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3">
       {statCards.map((item) => {
         const Icon = item.icon;
 
@@ -51,18 +48,29 @@ const StatsSection = ({ stats }: StatsSectionProps) => {
           <Card
             key={item.title}
             hoverEffect="light"
-            className="flex items-center justify-between p-5"
+            className="group p-6 transition-all duration-300 hover:-translate-y-1"
           >
-            <div>
-              <p className="text-sm text-neutral">{item.title}</p>
+            <div className="flex items-center justify-between gap-5">
+              <div className="min-w-0">
+                <p className="text-sm font-medium text-neutral">{item.title}</p>
 
-              <h2 className="mt-2 text-3xl font-bold">{item.value}</h2>
+                <h2 className="mt-3 text-3xl font-bold tracking-tight">
+                  {item.value}
+                </h2>
 
-              <p className="mt-1 text-xs text-neutral">{item.subtitle}</p>
-            </div>
+                <p className="mt-2 text-sm text-neutral">{item.subtitle}</p>
+              </div>
 
-            <div className="flex h-14 w-14 items-center justify-center rounded-full bg-background/40">
-              <Icon size={28} className={item.color} />
+              <div
+                className={clsx(
+                  "h-16 w-16 shrink-0 rounded-2xl",
+                  "flex items-center justify-center",
+                  "transition-transform duration-300 group-hover:scale-105",
+                  item.bg,
+                )}
+              >
+                <Icon className={clsx("h-8 w-8", item.color)} />
+              </div>
             </div>
           </Card>
         );

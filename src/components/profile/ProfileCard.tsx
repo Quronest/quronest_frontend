@@ -17,6 +17,7 @@ import { Tag } from "@/components/ui/Tag";
 
 import type { UserProfile } from "@/types/ProfileType";
 import Avatar from "../ui/Avatar";
+import ProfileSocialLink from "./ProfileSocialLink";
 
 interface ProfileCardProps {
   profile: UserProfile;
@@ -115,44 +116,9 @@ const ProfileCard = ({ profile }: ProfileCardProps) => {
         <h3 className="mb-3 font-semibold">Social Links</h3>
 
         <div className="flex items-center justify-center gap-3">
-          {profile.social.github && (
-            <a
-              href={profile.social.github}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <div className="flex h-11 w-11 items-center justify-center rounded-full border border-border bg-background/40 transition-all duration-300 hover:bg-card-hover">
-                <Github size={20} className="text-neutral hover:text-primary" />
-              </div>
-            </a>
-          )}
-
-          {profile.social.linkedin && (
-            <a
-              href={profile.social.linkedin}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <div className="flex h-11 w-11 items-center justify-center rounded-full border border-border bg-background/40 transition-all duration-300 hover:bg-card-hover">
-                <Linkedin
-                  size={20}
-                  className="text-neutral hover:text-primary"
-                />
-              </div>
-            </a>
-          )}
-
-          {profile.social.portfolio && (
-            <a
-              href={profile.social.portfolio}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <div className="flex h-11 w-11 items-center justify-center rounded-full border border-border bg-background/40 transition-all duration-300 hover:bg-card-hover">
-                <Globe size={20} className="text-neutral hover:text-primary" />
-              </div>
-            </a>
-          )}
+          {profile.social.map((socialLink) => (
+            <ProfileSocialLink key={socialLink.type} socialLink={socialLink} />
+          ))}
         </div>
       </div>
     </Card>

@@ -20,16 +20,11 @@ const sizeClasses = {
   xl: "h-32 w-32 text-4xl",
 };
 
-const Avatar = ({
-  src,
-  alt,
-  name,
-  size = "md",
-  className,
-}: AvatarProps) => {
+const Avatar = ({ src, alt, name, size = "md", className }: AvatarProps) => {
   const initials = useMemo(() => {
     return name
-      .split(" ")
+      .trim()
+      .split(/\s+/)
       .map((word) => word[0])
       .join("")
       .slice(0, 2)
@@ -44,7 +39,7 @@ const Avatar = ({
         className={clsx(
           "rounded-full object-cover border border-border",
           sizeClasses[size],
-          className
+          className,
         )}
       />
     );
@@ -53,9 +48,10 @@ const Avatar = ({
   return (
     <div
       className={clsx(
-        "flex items-center justify-center rounded-full bg-primary/10 font-bold text-primary border border-border",
+        "flex items-center justify-center",
+        "rounded-full bg-primary/10 font-bold text-primary border border-border",
         sizeClasses[size],
-        className
+        className,
       )}
     >
       {initials}

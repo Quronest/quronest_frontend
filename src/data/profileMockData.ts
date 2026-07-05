@@ -1,4 +1,5 @@
 import type { UserProfile } from "@/types/ProfileType";
+import { SocialLinkType } from "@/types/SocialLinkType.enum";
 
 export const profileMockData: UserProfile = {
   id: "1",
@@ -24,13 +25,23 @@ export const profileMockData: UserProfile = {
     "Node.js",
   ],
 
-  social: {
-    github: "https://github.com/alexjohnson",
-    linkedin: "https://linkedin.com/in/alexjohnson",
-    twitter: "https://twitter.com/alexjohnson",
-    portfolio: "https://alexjohnson.dev",
-    website: "https://alexjohnson.dev",
-  },
+  social: [
+    {
+      type: SocialLinkType.GITHUB,
+      link: "https://github.com/yourusername",
+      title: "GitHub",
+    },
+    {
+      type: SocialLinkType.LINKEDIN,
+      link: "https://linkedin.com/in/yourusername",
+      title: "LinkedIn",
+    },
+    {
+      type: SocialLinkType.PORTFOLIO,
+      link: "https://yourportfolio.com",
+      title: "Portfolio",
+    },
+  ],
 
   stats: {
     group: "A",

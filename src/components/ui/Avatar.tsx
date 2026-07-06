@@ -22,9 +22,13 @@ const sizeClasses = {
 
 const Avatar = ({ src, alt, name, size = "md", className }: AvatarProps) => {
   const initials = useMemo(() => {
-    return name
-      .trim()
-      .split(/\s+/)
+    const words = name.trim().split(/\s+/);
+
+    if (words.length === 1) {
+      return words[0].slice(0, 2).toUpperCase();
+    }
+
+    return words
       .map((word) => word[0])
       .join("")
       .slice(0, 2)

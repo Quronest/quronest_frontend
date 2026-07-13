@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef } from "react";
+import React, { forwardRef, useEffect, useRef } from "react";
 import clsx from "clsx";
 
 type TextareaProps = React.TextareaHTMLAttributes<HTMLTextAreaElement> & {

@@ -3,9 +3,9 @@ import { ReactNode } from "react";
 
 const layout = ({ children }: { children: ReactNode }) => {
   return (
-    <div className="flex h-screen w-screen ">
+    <div className="flex h-screen w-screen overflow-hidden ">
       <WorkspaceSideBar />
-      <div className="flex-1 h-full">
+      <div className="flex-1 min-w-0 h-full">
         {children}
       </div>
     </div>

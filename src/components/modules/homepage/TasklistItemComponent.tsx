@@ -12,7 +12,6 @@ type TaskItemType = {
 export const TasklistItemComponent = ({ task }: TaskItemType) => {
   const durationInMins = task?.duration / 60;
   const progresslabel = task.progress.toString();
-  console.log("durationInMins: ", task.duration);
   return (
     <Card >
       <div >

@@ -8,42 +8,45 @@ type TextareaProps = React.TextareaHTMLAttributes<HTMLTextAreaElement> & {
   maxHeight?: number;
 };
 
-export const TextArea = ({
-  minHeight = 64,
-  maxHeight = 200,
-  className,
-  value,
-  ...props
-}: TextareaProps) => {
-  const ref = useRef<HTMLTextAreaElement>(null);
+export const TextArea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
+  ({ minHeight = 64, maxHeight = 200, className, value, ...props }, ref) => {
+    const innerRef = useRef<HTMLTextAreaElement>(null);
 
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
+    useEffect(() => {
+      const el = innerRef.current;
+      if (!el) return;
 
-    // reset height to recalculate
-    el.style.height = `${minHeight}px`;
+      el.style.height = `${minHeight}px`;
 
-    const scrollHeight = el.scrollHeight;
+      const scrollHeight = el.scrollHeight;
 
-    if (scrollHeight > maxHeight) {
-      el.style.height = `${maxHeight}px`;
-      el.style.overflowY = "auto";
-    } else {
-      el.style.height = `${scrollHeight}px`;
-      el.style.overflowY = "hidden";
-    }
-  }, [value, minHeight, maxHeight]);
+      if (scrollHeight > maxHeight) {
+        el.style.height = `${maxHeight}px`;
+        el.style.overflowY = "auto";
+      } else {
+        el.style.height = `${scrollHeight}px`;
+        el.style.overflowY = "hidden";
+      }
+    }, [value, minHeight, maxHeight]);
 
-  return (
-    <textarea
-      ref={ref}
-      value={value}
-      className={clsx(
-        "w-full resize-none bg-transparent outline-none p-2 px-4 rounded-xl text-md",
-        className,
-      )}
-      {...props}
-    />
-  );
-};
+    return (
+      <textarea
+        ref={(node) => {
+          innerRef.current = node;
+
+          if (typeof ref === "function") {
+            ref(node);
+          } else if (ref) {
+            ref.current = node;
+          }
+        }}
+        value={value}
+        className={clsx(
+          "w-full resize-none bg-transparent outline-none p-2 px-4 rounded-xl text-md",
+          className,
+        )}
+        {...props}
+      />
+    );
+  },
+);

@@ -14,10 +14,10 @@ interface AvatarProps {
 }
 
 const sizeClasses = {
-  sm: "h-10 w-10 text-sm",
-  md: "h-14 w-14 text-lg",
-  lg: "h-20 w-20 text-2xl",
-  xl: "h-32 w-32 text-4xl",
+  sm: "h-14 w-14 text-lg",
+  md: "h-20 w-20 text-2xl",
+  lg: "h-32 w-32 text-4xl",
+  xl: "h-48 w-48 text-6xl",
 };
 
 const Avatar = ({ src, alt, name, size = "md", className }: AvatarProps) => {

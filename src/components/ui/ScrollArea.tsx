@@ -23,7 +23,6 @@ export const ScrollArea = ({
         direction === "horizontal" && "overflow-x-auto overflow-y-hidden",
         direction === "both" && "overflow-auto",
 
-        // Scrollbar styling (optional but recommended)
         "scrollbar-thin scrollbar-thumb-card-hover scrollbar-track-transparent",
 
         className,

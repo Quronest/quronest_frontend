@@ -5,6 +5,8 @@ export type MessageRole = "user" | "assistant";
 export type MessageType = {
   id: string;
 
+  taskId: string;
+
   role: MessageRole;
 
   content: string;
@@ -26,5 +28,3 @@ export type DiscussionType = {
   createdAt: string;
   updatedAt?: string;
 };
-
-

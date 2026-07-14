@@ -1,6 +1,6 @@
 import { ScrollArea } from "@/components/ui/ScrollArea";
 import { Message } from "./Message";
-import {  DiscussionType, MessageType } from "@/types/DiscussionType";
+import { DiscussionType, MessageType } from "@/types/DiscussionType";
 import { MailQuestion, Send, X } from "lucide-react";
 import Button from "@/components/ui/Button";
 import { QuestionOutline } from "./QuestionOutLine";
@@ -22,7 +22,7 @@ export const Conversation = () => {
 
   const discussions = useAppSelector((state) =>
     state.discussion.discussions.filter(
-      (discussion) => discussion?.reference?.resourceId === resourceId,
+      (discussion) => discussion?.reference?.reference === resourceId,
     ),
   );
 
@@ -36,9 +36,7 @@ export const Conversation = () => {
     id: "",
     content: "",
     createdAt: new Date().toISOString(),
-    anchor: {
-      resourceId: resourceId,
-    },
+    taskId: resourceId,
     role: "user",
   };
   const draftMessageData = draftMessage ?? mockMessage;

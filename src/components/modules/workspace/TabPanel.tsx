@@ -3,8 +3,9 @@ import React, { forwardRef } from "react";
 import { NoteTab } from "../tabs/note/NoteTab";
 import { ResourceTab } from "../tabs/resource/ResourceTab";
 import { ScrollArea } from "@/components/ui/ScrollArea";
-import { mockMarkdown } from "../tabs/resource/mockMarkdown";
+import { mockMarkdown } from "../../../mockData/mockMarkdown";
 import { tabTypes } from "@/enums/TabEnums";
+import DiscussTab from "../tabs/discussion/DiscussTab";
 
 type TabPanelType = {
   tab: TabData<any>;
@@ -20,6 +21,10 @@ export const TabPanel = forwardRef<HTMLDivElement, TabPanelType>(
 
       case tabTypes.NOTE:
         content = <NoteTab />;
+        break;
+
+      case tabTypes.DISCUSS:
+        content = <DiscussTab />;
         break;
 
       default:

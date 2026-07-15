@@ -1,7 +1,8 @@
 import { tabTypes } from "@/enums/TabEnums";
 import { NoteType } from "./NoteType";
 import { ValueOf } from "next/dist/shared/lib/constants";
-import { mockMarkdown } from "@/components/modules/tabs/resource/mockMarkdown";
+import { mockMarkdown } from "@/mockData/mockMarkdown";
+import { MessageType } from "./DiscussionType";
 
 export type Pane = {
   tabs: TabData<any>[];
@@ -21,6 +22,7 @@ export type TabType = ValueOf<typeof tabTypes>;
 
 export type TabData<T> = {
   id: string;
+  taskId: string;
   label: string;
 
   type: TabType;
@@ -29,40 +31,49 @@ export type TabData<T> = {
 };
 
 export type ResourceTabDataType = {
-  resourceId: string;
+  // resourceId: string;
   markdown: string;
 };
 
-type ResourceTabType = TabData<ResourceTabDataType> & {
+export type ResourceTabType = TabData<ResourceTabDataType> & {
   type: typeof tabTypes.RESOURCE;
 };
 
-type NoteTabType = TabData<NoteTabDataType> & {
+export type NoteTabType = TabData<NoteTabDataType> & {
   type: typeof tabTypes.NOTE;
 };
 
+export type DiscussTabType = TabData<DiscussTabDataType> & {
+  type: typeof tabTypes.DISCUSS;
+};
+
 export type NoteTabDataType = {
-  resourceId: string;
+  // resourceId: string;
 
   activeNoteId: string | null;
 
   draftNote?: NoteType;
 };
 
+export type DiscussTabDataType = {
+  // resourceId: string;
+  activeDiscussionId: string;
+  draftMessage?: MessageType;
+};
+
 export type SelectionAnchor = {
-  resourceId: string;
-
-  block: {
-    startOffset: number;
-    endOffset: number;
+  referenceId: string;
+  blockOffset: {
+    start: number;
+    end: number;
   };
 
-  selection: {
-    startOffset: number;
-    endOffset: number;
+  selectionOffset: {
+    start: number;
+    end: number;
   };
 
-  selectedText: string;
+  selectedText?: string;
 };
 
 export type ResourceSelection = {
@@ -76,48 +87,38 @@ export type ResourceSelection = {
   range: Range;
 };
 
-export const mockTabs: TabData<any>[] = [
-  {
-    id: "tab-1",
-    label: "Create Next App",
-    type: tabTypes.NOTE,
-    data: {
-      resourceId: "hibcicdoniaos",
-      notes: [],
-      referenceText: "this is the reference text",
-    },
-  },
-  {
-    id: "tab-2",
-    label: "Frontend Guidance",
-    type: tabTypes.NOTE,
-    data: { resourceId: "hibcicdoniaos", notes: [] },
-  },
-  {
-    id: "tab-3",
-    label: "Learning Roadmap",
-    type: tabTypes.NOTE,
-    data: {
-      resourceId: "hibcicdoniaos",
-      notes: [],
-    },
-  },
-  {
-    id: "tab-4",
-    label: "Discussion Thread",
-    type: tabTypes.RESOURCE,
-    data: {
-      resourceId: "scvhbv",
-      markdown: mockMarkdown,
-    },
-  },
-  {
-    id: "tab-5",
-    label: "API Integration",
-    type: tabTypes.RESOURCE,
-    data: {
-      resourceId: "scvhbciubvuv",
-      markdown: mockMarkdown,
-    },
-  },
-];
+export type DiscussionSelection = {
+  messageId: string;
+
+  selectedText: string;
+
+  position: {
+    x: number;
+    y: number;
+  };
+
+  range: Range;
+};
+
+export type TextSelection = {
+  selectedText: string;
+
+  position: {
+    x: number;
+    y: number;
+  };
+
+  range: Range;
+
+  blockOffset: {
+    start: number;
+    end: number;
+  };
+
+  selectionOffset: {
+    start: number;
+    end: number;
+  };
+
+  createAnchor: (reference: string) => SelectionAnchor;
+};

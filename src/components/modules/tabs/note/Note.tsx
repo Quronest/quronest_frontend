@@ -8,18 +8,21 @@ import { Pen, Trash2 } from "lucide-react";
 import { NoteCard } from "./NoteCard";
 import CardActions from "./CardActions";
 import { HighlightBox } from "./HighlightBox";
+import { useAppDispatch } from "@/store/store";
+import { deleteNote } from "@/store/features/notes/noteSlice";
 
 export const Note = ({ note }: { note: NoteType }) => {
+  const dispatch = useAppDispatch();
   const formattedDate = formatDate(note.createdAt);
-
+  const handleDeleteNote = () => {
+    dispatch(deleteNote({ id: note.id }));
+  };
   return (
     <NoteCard>
       <div className="relative flex items-start justify-between gap-4">
         <div className="flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.24em] text-neutral/80">
           <span className="h-1 w-1 rounded-full bg-primary/70" />
-          <time dateTime={note.createdAt}>
-            {formattedDate.dateTime}
-          </time>
+          <time dateTime={note.createdAt}>{formattedDate.dateTime}</time>
         </div>
 
         <CardActions>
@@ -34,13 +37,16 @@ export const Note = ({ note }: { note: NoteType }) => {
             variant="deleteIcon"
             aria-label={`Delete note created ${formattedDate.dateTime}`}
             tooltip="Delete note"
+            onClick={handleDeleteNote}
           >
             <Trash2 size={15} />
           </Button>
         </CardActions>
       </div>
 
-      <HighlightBox text={note.referenceText} />
+      {note?.anchor?.selectedText && (
+        <HighlightBox text={note.anchor.selectedText} />
+      )}
 
       <div
         className={clsx(

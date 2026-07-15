@@ -9,62 +9,36 @@ import { Message } from "./Message";
 
 type QuestionOutlineProps = {
   className?: string;
+  questions: MessageType[];
+  handleScroll: (messageId: string) => void;
 };
 
-export const QuestionOutline = ({ className }: QuestionOutlineProps) => {
-  const { tabRef, tabData } = useTab();
-  const { activeDiscussionId, resourceId } = tabData as DiscussTabDataType;
-  const discussion = useAppSelector((state) =>
-    state.discussion.discussions.find(
-      (discussion) => discussion.id === activeDiscussionId,
-    ),
-  );
-
-  const questions: MessageType[] | undefined = discussion?.messages.filter(
-    (message) => message.role === "user",
-  );
-
-  const handleScroll = (messageId: string) => {
-    tabRef.current
-      ?.querySelector(`#message-${CSS.escape(messageId)}`)
-      ?.scrollIntoView({
-        behavior: "smooth",
-        block: "start",
-      });
-  };
+export const QuestionOutline = ({
+  className,
+  questions,
+  handleScroll,
+}: QuestionOutlineProps) => {
   return (
     <aside
       className={clsx(
-        "flex h-full flex-col border-l border-card-hover bg-card transition-all duration-300 w-60",
+        "flex h-fit max-h-100 w-60",
+        "overflow-y-scroll flex-col border-l border-card-hover bg-card transition-all duration-300",
+        "absolute right-0 top-1/2 -translate-y-1/2",
         className,
       )}
     >
-      <div
-        className={clsx(
-          "flex h-14 items-center border-b border-card-hover",
-          "justify-between px-4",
-        )}
-      >
-        <div className="flex items-center gap-2">
-          <h2 className="font-semibold">Questions</h2>
-          <ListTree size={18} className="text-primary" />
-        </div>
-      </div>
-
-      <div className="flex-1 overflow-y-auto">
-        <div className="space-y-2 p-3">
-          {questions?.map((question) => {
-            return (
-              <Button
-                key={question.id}
-                variant="list"
-                onClick={() => handleScroll(question.id)}
-              >
-                {question.content}
-              </Button>
-            );
-          })}
-        </div>
+      <div className="space-y-2 p-3">
+        {questions?.map((question) => {
+          return (
+            <Button
+              key={question.id}
+              variant="list"
+              onClick={() => handleScroll(question.id)}
+            >
+              {question.content}
+            </Button>
+          );
+        })}
       </div>
     </aside>
   );

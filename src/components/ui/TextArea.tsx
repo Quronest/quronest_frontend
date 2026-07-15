@@ -10,7 +10,7 @@ type TextareaProps = React.TextareaHTMLAttributes<HTMLTextAreaElement> & {
 
 export const TextArea = forwardRef<HTMLTextAreaElement, TextareaProps>(
   (
-    { minHeight = 64, maxHeight = 200, className, value, ...props },
+    { minHeight = 32, maxHeight = 200, className, value, ...props },
     forwardedRef,
   ) => {
     const ref = useRef<HTMLTextAreaElement>(null);

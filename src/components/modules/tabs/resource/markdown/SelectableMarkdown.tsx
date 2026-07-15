@@ -1,10 +1,7 @@
 import React, { createContext, useEffect, useState } from "react";
 import { MarkdownProps, MarkdownRenderer } from "../MarkdownRenderer";
-import { useTab } from "@/hooks/useTab";
-import { TextSelection, ResourceTabDataType } from "@/types/WorkspaceType";
-import { useAppSelector } from "@/store/store";
-import { selectHighlight } from "@/store/features/highlights/highlightSlice";
-import { SelectionToolBarProps } from "../SelectionToolBar";
+import { TextSelection } from "@/types/WorkspaceType";
+
 
 const SelectableMarkdownContext = createContext<{
   selection: TextSelection | null;
@@ -30,7 +27,6 @@ export const SelectableMarkdown = ({
 
   const handleMouseUp = () => {
     const selection = window.getSelection();
-    console.log("from mouse up",selection);
     if (!selection) return;
 
     const range = selection.getRangeAt(0);
@@ -86,7 +82,7 @@ export const SelectableMarkdown = ({
       },
 
       createAnchor: (referenceId) => ({
-        reference: referenceId,
+        referenceId: referenceId,
         blockOffset: {
           start: startOffset,
           end: endOffset,
@@ -99,7 +95,6 @@ export const SelectableMarkdown = ({
         selectedText: text,
       }),
     };
-    console.log("Selection Data from mouse up ",selectionData)
     setSelectionInfo(selectionData);
     onSelect?.(selectionData);
   };
@@ -119,7 +114,6 @@ export const SelectableMarkdown = ({
       document.removeEventListener("selectionchange", handleSelectionChange);
     };
   }, []);
-
   return (
     <SelectableMarkdownContext.Provider value={{ selection: selectionInfo }}>
       <div

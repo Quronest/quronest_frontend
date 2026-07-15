@@ -5,7 +5,7 @@ export type MessageRole = "user" | "assistant";
 export type MessageType = {
   id: string;
 
-  taskId: string;
+  discussionId: string;
 
   role: MessageRole;
 
@@ -21,10 +21,13 @@ export type DiscussionType = {
 
   title: string;
 
-  reference?: SelectionAnchor;
+  taskId: string;
+
+  // reference?: SelectionAnchor;
 
   messages: MessageType[];
 
   createdAt: string;
   updatedAt?: string;
 };
+

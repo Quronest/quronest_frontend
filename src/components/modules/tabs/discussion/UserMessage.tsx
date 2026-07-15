@@ -1,11 +1,17 @@
 import { MessageType } from "@/types/DiscussionType";
-import clsx from "clsx";
+import { SelectableMarkdown } from "../resource/markdown/SelectableMarkdown";
+import { useState } from "react";
+import { TextSelection } from "@/types/WorkspaceType";
+import { SelectionToolBar } from "../resource/SelectionToolBar";
 
 type Props = {
   message: MessageType;
 };
 
 export const UserMessage = ({ message }: Props) => {
+  const [selectionInfo, setSelectionInfo] = useState<TextSelection | null>(
+    null,
+  );
   return (
     <div
       className="flex justify-end"
@@ -21,14 +27,20 @@ export const UserMessage = ({ message }: Props) => {
           </div>
         )}
 
-        <div
+        {/* <div
           className={clsx(
             " bg-primary px-5 py-3 text-background",
             message.anchor?.selectedText ? "rounded-b-2xl" : "rounded-2xl",
           )}
         >
           {message.content}
-        </div>
+        </div> */}
+        <SelectableMarkdown
+          markdown={message.content}
+          referenceId={message.discussionId}
+          onSelect={setSelectionInfo}
+          selectionToolBar={<SelectionToolBar selection={selectionInfo} />}
+        />
       </div>
     </div>
   );

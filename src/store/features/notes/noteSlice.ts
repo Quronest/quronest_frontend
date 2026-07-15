@@ -30,8 +30,8 @@ const noteSlice = createSlice({
       note.updatedAt = new Date().toISOString();
     },
 
-    deleteNote: (state, action: PayloadAction<string>) => {
-      state.notes = state.notes.filter((note) => note.id !== action.payload);
+    deleteNote: (state, action: PayloadAction<{ id: string }>) => {
+      state.notes = state.notes.filter((note) => note.id !== action.payload.id);
     },
 
     updateNoteAnchor: (

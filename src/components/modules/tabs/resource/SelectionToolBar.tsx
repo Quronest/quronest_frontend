@@ -1,28 +1,5 @@
 import Button from "@/components/ui/Button";
-import { tabTypes } from "@/enums/TabEnums";
-import { useTab } from "@/hooks/useTab";
-import { useWorkspace } from "@/hooks/useWorkspace";
-import { addDiscussion } from "@/store/features/discussion/discussionSlice";
-import {
-  addHighlight,
-  selectHighlight,
-} from "@/store/features/highlights/highlightSlice";
-import { addNote } from "@/store/features/notes/noteSlice";
-import {
-  addToPane,
-  openSplitPane,
-  setActivePane,
-  switchTab,
-  updateTabData,
-} from "@/store/features/workspace/workspaceSlice";
-import { useAppDispatch, useAppSelector } from "@/store/store";
-import { DiscussionType, MessageRole } from "@/types/DiscussionType";
-import { NoteType } from "@/types/NoteType";
-import {
-  NoteTabDataType,
-  TextSelection,
-  ResourceTabDataType,
-} from "@/types/WorkspaceType";
+import { TextSelection } from "@/types/WorkspaceType";
 
 export type SelectionToolBarProps = {
   selection: TextSelection | null;
@@ -43,24 +20,36 @@ export const SelectionToolBar = ({
 
   return (
     <div
-      className="absolute z-50 bg-card border border-primary p-2 rounded-lg grid grid-cols-3 gap-2 text-sm -translate-x-1/2 "
+      className="fixed z-50 bg-card border border-primary p-2 rounded-lg flex items-center gap-2 text-sm -translate-x-1/2 "
       style={{
         left: Math.max(235, selection.position.x),
         top: selection.position.y - 50,
       }}
     >
       {onHighlight && (
-        <Button variant="list" onClick={() => onHighlight(selection)}>
+        <Button
+          variant="list"
+          onClick={() => onHighlight(selection)}
+          className="flex-1"
+        >
           Highlight
         </Button>
       )}
       {onAddNote && (
-        <Button variant="list" onClick={() => onAddNote(selection)}>
+        <Button
+          variant="list"
+          onClick={() => onAddNote(selection)}
+          className="flex-1 whitespace-nowrap"
+        >
           Add Note
         </Button>
       )}
       {onAskDoubt && (
-        <Button variant="list" className="" onClick={() => onAskDoubt(selection)}>
+        <Button
+          variant="list"
+          onClick={() => onAskDoubt(selection)}
+          className="flex-1 whitespace-nowrap"
+        >
           Ask Doubt
         </Button>
       )}

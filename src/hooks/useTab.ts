@@ -9,6 +9,7 @@ export const useTab = () => {
     throw new Error("useTab must be used within TabContext.Provider");
 
   const { tabData: tab, containerRef: tabRef } = tabContext;
+  const taskId = tab.taskId;
   let tabData = tab.data;
   switch (tab.type) {
     case tabTypes.RESOURCE: {
@@ -22,6 +23,7 @@ export const useTab = () => {
   return {
     tabRef,
     tab,
+    taskId,
     tabData,
   };
 };

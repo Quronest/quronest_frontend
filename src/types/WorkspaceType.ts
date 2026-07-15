@@ -22,6 +22,7 @@ export type TabType = ValueOf<typeof tabTypes>;
 
 export type TabData<T> = {
   id: string;
+  taskId: string;
   label: string;
 
   type: TabType;
@@ -30,7 +31,7 @@ export type TabData<T> = {
 };
 
 export type ResourceTabDataType = {
-  resourceId: string;
+  // resourceId: string;
   markdown: string;
 };
 
@@ -47,7 +48,7 @@ export type DiscussTabType = TabData<DiscussTabDataType> & {
 };
 
 export type NoteTabDataType = {
-  resourceId: string;
+  // resourceId: string;
 
   activeNoteId: string | null;
 
@@ -55,13 +56,13 @@ export type NoteTabDataType = {
 };
 
 export type DiscussTabDataType = {
-  resourceId: string;
+  // resourceId: string;
   activeDiscussionId: string;
   draftMessage?: MessageType;
 };
 
 export type SelectionAnchor = {
-  reference: string;
+  referenceId: string;
   blockOffset: {
     start: number;
     end: number;

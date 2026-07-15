@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
 
 export const breakpoints = {
   sm: 640,
@@ -10,11 +10,25 @@ export const breakpoints = {
 export type Breakpoint = "base" | keyof typeof breakpoints;
 
 type ResponsiveContainerProps = {
-  children: (info: {
-    width: number;
-    breakpoint: Breakpoint;
-  }) => React.ReactNode;
+  children: React.ReactNode;
   className?: string;
+};
+type ResponsiveContainerContextType = {
+  width: number;
+  breakpoint: Breakpoint;
+};
+const ResponsiveContainerContext = createContext<
+  ResponsiveContainerContextType | undefined
+>(undefined);
+
+export const useResponsiveContainer = () => {
+  const data = useContext(ResponsiveContainerContext);
+  if (!data) {
+    throw new Error(
+      "useResponsiveContainer must be used inside ResponsiveContainer",
+    );
+  }
+  return data;
 };
 
 export const ResponsiveContainer = ({
@@ -48,8 +62,10 @@ export const ResponsiveContainer = ({
             : "base";
 
   return (
-    <div ref={ref} className={className}>
-      {children({ width, breakpoint })}
-    </div>
+    <ResponsiveContainerContext.Provider value={{ width, breakpoint }}>
+      <div ref={ref} className={className}>
+        {children}
+      </div>
+    </ResponsiveContainerContext.Provider>
   );
 };

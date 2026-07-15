@@ -1,5 +1,5 @@
 import { DocsRenderer } from "./DocsRenderer";
-import { TabContainer } from "../ui/TabContainer";
+import { TabContainer } from "../../../ui/TabContainer";
 import { extractHeadings } from "./contentTable/extractHeadings";
 import { TOC } from "./contentTable/TableOfContents";
 import { ResourceTabDataType } from "@/types/WorkspaceType";

@@ -7,20 +7,17 @@ import Button from "@/components/ui/Button";
 import { CornerDownRight, Plus, X } from "lucide-react";
 import { ScrollArea } from "@/components/ui/ScrollArea";
 import { TextArea } from "@/components/ui/TextArea";
-import { TabHeader } from "../ui/TabHeader";
-import { TabContainer } from "../ui/TabContainer";
+import { TabHeader } from "../../../ui/TabHeader";
+import { TabContainer } from "../../../ui/TabContainer";
 import { NoteTabDataType } from "@/types/WorkspaceType";
 import { useAppDispatch, useAppSelector } from "@/store/store";
 import { useTab } from "@/hooks/useTab";
 import { addNote } from "@/store/features/notes/noteSlice";
 
-const TEXTAREA_BASE_HEIGHT = 96;
-const TEXTAREA_MAX_HEIGHT = 128;
-
 export const NoteTab = () => {
   const dispatch = useAppDispatch();
   const { tabData, taskId } = useTab();
-  const { activeNoteId, draftNote } = tabData as NoteTabDataType;
+  const { draftNote } = tabData as NoteTabDataType;
 
   const notes = useAppSelector((state) =>
     state.note.notes.filter((note) => note?.taskId === taskId),

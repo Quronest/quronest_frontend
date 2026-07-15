@@ -174,6 +174,7 @@ const QuestionItemBars = ({
   questions: MessageType[];
   children: React.ReactNode;
 }) => {
+  if (questions.length < 3) return;
   return (
     <div className="space-y-1.5 h-fit w-fit absolute top-1/2 -translate-y-1/2 right-5 group">
       {questions.map((question) => {

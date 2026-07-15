@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { TabContainer } from "../ui/TabContainer";
+import { TabContainer } from "../../../ui/TabContainer";
 import { DiscussionSidebar } from "./DiscussionSideBar";
 import { Conversation } from "./Conversation";
 import { Menu } from "lucide-react";

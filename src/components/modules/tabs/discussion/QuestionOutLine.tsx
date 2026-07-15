@@ -18,6 +18,7 @@ export const QuestionOutline = ({
   questions,
   handleScroll,
 }: QuestionOutlineProps) => {
+  
   return (
     <aside
       className={clsx(

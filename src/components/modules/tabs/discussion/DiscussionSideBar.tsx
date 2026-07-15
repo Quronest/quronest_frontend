@@ -30,7 +30,10 @@ export const DiscussionSidebar = ({
   );
 
   const { width, breakpoint } = useResponsiveContainer();
-  const isMobile = breakpoint === "base" || breakpoint === "sm";
+
+  const isCompactView =
+    breakpoint === "base" || breakpoint === "md" || breakpoint === "sm";
+    
   const handleSwitchDiscussion = (discussionId: string) => {
     dispatch(setActiveDiscussion(discussionId));
     dispatch(
@@ -47,7 +50,7 @@ export const DiscussionSidebar = ({
         "flex flex-col ",
         "border-r border-card-hover bg-card ",
         "transition-all duration-300 h-full ",
-        isMobile ? "absolute top-0 z-2 " : "static",
+        isCompactView ? "absolute top-0 z-2 " : "static",
         collapsed ? "w-0 p-0 border-0!" : "w-72 ",
       )}
     >

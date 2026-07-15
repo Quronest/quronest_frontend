@@ -34,7 +34,9 @@ export default React.forwardRef<HTMLInputElement, InputProps>(
         <div
           className={clsx(
             "relative flex h-12 w-full items-center overflow-hidden rounded-xl border transition-all duration-200",
-            error ? "border-red-500" : "border-border",
+            error
+              ? "border-red-500"
+              : "border-border focus-within:border-primary",
             className,
           )}
         >

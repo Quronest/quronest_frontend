@@ -5,7 +5,6 @@ import { FormProvider, useForm } from "react-hook-form";
 import AvatarUpload from "./AvatarUpload";
 import BasicInformation from "./BasicInformation";
 import FooterActions from "./FooterActions";
-import ProfileHeader from "./ProfileHeader";
 import Skills from "./Skills";
 import SocialLinks from "./SocialLinks";
 
@@ -46,13 +45,8 @@ export default function EditProfile() {
 
   return (
     <FormProvider {...methods}>
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        className="w-full space-y-8 px-6 py-8 lg:px-10 xl:px-12"
-      >
-        <ProfileHeader />
-
-        <div className="space-y-8 max-w-5xl mx-auto">
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <div className="space-y-8 max-w-5xl mx-auto mt-6">
           <AvatarUpload />
 
           <BasicInformation />

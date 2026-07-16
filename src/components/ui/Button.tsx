@@ -15,7 +15,8 @@ interface ButtonProps extends React.ComponentProps<"button"> {
     | "list"
     | "icon"
     | "editIcon"
-    | "deleteIcon";
+    | "deleteIcon"
+    | "ghost";
   className?: string;
   id?: string;
   size?: "sm" | "md" | "lg";
@@ -40,6 +41,7 @@ const variants: Record<string, ClassValue> = {
   icon: `bg-card w-fit h-fit p-2! text-neutral active:translate-y-0.5! hover:bg-card-hover justify-center`,
   editIcon: `bg-card w-fit h-fit p-2! text-neutral active:translate-y-0.5! hover:bg-card-hover justify-center rounded-full! border border-primary/20 bg-background/60 text-primary!`,
   deleteIcon: `bg-card w-fit h-fit p-2! text-neutral active:translate-y-0.5! hover:bg-card-hover justify-center rounded-full! border border-red-400/15 bg-background/60 text-red-300!`,
+  ghost: "bg-transparent!",
 };
 
 const Button = ({

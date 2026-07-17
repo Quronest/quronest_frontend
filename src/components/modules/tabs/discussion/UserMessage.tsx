@@ -3,6 +3,7 @@ import { SelectableMarkdown } from "../resource/markdown/SelectableMarkdown";
 import { useState } from "react";
 import { TextSelection } from "@/types/WorkspaceType";
 import { SelectionToolBar } from "../resource/SelectionToolBar";
+import clsx from "clsx";
 
 type Props = {
   message: MessageType;
@@ -39,6 +40,10 @@ export const UserMessage = ({ message }: Props) => {
           markdown={message.content}
           referenceId={message.discussionId}
           onSelect={setSelectionInfo}
+          className={clsx(
+            "rounded-2xl bg-primary px-5 py-3 text-background",
+            message.anchor?.selectedText ? "rounded-b-2xl" : "rounded-2xl",
+          )}
           selectionToolBar={<SelectionToolBar selection={selectionInfo} />}
         />
       </div>

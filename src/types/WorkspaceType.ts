@@ -1,8 +1,8 @@
 import { tabTypes } from "@/enums/TabEnums";
 import { NoteType } from "./NoteType";
 import { ValueOf } from "next/dist/shared/lib/constants";
-import { mockMarkdown } from "@/mockData/mockMarkdown";
 import { MessageType } from "./DiscussionType";
+import { AnchorTypes } from "@/enums/AnchorEnums";
 
 export type Pane = {
   tabs: TabData<any>[];
@@ -33,6 +33,7 @@ export type TabData<T> = {
 export type ResourceTabDataType = {
   // resourceId: string;
   markdown: string;
+  anchors: SelectionAnchor[];
 };
 
 export type ResourceTabType = TabData<ResourceTabDataType> & {
@@ -63,6 +64,7 @@ export type DiscussTabDataType = {
 
 export type SelectionAnchor = {
   referenceId: string;
+  type: AnchorTypes;
   blockOffset: {
     start: number;
     end: number;
@@ -120,5 +122,5 @@ export type TextSelection = {
     end: number;
   };
 
-  createAnchor: (reference: string) => SelectionAnchor;
+  createAnchor: (reference: string, type: AnchorTypes) => SelectionAnchor;
 };

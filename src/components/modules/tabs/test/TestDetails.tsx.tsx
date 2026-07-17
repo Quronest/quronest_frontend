@@ -1,13 +1,9 @@
-import { Award, BookOpen, Clock3, Info, Layers3 } from "lucide-react";
+import { Award, BookOpen, Clock3, FileQuestionMark } from "lucide-react";
 import React from "react";
 
 export const TestDetails = () => {
   return (
     <div className="bg-card p-5 rounded-xl border border-border">
-      <div className="flex items-center gap-2 text-neutral mb-4 text-sm">
-        <Info />
-        <span>QUIZ DETAILS</span>
-      </div>
       {/* quiz details cards */}
       <div className="grid grid-cols-2 gap-5">
         {questionDetails.map((detail) => (
@@ -41,9 +37,9 @@ const questionDetails: QuestionInfoCardProps[] = [
     info: "70 / 100",
   },
   {
-    icon: <Layers3 className="h-5 w-5" />,
-    label: "Question Types",
-    info: "MCQ • MSQ • T/F",
+    icon: <FileQuestionMark className="h-5 w-5" />,
+    label: "Difficulty Level",
+    info: "Easy",
   },
 ];
 

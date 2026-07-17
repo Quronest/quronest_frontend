@@ -58,7 +58,6 @@ export const TestDetailedResult = ({
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-border pb-4">
         <div className="space-y-1">
           <h1 className="text-3xl font-bold flex items-center gap-2">
-            <Sparkles className="h-7 w-7 text-primary" />
             Quiz Results
           </h1>
           <p className="text-neutral text-sm">
@@ -74,15 +73,6 @@ export const TestDetailedResult = ({
           >
             <RotateCcw className="h-4 w-4" />
             Retake Quiz
-          </Button>
-          <Button
-            variant="primary"
-            size="md"
-            onClick={onExit}
-            className="rounded-lg gap-2 text-sm font-semibold cursor-pointer"
-          >
-            <ArrowLeft className="h-4 w-4" />
-            Exit Room
           </Button>
         </div>
       </div>

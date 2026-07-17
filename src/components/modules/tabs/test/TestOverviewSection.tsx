@@ -19,7 +19,7 @@ const topicsCovered = [
 
 export const TestOverviewSection = ({ onStart }: { onStart?: () => void }) => {
   return (
-    <div className="w-full max-w-7xl mx-auto space-y-4">
+    <div className="w-full max-w-7xl mx-auto space-y-4 mt-8">
       <TestOverviewHeader
         level="easy"
         title="TypeScript Advanced Patterns"

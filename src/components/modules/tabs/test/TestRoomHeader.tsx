@@ -29,7 +29,7 @@ export const TestRoomHeader = ({
   const isTimeLow = timeRemaining < 300; // Warning under 5 minutes
 
   return (
-    <div className="flex items-center justify-between border-b border-border pb-4 w-full select-none">
+    <div className="sticky top-0 bg-background flex items-center justify-between border-b border-border pb-4 px-6 w-full select-none">
       {/* Left section: Title & Progress */}
       <div className="flex items-center gap-4">
         <div className="flex items-center gap-2 text-foreground font-semibold text-lg">
@@ -38,7 +38,7 @@ export const TestRoomHeader = ({
         </div>
 
         {/* Vertical divider */}
-        <div className="h-4 w-[1px] bg-border hidden sm:block" />
+        <div className="h-4 w-px bg-border hidden sm:block" />
 
         {/* Progress bar */}
         <div className="hidden md:flex items-center gap-3">
@@ -56,7 +56,7 @@ export const TestRoomHeader = ({
       </div>
 
       {/* Right section: Timer & Submit Button */}
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-4 pt-4">
         {/* Timer Box */}
         <div
           className={clsx(

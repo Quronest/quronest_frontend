@@ -9,7 +9,7 @@ export const TestTab = () => {
   const [isPlaying, setIsPlaying] = useState(false);
 
   return (
-    <TabContainer className="">
+    <TabContainer className="pt-0!">
       {isPlaying ? (
         <TestRoom onExit={() => setIsPlaying(false)} />
       ) : (

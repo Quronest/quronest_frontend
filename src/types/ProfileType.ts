@@ -1,16 +1,51 @@
 import type { SocialLinkType } from "./SocialLinkType.enum";
 
-export type SocialLink = {
+export interface SocialLink {
   type: SocialLinkType;
-  link: string;
   title: string;
-};
+  link: string;
+}
 
-export interface UserStats {
-  group: string;
-  level: number;
-  streak: number;
-  techStack: string;
+export interface CurrentSummary {
+  group: string | null;
+  phase: number | null;
+  summary: string | null;
+}
+
+export interface PersonalData {
+  description: string | null;
+  experience: string | null;
+  primary_goal: string | null;
+  interested_domains: string[];
+  skills: string[];
+}
+
+export interface AcademicData {
+  institute_name: string | null;
+  course: string | null;
+  grade: string | null;
+  description: string | null;
+}
+
+export interface OtherData {
+  about: string | null;
+  social_links: SocialLink[];
+}
+
+export interface ProfileResponse {
+  id: string;
+  fullname: string;
+  username: string;
+  email: string;
+  email_verified: boolean;
+  phone: string | null;
+  phone_verified: boolean;
+  avatar: string | null;
+
+  academic_data: AcademicData;
+  personal_data: PersonalData;
+  other_data: OtherData;
+  current_summary: CurrentSummary;
 }
 
 export interface Contribution {
@@ -30,26 +65,4 @@ export interface ActivityTimelineItem {
   tags: string[];
   status: ActivityStatus;
   icon: ActivityIcon;
-}
-
-export interface UserProfile {
-  id: string;
-
-  name: string;
-  username: string;
-  email: string;
-  avatar: string | null;
-
-  location: string;
-  joinedAt: string;
-
-  skills: string[];
-
-  social: SocialLink[];
-
-  stats: UserStats;
-
-  contributions: Contribution[];
-
-  activityTimeline: ActivityTimelineItem[];
 }

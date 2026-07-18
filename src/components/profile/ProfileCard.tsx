@@ -1,58 +1,40 @@
 "use client";
 
-import { useMemo } from "react";
-import {
-  Calendar,
-  Github,
-  Globe,
-  Linkedin,
-  Mail,
-  MapPin,
-  Pencil,
-} from "lucide-react";
+import { Calendar, Mail, MapPin, Pencil } from "lucide-react";
 
 import Button from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Tag } from "@/components/ui/Tag";
 
-import type { UserProfile } from "@/types/ProfileType";
+import type { ProfileResponse } from "@/types/ProfileType";
+
 import Avatar from "../ui/Avatar";
 import ProfileSocialLink from "./ProfileSocialLink";
 
 interface ProfileCardProps {
-  profile: UserProfile;
+  profile: ProfileResponse;
 }
 
 const ProfileCard = ({ profile }: ProfileCardProps) => {
-  const initials = useMemo(() => {
-    return profile.name
-      .split(" ")
-      .map((word) => word[0])
-      .join("")
-      .slice(0, 2)
-      .toUpperCase();
-  }, [profile.name]);
-
   return (
     <Card
       hoverEffect="none"
       border="transparent"
-      className="w-full border border-border p-6 space-y-7"
+      className="w-full space-y-7 border border-border p-6"
     >
       {/* Avatar */}
-
       <div className="flex flex-col items-center text-center">
         <Avatar
           src={profile.avatar}
-          alt={profile.name}
-          name={profile.name}
+          alt={profile.fullname}
+          name={profile.fullname}
           size="xl"
         />
 
         <div className="mt-5 flex w-full flex-col items-center">
-          <h2 className="text-2xl font-bold">{profile.name}</h2>
+          <h2 className="text-2xl font-bold">{profile.fullname}</h2>
 
-          <p className="mt-1 text-sm text-neutral">{profile.username}</p>
+          <p className="mt-1 text-sm text-neutral">@{profile.username}</p>
 
           <Button
             variant="primary"
@@ -65,7 +47,6 @@ const ProfileCard = ({ profile }: ProfileCardProps) => {
       </div>
 
       {/* Personal Information */}
-
       <div className="space-y-5">
         <div className="flex items-start gap-3">
           <Mail size={18} className="mt-1 text-primary" />
@@ -81,9 +62,11 @@ const ProfileCard = ({ profile }: ProfileCardProps) => {
           <MapPin size={18} className="mt-1 text-primary" />
 
           <div>
-            <p className="text-xs text-neutral">Location</p>
+            <p className="text-xs text-neutral">About</p>
 
-            <p className="text-sm">{profile.location}</p>
+            <p className="text-sm">
+              {profile.personal_data.description ?? "Not provided"}
+            </p>
           </div>
         </div>
 
@@ -93,30 +76,28 @@ const ProfileCard = ({ profile }: ProfileCardProps) => {
           <div>
             <p className="text-xs text-neutral">Joined</p>
 
-            <p className="text-sm">{profile.joinedAt}</p>
+            <p className="text-sm">-</p>
           </div>
         </div>
       </div>
 
       {/* Skills */}
-
       <div>
         <h3 className="mb-3 font-semibold">Skills</h3>
 
         <div className="flex flex-wrap gap-2">
-          {profile.skills.map((skill) => (
+          {profile.personal_data.skills.map((skill) => (
             <Tag key={skill} label={skill} />
           ))}
         </div>
       </div>
 
       {/* Social Links */}
-
       <div>
         <h3 className="mb-3 font-semibold">Social Links</h3>
 
         <div className="flex items-center justify-center gap-3">
-          {profile.social.map((socialLink) => (
+          {profile.other_data.social_links.map((socialLink) => (
             <ProfileSocialLink key={socialLink.type} socialLink={socialLink} />
           ))}
         </div>

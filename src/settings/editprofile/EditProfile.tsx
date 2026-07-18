@@ -22,7 +22,6 @@ export default function EditProfile() {
       avatar: "",
       fullName: "",
       username: "",
-      email: "",
       bio: "",
       location: "",
       socials: {
@@ -34,10 +33,7 @@ export default function EditProfile() {
     },
   });
 
-  const onSubmit = (data: EditProfileSchemaType) => {
-    console.log("Form Submitted");
-    console.log(data);
-  };
+  const onSubmit = (data: EditProfileSchemaType) => {};
 
   return (
     <FormProvider {...methods}>

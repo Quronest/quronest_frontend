@@ -10,27 +10,16 @@ export const editProfileSchema = z.object({
     .trim()
     .min(3, "Username must be at least 3 characters long"),
 
-  email: z
-    .string()
-    .min(1, "Email is required")
-    .email("Please enter a valid email address"),
-
   bio: z.string().max(200, "Bio cannot exceed 200 characters"),
 
   location: z.string().trim(),
 
   socials: z.object({
-    github: z.string().url("Please enter a valid GitHub URL").or(z.literal("")),
+    github: z.url("Please enter a valid GitHub URL").or(z.literal("")),
 
-    linkedin: z
-      .string()
-      .url("Please enter a valid LinkedIn URL")
-      .or(z.literal("")),
+    linkedin: z.url("Please enter a valid LinkedIn URL").or(z.literal("")),
 
-    website: z
-      .string()
-      .url("Please enter a valid website URL")
-      .or(z.literal("")),
+    website: z.url("Please enter a valid website URL").or(z.literal("")),
   }),
 
   skills: z.array(z.string()),

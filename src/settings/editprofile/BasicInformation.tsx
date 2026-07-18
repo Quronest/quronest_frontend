@@ -59,39 +59,6 @@ export default function BasicInformation() {
         </div>
 
         <div className="space-y-2">
-          <Label variant="secondary">Email Address</Label>
-
-          <div className="flex items-start gap-3">
-            <Input
-              type="email"
-              placeholder="john@example.com"
-              error={errors.email?.message}
-              {...register("email")}
-            />
-
-            {isEmailVerified ? (
-              <Button
-                type="button"
-                size="md"
-                disabled
-                className="h-12 rounded-xl bg-emerald-500/15 px-5 text-emerald-400"
-              >
-                Verified
-              </Button>
-            ) : (
-              <Button
-                type="button"
-                size="md"
-                className="h-12 whitespace-nowrap rounded-xl"
-                onClick={handleVerifyEmail}
-              >
-                Verify
-              </Button>
-            )}
-          </div>
-        </div>
-
-        <div className="space-y-2">
           <div className="flex items-center justify-between">
             <Label variant="secondary">Bio</Label>
 

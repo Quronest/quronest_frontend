@@ -5,17 +5,17 @@ import { Award, Flame, Users } from "lucide-react";
 
 import { Card } from "@/components/ui/Card";
 
-import type { UserStats } from "@/types/ProfileType";
+import type { CurrentSummary } from "@/types/ProfileType";
 
 interface StatsSectionProps {
-  stats: UserStats;
+  currentSummary: CurrentSummary;
 }
 
-const StatsSection = ({ stats }: StatsSectionProps) => {
+const StatsSection = ({ currentSummary }: StatsSectionProps) => {
   const statCards = [
     {
       title: "Group",
-      value: stats.group,
+      value: currentSummary.group ?? "-",
       subtitle: "Elite Cohort",
       icon: Users,
       color: "text-cyan-400",
@@ -23,7 +23,7 @@ const StatsSection = ({ stats }: StatsSectionProps) => {
     },
     {
       title: "Phase",
-      value: stats.level,
+      value: currentSummary.phase ?? "-",
       subtitle: "Current Progress",
       icon: Award,
       color: "text-amber-400",
@@ -31,7 +31,7 @@ const StatsSection = ({ stats }: StatsSectionProps) => {
     },
     {
       title: "Current Streak",
-      value: stats.streak,
+      value: "-",
       subtitle: "Days",
       icon: Flame,
       color: "text-orange-400",
@@ -63,8 +63,7 @@ const StatsSection = ({ stats }: StatsSectionProps) => {
 
               <div
                 className={clsx(
-                  "h-16 w-16 shrink-0 rounded-2xl",
-                  "flex items-center justify-center",
+                  "flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl",
                   "transition-transform duration-300 group-hover:scale-105",
                   item.bg,
                 )}

@@ -33,7 +33,7 @@ const ProfileSocialLink = ({ socialLink }: ProfileSocialLinkProps) => {
           "flex h-11 w-11 items-center justify-center",
           "rounded-full border border-border",
           "bg-background/40 transition-all duration-300",
-          "hover:bg-card-hover"
+          "hover:bg-card-hover",
         )}
       >
         <Icon
@@ -41,7 +41,7 @@ const ProfileSocialLink = ({ socialLink }: ProfileSocialLinkProps) => {
           className={clsx(
             "text-neutral",
             "transition-colors",
-            "hover:text-primary"
+            "hover:text-primary",
           )}
         />
       </div>

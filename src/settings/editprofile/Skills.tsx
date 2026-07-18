@@ -9,10 +9,10 @@ import { Card } from "@/components/ui/Card";
 import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
 
-import type { EditProfileForm } from "@/types/EditProfiletypes";
+import type { EditProfileSchemaType } from "@/schemas/editProfileSchema";
 
 export default function Skills() {
-  const { control, setValue } = useFormContext<EditProfileForm>();
+  const { control, setValue } = useFormContext<EditProfileSchemaType>();
 
   const skills = useWatch({
     control,

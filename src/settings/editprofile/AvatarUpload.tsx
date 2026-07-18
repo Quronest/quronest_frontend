@@ -8,12 +8,12 @@ import { clsx } from "clsx";
 import Avatar from "@/components/ui/Avatar";
 import AvatarCropModal from "./AvatarCropModal";
 
-import type { EditProfileForm } from "@/types/EditProfiletypes";
+import type { EditProfileSchemaType } from "@/schemas/editProfileSchema";
 
 export default function AvatarUpload() {
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const { watch, setValue } = useFormContext<EditProfileForm>();
+  const { watch, setValue } = useFormContext<EditProfileSchemaType>();
 
   const avatar = watch("avatar");
   const fullName = watch("fullName");

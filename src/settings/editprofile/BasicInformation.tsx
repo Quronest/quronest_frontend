@@ -1,6 +1,6 @@
 "use client";
 
-import { useFormContext } from "react-hook-form";
+import { useFormContext, useFormState } from "react-hook-form";
 
 import { Card } from "@/components/ui/Card";
 import Button from "@/components/ui/Button";
@@ -8,10 +8,14 @@ import Input from "@/components/ui/Input";
 import Label from "@/components/ui/Label";
 import { TextArea } from "@/components/ui/TextArea";
 
-import type { EditProfileForm } from "@/types/EditProfiletypes";
+import type { EditProfileSchemaType } from "@/schemas/editProfileSchema";
 
 export default function BasicInformation() {
-  const { register, watch } = useFormContext<EditProfileForm>();
+  const { register, watch, control } = useFormContext<EditProfileSchemaType>();
+
+  const { errors } = useFormState({
+    control,
+  });
 
   const bio = watch("bio") ?? "";
 
@@ -36,13 +40,21 @@ export default function BasicInformation() {
           <div className="space-y-2">
             <Label variant="secondary">Full Name</Label>
 
-            <Input placeholder="John Doe" {...register("fullName")} />
+            <Input
+              placeholder="John Doe"
+              error={errors.fullName?.message}
+              {...register("fullName")}
+            />
           </div>
 
           <div className="space-y-2">
             <Label variant="secondary">Username</Label>
 
-            <Input placeholder="john_doe" {...register("username")} />
+            <Input
+              placeholder="john_doe"
+              error={errors.username?.message}
+              {...register("username")}
+            />
           </div>
         </div>
 
@@ -53,6 +65,7 @@ export default function BasicInformation() {
             <Input
               type="email"
               placeholder="john@example.com"
+              error={errors.email?.message}
               {...register("email")}
             />
 
@@ -98,7 +111,11 @@ export default function BasicInformation() {
         <div className="max-w-md space-y-2">
           <Label variant="secondary">Location</Label>
 
-          <Input placeholder="City, Country" {...register("location")} />
+          <Input
+            placeholder="City, Country"
+            error={errors.location?.message}
+            {...register("location")}
+          />
         </div>
       </div>
     </Card>

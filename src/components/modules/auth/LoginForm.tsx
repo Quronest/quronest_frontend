@@ -10,10 +10,8 @@ import { useAuth } from "@/hooks/useAuth";
 import { FieldValues, useForm } from "react-hook-form";
 import Input from "@/components/ui/Input";
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  loginSchema,
-  LoginFormSchemaType,
-} from "@/schemas/LoginFormSchema";
+import { loginSchema, LoginFormSchemaType } from "@/schemas/LoginFormSchema";
+import { GoogleIcon } from "@/components/icons/GoogleIcon";
 
 function LoginForm() {
   const { login, isLoggingIn } = useAuth();
@@ -99,11 +97,12 @@ function LoginForm() {
       <div className="flex gap-3">
         {/* Google */}
         <Button
+          type="button"
           variant="outline"
           className="w-full flex items-center justify-center gap-2"
-          disabled={isLoggingIn}
         >
-          Log In
+          <GoogleIcon />
+          <span className="text-md font-semibold">Google</span>
         </Button>
 
         {/* GitHub */}

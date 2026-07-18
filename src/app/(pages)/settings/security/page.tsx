@@ -1,6 +1,6 @@
 import ScrollablePageContainer from "@/components/ui/ScrollablePageContainer";
-import ContextSettings from "@/settings/context/ContextSettings";
+import SecuritySettings from "@/settings/security/SecuritySettings";
 
 export default function ContextSettingsPage() {
-  return <ContextSettings />;
+  return <SecuritySettings />;
 }

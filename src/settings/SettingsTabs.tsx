@@ -10,8 +10,8 @@ const settingsTabs: TabItem[] = [
     href: "/settings/profile",
   },
   {
-    label: "Context",
-    href: "/settings/context",
+    label: "Security",
+    href: "/settings/security",
   },
 ];
 

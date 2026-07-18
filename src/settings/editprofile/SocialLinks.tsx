@@ -1,15 +1,19 @@
 "use client";
 
 import { Globe, Github, Linkedin } from "lucide-react";
-import { useFormContext } from "react-hook-form";
+import { useFormContext, useFormState } from "react-hook-form";
 
 import { Card } from "@/components/ui/Card";
 import Input from "@/components/ui/Input";
 
-import type { EditProfileForm } from "@/types/EditProfiletypes";
+import type { EditProfileSchemaType } from "@/schemas/editProfileSchema";
 
 export default function SocialLinks() {
-  const { register } = useFormContext<EditProfileForm>();
+  const { register, control } = useFormContext<EditProfileSchemaType>();
+
+  const { errors } = useFormState({
+    control,
+  });
 
   return (
     <Card className="rounded-3xl bg-card p-8 shadow-xl">
@@ -32,6 +36,7 @@ export default function SocialLinks() {
             <Input
               className="bg-transparent shadow-none"
               placeholder="https://github.com/username"
+              error={errors.socials?.github?.message}
               {...register("socials.github")}
             />
           </div>
@@ -46,6 +51,7 @@ export default function SocialLinks() {
             <Input
               className="bg-transparent shadow-none"
               placeholder="https://linkedin.com/in/username"
+              error={errors.socials?.linkedin?.message}
               {...register("socials.linkedin")}
             />
           </div>
@@ -60,6 +66,7 @@ export default function SocialLinks() {
             <Input
               className="bg-transparent shadow-none"
               placeholder="https://yourportfolio.com"
+              error={errors.socials?.website?.message}
               {...register("socials.website")}
             />
           </div>

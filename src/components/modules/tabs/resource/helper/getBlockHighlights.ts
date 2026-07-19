@@ -7,7 +7,7 @@ export const getBlockHighlights = (
 ) => {
   return highlights.filter(
     (highlight) =>
-      highlight.anchor.block.startOffset === startOffset &&
-      highlight.anchor.block.endOffset === endOffset,
+      highlight.anchor.blockOffset.start === startOffset &&
+      highlight.anchor.blockOffset.end === endOffset,
   );
 };

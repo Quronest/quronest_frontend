@@ -13,6 +13,7 @@ export const useWorkspace = () => {
     left: leftPane?.activeTabId,
     right: rightPane?.activeTabId,
   };
+  const activePane = panes[activePaneId];
 
   const activeFocusedTab = panes[activePaneId]?.tabs.find(
     (tab) => tab.id === activeTabId[activePaneId],
@@ -20,6 +21,7 @@ export const useWorkspace = () => {
 
   return {
     panes,
+    activePane,
     activePaneId,
     isSplitView,
     isSidebarCollapsed,

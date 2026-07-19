@@ -25,8 +25,8 @@ export default function ForgotPasswordForm() {
   });
 
   const onSubmit = async (data: ForgotPasswordFormDataSchemaType) => {
-    console.log(data);
     setSent(true);
+    console.log(data);
   };
 
   if (sent) {

@@ -5,7 +5,7 @@ export const renderHighlightedText = (
   blockHighlights: HighlightText[],
 ) => {
   const sortedHighlights = [...blockHighlights].sort(
-    (a, b) => a.anchor.selection.startOffset - b.anchor.selection.startOffset,
+    (a, b) => a.anchor.selectionOffset.start - b.anchor.selectionOffset.start,
   );
 
   const parts: React.ReactNode[] = [];
@@ -13,8 +13,8 @@ export const renderHighlightedText = (
   let current = 0;
 
   sortedHighlights.forEach((highlight) => {
-    const start = highlight.anchor.selection.startOffset;
-    const end = highlight.anchor.selection.endOffset;
+    const start = highlight.anchor.selectionOffset.start;
+    const end = highlight.anchor.selectionOffset.end;
 
     if (start > current) {
       parts.push(text.slice(current, start));

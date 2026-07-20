@@ -43,6 +43,7 @@ export const TextArea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
         value={value}
         className={clsx(
           "w-full resize-none bg-transparent outline-none p-2 px-4 rounded-xl text-md",
+          " border border-border focus-within:border-primary",
           className,
         )}
         {...props}

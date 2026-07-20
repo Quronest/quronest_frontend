@@ -115,7 +115,6 @@ const GeneralSettings = () => {
                   maxLength={300}
                   minHeight={120}
                   maxHeight={220}
-                  className="border border-border bg-transparent shadow-none focus:ring-0"
                   {...register("academicDescription")}
                 />
               </div>
@@ -188,7 +187,6 @@ const GeneralSettings = () => {
                   maxLength={300}
                   minHeight={120}
                   maxHeight={220}
-                  className="border border-border bg-transparent shadow-none focus:ring-0"
                   {...register("personalDescription")}
                 />
               </div>

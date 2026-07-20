@@ -19,12 +19,6 @@ export default function BasicInformation() {
 
   const bio = watch("bio") ?? "";
 
-  const isEmailVerified = false;
-
-  const handleVerifyEmail = () => {
-    console.log("Verify Email");
-  };
-
   return (
     <Card className="rounded-3xl bg-card p-8 shadow-xl">
       <div className="space-y-8">
@@ -70,7 +64,6 @@ export default function BasicInformation() {
             minHeight={140}
             maxHeight={240}
             maxLength={200}
-            className="border border-border bg-transparent shadow-none focus:ring-0"
             {...register("bio")}
           />
         </div>

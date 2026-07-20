@@ -43,21 +43,17 @@ export async function getCroppedImage(
   );
 
   return new Promise((resolve, reject) => {
-    canvas.toBlob(
-      (blob) => {
-        if (!blob) {
-          reject(new Error("Failed to crop image"));
-          return;
-        }
+    canvas.toBlob((blob) => {
+      if (!blob) {
+        reject(new Error("Failed to crop image"));
+        return;
+      }
 
-        const file = new File([blob], "avatar.jpg", {
-          type: "image/jpeg",
-        });
+      const file = new File([blob], "avatar.png", {
+        type: "image/png",
+      });
 
-        resolve(file);
-      },
-      "image/jpeg",
-      0.95,
-    );
+      resolve(file);
+    }, "image/png");
   });
 }

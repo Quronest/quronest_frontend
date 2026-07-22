@@ -1,11 +1,5 @@
-import React from 'react'
+import { redirect } from "next/navigation";
 
-const SettingsPage = () => {
-  return (
-    <div>
-      Welcome to settings page
-    </div>
-  )
+export default function SettingsPage() {
+  redirect("/settings/general");
 }
-
-export default SettingsPage

@@ -27,9 +27,9 @@ interface ButtonProps extends React.ComponentProps<"button"> {
 }
 
 const sizes: Record<string, ClassValue> = {
-  sm: "px-4 py-2 ",
-  md: "px-8 py-4 ",
-  lg: "px-10 py-6 ",
+  sm: "px-2 py-1 ",
+  md: "px-4 py-2 ",
+  lg: "px-6 py-3 ",
 };
 
 const variants: Record<string, ClassValue> = {

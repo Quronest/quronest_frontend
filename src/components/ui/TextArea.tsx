@@ -8,27 +8,14 @@ type TextareaProps = React.TextareaHTMLAttributes<HTMLTextAreaElement> & {
   maxHeight?: number;
 };
 
-export const TextArea = forwardRef<HTMLTextAreaElement, TextareaProps>(
-  (
-    { minHeight = 32, maxHeight = 200, className, value, ...props },
-    forwardedRef,
-  ) => {
-    const ref = useRef<HTMLTextAreaElement>(null);
-    const setRefs = (node: HTMLTextAreaElement | null) => {
-      ref.current = node;
-
-      if (typeof forwardedRef === "function") {
-        forwardedRef(node);
-      } else if (forwardedRef) {
-        forwardedRef.current = node;
-      }
-    };
+export const TextArea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
+  ({ minHeight = 64, maxHeight = 200, className, value, ...props }, ref) => {
+    const innerRef = useRef<HTMLTextAreaElement>(null);
 
     useEffect(() => {
-      const el = ref.current;
+      const el = innerRef.current;
       if (!el) return;
 
-      // reset height to recalculate
       el.style.height = `${minHeight}px`;
 
       const scrollHeight = el.scrollHeight;
@@ -44,10 +31,19 @@ export const TextArea = forwardRef<HTMLTextAreaElement, TextareaProps>(
 
     return (
       <textarea
-        ref={setRefs}
+        ref={(node) => {
+          innerRef.current = node;
+
+          if (typeof ref === "function") {
+            ref(node);
+          } else if (ref) {
+            ref.current = node;
+          }
+        }}
         value={value}
         className={clsx(
           "w-full resize-none bg-transparent outline-none p-2 px-4 rounded-xl text-md",
+          " border border-border focus-within:border-primary",
           className,
         )}
         {...props}

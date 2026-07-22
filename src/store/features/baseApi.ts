@@ -4,7 +4,7 @@ import {
   BaseQueryFn,
 } from "@reduxjs/toolkit/query/react";
 
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
+const BASE_URL = process.env.NEXT_PUBLIC_API_URI;
 
 const rawBaseQuery = fetchBaseQuery({
   baseUrl: BASE_URL + "/backend/api/v1",

@@ -1,11 +1,10 @@
-import React from 'react'
+import ProfilePage from "@/components/profile/ProfilePage";
+import ScrollablePageContainer from "@/components/ui/ScrollablePageContainer";
 
-const ProfilePage = () => {
+export default function Page() {
   return (
-    <div>
-      Welcome to Profile page
-    </div>
-  )
+    <ScrollablePageContainer>
+      <ProfilePage />
+    </ScrollablePageContainer>
+  );
 }
-
-export default ProfilePage

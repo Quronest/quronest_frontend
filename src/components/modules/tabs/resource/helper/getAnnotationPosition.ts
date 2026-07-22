@@ -10,9 +10,10 @@ export function getAnnotationPosition(
   if (!range) return null;
 
   const rect = range.getBoundingClientRect();
+  const rootRect = root.getBoundingClientRect();
 
   return {
-    x: rect.right,
-    y: rect.top + rect.height / 2,
+    x: rect.right - rootRect.left,
+    y: rect.top - rootRect.top,
   };
 }

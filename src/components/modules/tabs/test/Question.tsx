@@ -35,8 +35,13 @@ export const Question = ({
       </div>
 
       {/* Question Body */}
-      <div className="prose prose-invert max-w-none text-lg leading-relaxed text-foreground/90">
-        <MarkdownRenderer markdown={question.question} />
+      <div
+        className={clsx(
+          "prose prose-invert w-full prose-pre:bg-transparent prose-pre:p-0 prose-pre:m-0",
+          " max-w-none text-lg leading-relaxed text-foreground/90",
+        )}
+      >
+        <MarkdownRenderer markdown={question.question} showCopyButton={false} />
       </div>
 
       {/* Options Stack */}

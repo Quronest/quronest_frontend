@@ -9,8 +9,8 @@ type Props = {
 };
 
 const iconMap: any = {
-  [AnchorTypes.DOUBT]: <CircleHelp />,
-  [AnchorTypes.NOTE]: <MessageSquare />,
+  [AnchorTypes.DOUBT]: <CircleHelp size={10}/>,
+  [AnchorTypes.NOTE]: <MessageSquare size={10}/>,
 };
 
 export default function AnnotationIcon({ type, x, y, onClick }: Props) {
@@ -20,7 +20,7 @@ export default function AnnotationIcon({ type, x, y, onClick }: Props) {
     <button
       className="absolute z-40 rounded-full bg-card border border-card-hover p-1 shadow hover:bg-card-hover transition"
       style={{
-        left: x ,
+        left: x,
         top: y,
         transform: "translateY(-50%)",
       }}

@@ -1,4 +1,5 @@
 import { DiscussionType } from "@/types/DiscussionType";
+import { AnchorTypes } from "@/enums/AnchorEnums";
 
 export const mockDiscussion: DiscussionType = {
   id: "discussion-1",
@@ -13,6 +14,7 @@ export const mockDiscussion: DiscussionType = {
       content: "Why does React use a Virtual DOM?",
       createdAt: "2026-06-28T10:00:00.000Z",
       anchor: {
+        type: AnchorTypes.DOUBT,
         referenceId: "react-basics",
         blockOffset: {
           start: 0,

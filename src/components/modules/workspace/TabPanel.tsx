@@ -6,6 +6,7 @@ import { ScrollArea } from "@/components/ui/ScrollArea";
 import { mockMarkdown } from "../../../mockData/mockMarkdown";
 import { tabTypes } from "@/enums/TabEnums";
 import DiscussTab from "../tabs/discussion/DiscussTab";
+import { TestTab } from "../tabs/test/TestTab";
 
 type TabPanelType = {
   tab: TabData<any>;
@@ -25,6 +26,10 @@ export const TabPanel = forwardRef<HTMLDivElement, TabPanelType>(
 
       case tabTypes.DISCUSS:
         content = <DiscussTab />;
+        break;
+
+      case tabTypes.TEST:
+        content = <TestTab />;
         break;
 
       default:

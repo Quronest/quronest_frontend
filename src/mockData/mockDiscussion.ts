@@ -1,42 +1,37 @@
 import { DiscussionType } from "@/types/DiscussionType";
+import { AnchorTypes } from "@/enums/AnchorEnums";
 
 export const mockDiscussion: DiscussionType = {
   id: "discussion-1",
-
   title: "Understanding the Virtual DOM",
-
-  resourceId: "react-basics",
-
+  taskId: "react-basics",
+  createdAt: "2026-06-28T10:00:00.000Z",
   messages: [
     {
       id: "message-1",
+      discussionId: "discussion-1",
       role: "user",
       content: "Why does React use a Virtual DOM?",
-
       createdAt: "2026-06-28T10:00:00.000Z",
-
       anchor: {
-        resourceId: "react-basics",
-
-        block: {
-          startOffset: 0,
-          endOffset: 120,
+        type: AnchorTypes.DOUBT,
+        referenceId: "react-basics",
+        blockOffset: {
+          start: 0,
+          end: 120,
         },
-
-        selection: {
-          startOffset: 18,
-          endOffset: 29,
+        selectionOffset: {
+          start: 18,
+          end: 29,
         },
-
         selectedText: "Virtual DOM",
       },
     },
-
     {
       id: "message-2",
+      discussionId: "discussion-1",
       role: "assistant",
       createdAt: "2026-06-28T10:00:05.000Z",
-
       content: `
 ## Why does React use a Virtual DOM?
 
@@ -65,20 +60,18 @@ function App() {
 This makes UI updates predictable while avoiding unnecessary DOM operations.
       `,
     },
-
     {
       id: "message-3",
+      discussionId: "discussion-1",
       role: "user",
       createdAt: "2026-06-28T10:01:20.000Z",
-
       content: "How is this different from directly manipulating the DOM?",
     },
-
     {
       id: "message-4",
+      discussionId: "discussion-1",
       role: "assistant",
       createdAt: "2026-06-28T10:01:28.000Z",
-
       content: `
 Direct DOM manipulation requires you to manually find and update elements.
 

@@ -54,4 +54,11 @@ export const mockTabs: TabData<any>[] = [
     taskId: "react-basics",
     data: {},
   },
+  {
+    id: "tab-7",
+    label: "Typescript Test",
+    type: tabTypes.TEST,
+    taskId: "typescript-basics",
+    data: {},
+  },
 ];

@@ -15,6 +15,16 @@ const noteSlice = createSlice({
       state.notes.push(action.payload);
     },
 
+    updateNote: (state, action: PayloadAction<NoteType>) => {
+      const index = state.notes.findIndex((note) => note.id === action.payload.id);
+      if (index !== -1) {
+        state.notes[index] = {
+          ...action.payload,
+          updatedAt: new Date().toISOString(),
+        };
+      }
+    },
+
     updateNoteContent: (
       state,
       action: PayloadAction<{
@@ -57,6 +67,7 @@ const noteSlice = createSlice({
 
 export const {
   addNote,
+  updateNote,
   deleteNote,
   updateNoteAnchor,
   updateNoteContent,

@@ -2,6 +2,7 @@ import { SelectableMarkdown } from "../resource/markdown/SelectableMarkdown";
 import { MessageRole, MessageType } from "@/types/DiscussionType";
 import { SelectionToolBar } from "../resource/SelectionToolBar";
 import { TextSelection } from "@/types/WorkspaceType";
+import { AnchorTypes } from "@/enums/AnchorEnums";
 import { useState } from "react";
 import { useAppDispatch } from "@/store/store";
 import {
@@ -25,7 +26,7 @@ export const AssistantMessage = ({ message }: AssistantMessageProps) => {
   const { taskId } = useTab();
   const handleAskDoubt = (selection: TextSelection | null) => {
     if (!selection) return;
-    const anchor = selection.createAnchor(taskId);
+    const anchor = selection.createAnchor(taskId, AnchorTypes.DOUBT);
     const draftMessage: MessageType = {
       id: "",
       discussionId: message.discussionId,

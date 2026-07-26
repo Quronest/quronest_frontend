@@ -8,7 +8,7 @@ import { Card } from "@/components/ui/Card";
 export default function VerifyEmail() {
   return (
     <main className="flex min-h-screen items-center justify-center px-6 py-12">
-      <Card border="neutral" className="w-full max-w-xl p-10 text-center">
+      <Card className="w-full max-w-xl p-10 text-center border-border">
         <div className="mx-auto mb-8 flex h-20 w-20 items-center justify-center rounded-full bg-primary/10">
           <MailCheck className="h-10 w-10 text-primary" />
         </div>

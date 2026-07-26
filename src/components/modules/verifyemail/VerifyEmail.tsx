@@ -2,13 +2,13 @@
 
 import { MailCheck } from "lucide-react";
 
-import { Card } from "@/components/ui/Card";
 import Button from "@/components/ui/Button";
+import { Card } from "@/components/ui/Card";
 
 export default function VerifyEmail() {
   return (
-    <main className="flex min-h-screen items-center justify-center bg-background px-6 py-12">
-      <Card className="w-full max-w-xl rounded-[28px] border-border bg-card p-10 text-center">
+    <main className="flex min-h-screen items-center justify-center px-6 py-12">
+      <Card border="neutral" className="w-full max-w-xl p-10 text-center">
         <div className="mx-auto mb-8 flex h-20 w-20 items-center justify-center rounded-full bg-primary/10">
           <MailCheck className="h-10 w-10 text-primary" />
         </div>
@@ -23,16 +23,14 @@ export default function VerifyEmail() {
           Click the button below to verify your account and continue.
         </p>
 
-        {/* Primary Action */}
         <Button className="mt-8 w-full">Verify Email</Button>
 
-        {/* Footer */}
         <div className="mt-8 border-t border-border pt-6">
           <p className="text-sm text-neutral">Didn't receive the email?</p>
 
           <button
             type="button"
-            className="mt-2 text-sm font-medium text-primary transition-colors hover:opacity-80"
+            className="mt-2 text-sm font-medium text-primary transition-opacity hover:opacity-80"
           >
             Resend Email
           </button>

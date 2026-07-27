@@ -1,11 +1,11 @@
 import SideNavBar from "@/components/modules/layout/SideNavBar";
 import React from "react";
 
-type AppShellPropType = {
+type PrivateLayoutType = {
   children: React.ReactNode;
 };
 
-function AppShelllayout({ children }: AppShellPropType) {
+function PrivateLayout({ children }: PrivateLayoutType) {
   return (
     <div className="flex">
       <SideNavBar />
@@ -14,4 +14,4 @@ function AppShelllayout({ children }: AppShellPropType) {
   );
 }
 
-export default AppShelllayout;
+export default PrivateLayout;

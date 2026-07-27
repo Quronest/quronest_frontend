@@ -7,15 +7,14 @@ import { Separator } from "@/components/ui/Separator";
 import FormCard from "./FormCard";
 import TextLink from "@/components/ui/TextLink";
 import { useAuth } from "@/hooks/useAuth";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  signUpSchema,
-  SignUpFormSchemaType,
-} from "@/schemas/SignUpFormSchema";
+import { signUpSchema, SignUpFormSchemaType } from "@/schemas/SignUpFormSchema";
 import Input from "@/components/ui/Input";
 
 function SignupForm() {
+  const router = useRouter();
   const { register: registerUser, isSigningIn } = useAuth();
 
   const {
@@ -55,7 +54,8 @@ function SignupForm() {
   // };
 
   const onSubmit = async (data: SignUpFormSchemaType) => {
-    await registerUser({ data });
+    const { confirmPassword, ...registerData } = data;
+    await registerUser(registerData).then(() => router.push("/home"));
     reset();
   };
 

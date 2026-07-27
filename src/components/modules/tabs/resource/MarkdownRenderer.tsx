@@ -13,11 +13,13 @@ import { HighlightText } from "@/store/features/highlights/highlightSlice";
 export type MarkdownProps = {
   markdown: string;
   highlights?: HighlightText[];
+  showCopyButton?: boolean;
 };
 
 export const MarkdownRenderer = ({
   markdown,
   highlights = [],
+  showCopyButton = true,
 }: MarkdownProps) => {
   return (
     <ReactMarkdown
@@ -38,7 +40,7 @@ export const MarkdownRenderer = ({
 
         code: CodeBlock,
 
-        pre: PreBlock,
+        pre: (props) => <PreBlock {...props} showCopyButton={showCopyButton} />,
 
         mark: ({ children }) => (
           <mark className="rounded bg-yellow-400/30 px-1 text-foreground">

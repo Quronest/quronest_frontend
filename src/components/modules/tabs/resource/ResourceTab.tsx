@@ -2,19 +2,21 @@ import { DocsRenderer } from "./DocsRenderer";
 import { TabContainer } from "../../../ui/TabContainer";
 import { extractHeadings } from "./contentTable/extractHeadings";
 import { TOC } from "./contentTable/TableOfContents";
-import { ResourceTabDataType } from "@/types/WorkspaceType";
+import { ResourceTabDataType, SelectionAnchor } from "@/types/WorkspaceType";
 import { useTab } from "@/hooks/useTab";
+import { useEffect, useRef } from "react";
+import { useAppSelector } from "@/store/store";
+import AnnotationLayer from "./AnnotationLayer";
 
 export const ResourceTab = () => {
-  const { tabData } = useTab();
+  const { tabData, taskId, tabRef} = useTab();
   const { markdown } = tabData as ResourceTabDataType;
-
   const headings = extractHeadings(markdown);
 
   return (
     <>
-      <TabContainer>
-        <div className="flex h-full gap-6 overflow-y-auto">
+      <TabContainer className="">
+        <div className="flex h-full gap-6 overflow-y-auto " >
           <div className="min-w-0 flex-1 px-4">
             <DocsRenderer />
           </div>

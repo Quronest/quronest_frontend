@@ -1,7 +1,11 @@
-import React, { createContext, useEffect, useState } from "react";
+import React, { createContext, useEffect, useMemo, useRef, useState } from "react";
 import { MarkdownProps, MarkdownRenderer } from "../MarkdownRenderer";
 import { TextSelection } from "@/types/WorkspaceType";
-
+import clsx from "clsx";
+import { getNodeOffset } from "../helper/getNodeOffset";
+import { useAppSelector } from "@/store/store";
+import { useTab } from "@/hooks/useTab";
+import AnnotationLayer from "../AnnotationLayer";
 
 const SelectableMarkdownContext = createContext<{
   selection: TextSelection | null;
@@ -13,18 +17,39 @@ type SelectableMarkdownType = {
   referenceId: string;
   selectionToolBar: React.ReactNode;
   onSelect?: (selectionData: TextSelection | null) => void;
+  className?: string;
 } & MarkdownProps;
 
 export const SelectableMarkdown = ({
   referenceId,
   selectionToolBar: toolBar,
   onSelect,
+  className,
   ...markdownProps
 }: SelectableMarkdownType) => {
   const [selectionInfo, setSelectionInfo] = useState<TextSelection | null>(
     null,
   );
+  const { tabData, taskId, tabRef } = useTab();
 
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const { notes } = useAppSelector((state) => state.note);
+  const { discussions } = useAppSelector((state) => state.discussion);
+
+  const resourceAnchors = useMemo(() => {
+    const filteredNotes = notes.filter((note) => note.taskId === taskId);
+    const filteredDiscussions = discussions.filter(
+      (discussion) => discussion.taskId === taskId,
+    );
+    return [
+      ...filteredNotes.map((note) => note.anchor),
+      ...filteredDiscussions
+        .filter((discussion) => discussion.messages && discussion.messages.length > 0)
+        .map((discussion) => discussion.messages[0]?.anchor),
+    ].filter((anchor): anchor is NonNullable<typeof anchor> => !!anchor);
+  }, [notes, discussions, taskId]);
+
+  if (!containerRef) return;
   const handleMouseUp = () => {
     const selection = window.getSelection();
     if (!selection) return;
@@ -36,12 +61,17 @@ export const SelectableMarkdown = ({
         ? range.commonAncestorContainer.parentElement
         : (range.commonAncestorContainer as HTMLElement);
 
-    const blockElement = element?.closest("[data-block-start]");
-    const blockText = blockElement?.textContent ?? "";
-    const nodeText = range.startContainer.textContent ?? "";
-    const nodeStart = blockText.indexOf(nodeText);
-    const absoluteStart = nodeStart + range.startOffset;
+    const blockElement = element?.closest<HTMLElement>("[data-block-start]");
+    // const blockText = blockElement?.textContent ?? "";
+    // const nodeText = range.startContainer.textContent ?? "";
+    // const nodeStart = blockText.indexOf(nodeText);
+    // const absoluteStart = nodeStart + range.startOffset;
 
+    // const absoluteEnd = nodeStart + range.endOffset;
+
+    const nodeStart = getNodeOffset(blockElement!, range.startContainer);
+
+    const absoluteStart = nodeStart + range.startOffset;
     const absoluteEnd = nodeStart + range.endOffset;
 
     const startOffset = Number(blockElement?.getAttribute("data-block-start"));
@@ -81,8 +111,9 @@ export const SelectableMarkdown = ({
         end: absoluteEnd,
       },
 
-      createAnchor: (referenceId) => ({
+      createAnchor: (referenceId, type) => ({
         referenceId: referenceId,
+        type,
         blockOffset: {
           start: startOffset,
           end: endOffset,
@@ -114,14 +145,20 @@ export const SelectableMarkdown = ({
       document.removeEventListener("selectionchange", handleSelectionChange);
     };
   }, []);
+  console.log("selectable markdown rendered")
   return (
     <SelectableMarkdownContext.Provider value={{ selection: selectionInfo }}>
       <div
         onMouseUp={handleMouseUp}
-        className="prose prose-invert w-full prose-pre:bg-transparent prose-pre:p-0 prose-pre:m-0"
+        className={clsx(
+          "prose prose-invert w-full prose-pre:bg-transparent prose-pre:p-0 prose-pre:m-0 ",
+          className,"relative"
+        )}
+        ref={containerRef}
       >
         <MarkdownRenderer {...markdownProps} />
         {selectionInfo && toolBar}
+        <AnnotationLayer anchors={resourceAnchors} containerRef={containerRef} />
       </div>
     </SelectableMarkdownContext.Provider>
   );

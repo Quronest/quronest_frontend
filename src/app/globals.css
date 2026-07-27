@@ -77,3 +77,18 @@ body::-webkit-scrollbar-corner,
 *::-webkit-scrollbar-corner {
   background: rgba(4, 10, 20, 0.88);
 }
+
+@keyframes border-pulse {
+  0%, 100% {
+    border-color: var(--border);
+    box-shadow: 0 0 0 0 transparent;
+  }
+  50% {
+    border-color: var(--primary);
+    box-shadow: 0 0 8px 2px var(--primary);
+  }
+}
+
+.animate-border-pulse {
+  animation: border-pulse 1s ease-in-out infinite;
+}

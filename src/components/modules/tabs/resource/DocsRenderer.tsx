@@ -3,8 +3,12 @@ import {
   addHighlight,
   selectHighlight,
 } from "@/store/features/highlights/highlightSlice";
-import { TextSelection, ResourceTabDataType } from "@/types/WorkspaceType";
-import { useState } from "react";
+import {
+  TextSelection,
+  ResourceTabDataType,
+  SelectionAnchor,
+} from "@/types/WorkspaceType";
+import { useMemo, useState } from "react";
 import { useTab } from "@/hooks/useTab";
 import { useWorkspace } from "@/hooks/useWorkspace";
 import { NoteType } from "@/types/NoteType";
@@ -24,8 +28,16 @@ import {
 import { addDiscussion } from "@/store/features/discussion/discussionSlice";
 import { SelectableMarkdown } from "./markdown/SelectableMarkdown";
 import { SelectionToolBar } from "./SelectionToolBar";
+import { AnchorTypes } from "@/enums/AnchorEnums";
+
+type RenderAnnotation = {
+  id: string;
+  type: "note" | "discussion" | "highlight";
+  anchor: SelectionAnchor | undefined;
+};
 
 export const DocsRenderer = () => {
+ 
   const { tabData, taskId } = useTab();
   const { markdown } = tabData as ResourceTabDataType;
   const { highlights } = useAppSelector(selectHighlight);
@@ -41,7 +53,7 @@ export const DocsRenderer = () => {
 
   const handleHighlight = (selection: TextSelection | null) => {
     if (!selection) return;
-    const anchor = selection?.createAnchor(taskId);
+    const anchor = selection?.createAnchor(taskId, AnchorTypes.HIGHLIGHT);
     dispatch(
       addHighlight({
         id: crypto.randomUUID(),
@@ -52,7 +64,7 @@ export const DocsRenderer = () => {
 
   const handleAddNote = (selection: TextSelection | null) => {
     if (!selection) return;
-    const anchor = selection?.createAnchor(taskId);
+    const anchor = selection?.createAnchor(taskId, AnchorTypes.NOTE);
     let targetPane = panes["right"] ?? undefined;
     const draftNote: NoteType = {
       id: "",
@@ -112,7 +124,7 @@ export const DocsRenderer = () => {
 
   const handleAskDoubt = (selection: TextSelection | null) => {
     if (!selection) return;
-    const anchor = selection?.createAnchor(taskId);
+    const anchor = selection?.createAnchor(taskId, AnchorTypes.DOUBT);
     let targetPane = panes["right"] ?? undefined;
     if (isSplitView) {
       if (activePaneId == "right") {

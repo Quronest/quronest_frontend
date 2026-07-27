@@ -2,9 +2,15 @@ import Button from "@/components/ui/Button";
 import { Copy } from "lucide-react";
 import React from "react";
 
-type PreBlockProps = React.ComponentPropsWithoutRef<"pre">;
+type PreBlockProps = React.ComponentPropsWithoutRef<"pre"> & {
+  showCopyButton?: boolean;
+};
 
-export const PreBlock = ({ children, ...props }: PreBlockProps) => {
+export const PreBlock = ({
+  children,
+  showCopyButton = true,
+  ...props
+}: PreBlockProps) => {
   const [copied, setCopied] = React.useState(false);
 
   const preRef = React.useRef<HTMLPreElement>(null);
@@ -45,13 +51,15 @@ export const PreBlock = ({ children, ...props }: PreBlockProps) => {
           {language}
         </span>
 
-        <Button
-          variant="nav"
-          className="h-fit! w-fit! px-2! py-1! text-xs"
-          onClick={handleCopy}
-        >
-          {copied ? "Copied" : <Copy size={14} />}
-        </Button>
+        {showCopyButton && (
+          <Button
+            variant="nav"
+            className="h-fit! w-fit! px-2! py-1! text-xs"
+            onClick={handleCopy}
+          >
+            {copied ? "Copied" : <Copy size={14} />}
+          </Button>
+        )}
       </div>
 
       <pre ref={preRef} className="m-0 overflow-x-auto p-0" {...props}>

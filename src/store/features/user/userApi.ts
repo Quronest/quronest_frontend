@@ -3,28 +3,26 @@ import { baseApi } from "../baseApi";
 export const userApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     registerUser: builder.mutation({
-      query: ({
-        data,
-      }: {
-        data: {
-          email: string;
-          password: string;
-          fullname: string;
-          username: string;
-        };
+      query: (data: {
+        email: string;
+        password: string;
+        fullname: string;
+        username: string;
       }) => ({
         url: "auth/register",
         method: "POST",
         body: data,
       }),
+      invalidatesTags: ["User"],
     }),
 
     loginUser: builder.mutation({
-      query: ({ data }: { data: { email: string; password: string } }) => ({
+      query: (data: { email: string; password: string }) => ({
         url: "auth/login",
         method: "POST",
         body: data,
       }),
+      invalidatesTags: ["User"],
     }),
 
     logoutUser: builder.mutation<any, void>({
@@ -32,10 +30,12 @@ export const userApi = baseApi.injectEndpoints({
         url: "auth/logout",
         method: "POST",
       }),
+      invalidatesTags: ["User"],
     }),
 
     getProfile: builder.query<any, void>({
       query: () => "user/profile",
+      providesTags: ["User"],
     }),
   }),
 });

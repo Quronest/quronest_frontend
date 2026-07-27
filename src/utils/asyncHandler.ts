@@ -6,6 +6,6 @@ export async function asyncHandler<T>(
   try {
     return await fn();
   } catch (error: any) {
-    toast.error(error?.data?.errors[0] || "Something went wrong");
+    toast.error(error?.data?.errors?.[0] || error?.message || "Something went wrong");
   }
 }

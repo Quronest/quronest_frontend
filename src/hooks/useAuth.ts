@@ -25,7 +25,7 @@ export const useAuth = () => {
     await asyncHandler(async () => {
       await registerUser(credentials)
         .unwrap()
-        .then(async () => await login(credentials));
+        .then(async () => await login({ email: credentials.email, password: credentials.password }));
     });
 
   return {

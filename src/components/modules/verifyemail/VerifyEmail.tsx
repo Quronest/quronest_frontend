@@ -62,8 +62,8 @@ export default function VerifyEmail() {
 
         {status === "success" && (
           <div className="flex flex-col items-center py-6">
-            <div className="mb-6 rounded-full bg-primary/10 p-4">
-              <CheckCircle2 className="h-14 w-14 text-primary" />
+            <div className="mb-6 rounded-full bg-green-500/10 p-4">
+              <CheckCircle2 className="h-14 w-14 text-green-500" />
             </div>
 
             <h2 className="mb-2 text-2xl font-bold text-foreground">
@@ -88,8 +88,8 @@ export default function VerifyEmail() {
 
         {status === "error" && (
           <div className="flex flex-col items-center py-6">
-            <div className="mb-6 rounded-full bg-primary/10 p-4">
-              <XCircle className="h-14 w-14 text-primary" />
+            <div className="mb-6 rounded-full bg-red-500/10 p-4">
+              <XCircle className="h-14 w-14 text-red-500" />
             </div>
 
             <h2 className="mb-2 text-2xl font-bold text-foreground">

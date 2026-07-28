@@ -22,9 +22,8 @@ export default function VerifyEmail() {
   useEffect(() => {
     setStatus("loading");
 
-    // Demo only. Replace with your API later.
     const timer = setTimeout(() => {
-      const success = false; // Change to false to preview error state
+      const success = false;
 
       if (success) {
         setStatus("success");

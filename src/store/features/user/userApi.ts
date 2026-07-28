@@ -1,4 +1,6 @@
+import { AcademicData, PersonalData } from "@/types/ProfileType";
 import { baseApi } from "../baseApi";
+import { User } from "./userType";
 
 export const userApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
@@ -33,9 +35,26 @@ export const userApi = baseApi.injectEndpoints({
       invalidatesTags: ["User"],
     }),
 
-    getProfile: builder.query<any, void>({
+    getProfile: builder.query<User, void>({
       query: () => "user/profile",
       providesTags: ["User"],
+    }),
+
+    setPersonalData: builder.mutation({
+      query: (data: PersonalData) => {
+        url: "user/personal-data";
+        method: "POST";
+        body: data;
+      },
+      invalidatesTags: ["User"],
+    }),
+    setAcademicData: builder.mutation({
+      query: (data: AcademicData) => {
+        url: "user/academic-data";
+        method: "POST";
+        body: data;
+      },
+      invalidatesTags: ["User"],
     }),
   }),
 });
@@ -45,4 +64,6 @@ export const {
   useLoginUserMutation,
   useLogoutUserMutation,
   useGetProfileQuery,
+  useSetPersonalDataMutation,
+  useSetAcademicDataMutation
 } = userApi;

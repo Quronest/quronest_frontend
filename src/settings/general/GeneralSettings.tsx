@@ -19,10 +19,10 @@ const GeneralSettings = () => {
     resolver: zodResolver(generalSettingsSchema),
     mode: "onBlur",
     defaultValues: {
-      instituteName: "",
+      institute_name: "",
       grade: "",
       course: "",
-      academicDescription: "",
+      academic_description: "",
       interestedDomains: "",
       skills: "",
       primaryGoal: "",
@@ -75,7 +75,7 @@ const GeneralSettings = () => {
 
                   <Input
                     placeholder="XYZ University"
-                    error={errors.instituteName?.message}
+                    error={errors.institute_name?.message}
                     {...register("instituteName")}
                   />
                 </div>

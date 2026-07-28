@@ -27,14 +27,14 @@ export default function AcademicForm({ onNext }: Props) {
     resolver: zodResolver(academicFormSchema),
     mode: "onBlur",
     defaultValues: {
-      instituteName: "",
+      institute_name: "",
       grade: "",
       course: "",
-      academicDescription: "",
+      academic_description: "",
     },
   });
 
-  const academicDescription = watch("academicDescription") ?? "";
+  const academicDescription = watch("academic_description") ?? "";
 
   const onSubmit = () => {
     onNext();
@@ -46,8 +46,8 @@ export default function AcademicForm({ onNext }: Props) {
 
       <Input
         placeholder="Institute Name"
-        error={errors.instituteName?.message}
-        {...register("instituteName")}
+        error={errors.institute_name?.message}
+        {...register("institute_name")}
       />
 
       <Input
@@ -67,12 +67,12 @@ export default function AcademicForm({ onNext }: Props) {
         maxLength={300}
         minHeight={120}
         maxHeight={220}
-        {...register("academicDescription")}
+        {...register("academic_description")}
       />
 
       <div className="flex items-center justify-between">
         <span className="text-sm text-red-500">
-          {errors.academicDescription?.message}
+          {errors.academic_description?.message}
         </span>
 
         <span className="text-xs text-neutral">

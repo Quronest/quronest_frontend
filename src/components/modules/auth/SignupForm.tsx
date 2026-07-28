@@ -33,29 +33,9 @@ function SignupForm() {
     resolver: zodResolver(signUpSchema),
   });
 
-  // const [form, setForm] = useState({
-  //   fullname: "",
-  //   username: "",
-  //   email: "",
-  //   password: "",
-  //   confirmPassword: "",
-  // });
-
-  // const handleRegister = async () => {
-  //   const { confirmPassword, ...registerData } = form;
-  //   await registerUser({ data: registerData });
-  // };
-
-  // const handleChange = (field: string, value: string) => {
-  //   setForm((prev) => ({
-  //     ...prev,
-  //     [field]: value,
-  //   }));
-  // };
-
   const onSubmit = async (data: SignUpFormSchemaType) => {
     const { confirmPassword, ...registerData } = data;
-    await registerUser(registerData).then(() => router.push("/home"));
+    await registerUser(registerData);
     reset();
   };
 

@@ -19,15 +19,15 @@ const GeneralSettings = () => {
     resolver: zodResolver(generalSettingsSchema),
     mode: "onBlur",
     defaultValues: {
-      instituteName: "",
+      institute_name: "",
       grade: "",
       course: "",
-      academicDescription: "",
-      interestedDomains: "",
+      academic_description: "",
+      interested_domains: "",
       skills: "",
-      primaryGoal: "",
+      primary_goal: "",
       experience: "",
-      personalDescription: "",
+      personal_description: "",
     },
   });
 
@@ -75,7 +75,7 @@ const GeneralSettings = () => {
 
                   <Input
                     placeholder="XYZ University"
-                    error={errors.instituteName?.message}
+                    error={errors.institute_name?.message}
                     {...register("instituteName")}
                   />
                 </div>
@@ -137,7 +137,7 @@ const GeneralSettings = () => {
 
                   <Input
                     placeholder="AI, Web Development"
-                    error={errors.interestedDomains?.message}
+                    error={errors.interested_domains?.message}
                     {...register("interestedDomains")}
                   />
                 </div>
@@ -157,7 +157,7 @@ const GeneralSettings = () => {
 
                   <Input
                     placeholder="Become a Full Stack Developer"
-                    error={errors.primaryGoal?.message}
+                    error={errors.primary_goal?.message}
                     {...register("primaryGoal")}
                   />
                 </div>

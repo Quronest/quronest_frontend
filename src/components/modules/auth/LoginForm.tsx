@@ -30,27 +30,9 @@ function LoginForm() {
     resolver: zodResolver(loginSchema),
   });
 
-  // const [form, setForm] = useState({
-  //   email: "",
-  //   password: "",
-  // });
-
-  // const handleChange = (field: string, value: string) => {
-  //   setForm((prev) => ({
-  //     ...prev,
-  //     [field]: value,
-  //   }));
-  // };
-
   const onSubmit = async (data: FieldValues) => {
     await login(data);
-    router.push("/home");
   };
-
-  // const handleLogin = async () => {
-  //   await login({ data: form });
-  //   router.push("/home");
-  // };
 
   return (
     <FormCard onSubmit={handleSubmit(onSubmit)}>

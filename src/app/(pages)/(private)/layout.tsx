@@ -1,3 +1,4 @@
+import { PrivateLayoutWrapper } from "@/components/layout/PrivateLayoutWrapper";
 import SideNavBar from "@/components/modules/layout/SideNavBar";
 import React from "react";
 
@@ -7,10 +8,12 @@ type PrivateLayoutType = {
 
 function PrivateLayout({ children }: PrivateLayoutType) {
   return (
-    <div className="flex">
-      <SideNavBar />
-      {children}
-    </div>
+    <PrivateLayoutWrapper>
+      <div className="flex">
+        <SideNavBar />
+        {children}
+      </div>
+    </PrivateLayoutWrapper>
   );
 }
 

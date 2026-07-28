@@ -12,12 +12,15 @@ import {
   personalFormSchema,
   type PersonalFormSchemaType,
 } from "@/schemas/personalFormSchema";
+import { useSetPersonalDataMutation } from "@/store/features/user/userApi";
+import clsx from "clsx";
+import { asyncHandler } from "@/utils/asyncHandler";
 
 type Props = {
-  onBack: () => void;
+  onNext: () => void;
 };
 
-export default function PersonalForm({ onBack }: Props) {
+export default function PersonalForm({ onNext }: Props) {
   const {
     register,
     handleSubmit,
@@ -27,18 +30,21 @@ export default function PersonalForm({ onBack }: Props) {
     resolver: zodResolver(personalFormSchema),
     mode: "onBlur",
     defaultValues: {
-      interestedDomains: "",
+      interested_domains: "",
       skills: "",
-      primaryGoal: "",
+      primary_goal: "",
       experience: "",
-      personalDescription: "",
+      personal_description: "",
     },
   });
 
-  const personalDescription = watch("personalDescription") ?? "";
+  const [setPersonalData, result] = useSetPersonalDataMutation();
 
-  const onSubmit = (data: PersonalFormSchemaType) => {
+  const personalDescription = watch("personal_description") ?? "";
+
+  const onSubmit = async (data: PersonalFormSchemaType) => {
     console.log("Personal:", data);
+    await asyncHandler(() => setPersonalData(data).unwrap());
   };
 
   return (
@@ -47,8 +53,8 @@ export default function PersonalForm({ onBack }: Props) {
 
       <Input
         placeholder="Interested Domains"
-        error={errors.interestedDomains?.message}
-        {...register("interestedDomains")}
+        error={errors.interested_domains?.message}
+        {...register("interested_domains")}
       />
 
       <Input
@@ -59,8 +65,8 @@ export default function PersonalForm({ onBack }: Props) {
 
       <Input
         placeholder="Primary Goal"
-        error={errors.primaryGoal?.message}
-        {...register("primaryGoal")}
+        error={errors.primary_goal?.message}
+        {...register("primary_goal")}
       />
 
       <Input
@@ -74,12 +80,12 @@ export default function PersonalForm({ onBack }: Props) {
         maxLength={300}
         minHeight={120}
         maxHeight={220}
-        {...register("personalDescription")}
+        {...register("personal_description")}
       />
 
       <div className="flex items-center justify-between">
         <span className="text-sm text-red-500">
-          {errors.personalDescription?.message}
+          {errors.personal_description?.message}
         </span>
 
         <span className="text-xs text-neutral">
@@ -87,15 +93,9 @@ export default function PersonalForm({ onBack }: Props) {
         </span>
       </div>
 
-      <div className="flex w-full gap-3">
-        <Button className="flex-1" variant="outline" onClick={onBack}>
-          Back
-        </Button>
-
-        <Button className="flex-1" type="submit" variant="primary">
-          Submit
-        </Button>
-      </div>
+      <Button type="submit" variant="primary" disabled={result.isLoading}>
+        Continue
+      </Button>
     </FormCard>
   );
 }

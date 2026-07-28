@@ -13,18 +13,18 @@ export interface CurrentSummary {
 }
 
 export interface PersonalData {
-  description: string | null;
+  personal_description: string | null;
   experience: string | null;
   primary_goal: string | null;
-  interested_domains: string[];
-  skills: string[];
+  interested_domains: string;
+  skills: string;
 }
 
 export interface AcademicData {
   institute_name: string | null;
   course: string | null;
   grade: string | null;
-  description: string | null;
+  academic_description: string | null;
 }
 
 export interface OtherData {

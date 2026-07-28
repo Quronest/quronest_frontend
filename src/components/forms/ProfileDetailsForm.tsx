@@ -19,7 +19,7 @@ export default function Page() {
 
   return (
     <>
-      {step === 0 && <PersonalForm onBack={() => setStep(1)} />}
+      {step === 0 && <PersonalForm onNext={() => setStep(1)} />}
       {step === 1 && <AcademicForm onNext={() => setStep(2)} />}
       {step === 2 && <StartJourney />}
     </>

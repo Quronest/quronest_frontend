@@ -26,18 +26,18 @@ export type SocialLink = {
 };
 
 export type PersonalData = {
-  interested_domains: string[];
+  interested_domains: string;
   skills: string[];
   primary_goal: string;
   experience: string;
-  description: string;
+  personal_description: string;
 };
 
 export type AcademicData = {
   institute_name: string;
   grade: string;
   course: string;
-  description: string;
+  academic_description: string;
 };
 
 export type CurrentSummary = {

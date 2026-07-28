@@ -8,9 +8,12 @@ import {
 
 import { asyncHandler } from "@/utils/asyncHandler";
 import { useRouter } from "next/navigation";
+import { useAppDispatch } from "@/store/store";
+import { baseApi } from "@/store/features/baseApi";
 
 export const useAuth = () => {
   const router = useRouter();
+  const dispatch = useAppDispatch();
   const { data: user, isLoading } = useGetProfileQuery();
   const [loginUser, { isLoading: isLoggingIn }] = useLoginUserMutation();
   const [logoutUser, { isLoading: isLoggingOut }] = useLogoutUserMutation();
@@ -22,7 +25,12 @@ export const useAuth = () => {
         .unwrap()
         .then(() => router.push("/home")),
     );
-  const logout = async () => await asyncHandler(() => logoutUser().unwrap());
+  const logout = async () =>
+    await asyncHandler(async () => {
+      await logoutUser().unwrap();
+      dispatch(baseApi.util.resetApiState());
+      router.push("/login");
+    });
 
   const register = async (credentials: any) =>
     await asyncHandler(async () => {

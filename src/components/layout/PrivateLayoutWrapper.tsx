@@ -22,9 +22,9 @@ export const PrivateLayoutWrapper = ({
           case "ACADEMIC_DATA_INCOMPLETE":
             router.push("/profile-details?tab=1");
             break;
-          case "JOURNEY_START_INCOMPLETE":
-            router.push("/profile-details?tab=2");
-            break;
+          // case "JOURNEY_START_INCOMPLETE":
+          //   router.push("/profile-details?tab=2");
+          //   break;
           default:
             router.push("/home");
         }

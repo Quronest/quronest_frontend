@@ -23,11 +23,11 @@ const GeneralSettings = () => {
       grade: "",
       course: "",
       academic_description: "",
-      interestedDomains: "",
+      interested_domains: "",
       skills: "",
-      primaryGoal: "",
+      primary_goal: "",
       experience: "",
-      personalDescription: "",
+      personal_description: "",
     },
   });
 
@@ -137,7 +137,7 @@ const GeneralSettings = () => {
 
                   <Input
                     placeholder="AI, Web Development"
-                    error={errors.interestedDomains?.message}
+                    error={errors.interested_domains?.message}
                     {...register("interestedDomains")}
                   />
                 </div>
@@ -157,7 +157,7 @@ const GeneralSettings = () => {
 
                   <Input
                     placeholder="Become a Full Stack Developer"
-                    error={errors.primaryGoal?.message}
+                    error={errors.primary_goal?.message}
                     {...register("primaryGoal")}
                   />
                 </div>

@@ -1,18 +1,18 @@
 import { z } from "zod";
 
 export const personalFormSchema = z.object({
-  interestedDomains: z
+  interested_domains: z
     .string()
     .trim()
     .min(1, "Interested domains are required"),
 
   skills: z.string().trim().min(1, "Skills are required"),
 
-  primaryGoal: z.string().trim().min(1, "Primary goal is required"),
+  primary_goal: z.string().trim().min(1, "Primary goal is required"),
 
   experience: z.string().trim().min(1, "Experience is required"),
 
-  personalDescription: z
+  personal_description: z
     .string()
     .max(300, "Personal description cannot exceed 300 characters"),
 });

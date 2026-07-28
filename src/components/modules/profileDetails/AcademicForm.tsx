@@ -12,6 +12,9 @@ import {
   academicFormSchema,
   type AcademicFormSchemaType,
 } from "@/schemas/academicFormSchema";
+import { AcademicData } from "@/store/features/user/userType";
+import { useSetAcademicDataMutation } from "@/store/features/user/userApi";
+import { asyncHandler } from "@/utils/asyncHandler";
 
 type Props = {
   onNext: () => void;
@@ -34,10 +37,13 @@ export default function AcademicForm({ onNext }: Props) {
     },
   });
 
+  const [setAcademicData, result] = useSetAcademicDataMutation();
+
   const academicDescription = watch("academic_description") ?? "";
 
-  const onSubmit = () => {
-    onNext();
+  const onSubmit = async (data: AcademicData) => {
+    console.log("Academic-data ", data);
+    await asyncHandler(() => setAcademicData(data).unwrap());
   };
 
   return (

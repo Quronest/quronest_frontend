@@ -1,34 +1,57 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowRight, CheckCircle2, LoaderCircle, XCircle } from "lucide-react";
 
 import Button from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
+import {
+  useStartJourneyMutation,
+  useLazyGetCurrentJourneyQuery,
+} from "@/store/features/user/userApi";
+import { useJobPolling } from "@/hooks/useJobPolling";
+import { UserJourneyResponse } from "@/store/features/user/userType";
 
-type JourneyStatus = "review" | "creating" | "success" | "error";
+const mapGroup = (group?: string) => {
+  switch (group) {
+    case "GROUP_A":
+      return "Frontend Development";
+    case "GROUP_B":
+      return "Backend Development";
+    case "GROUP_C":
+      return "Fullstack Development";
+    default:
+      return group || "Not Assigned";
+  }
+};
+
+const mapPhase = (phase?: string) => {
+  switch (phase) {
+    case "PHASE_1":
+      return "Foundation";
+    case "PHASE_2":
+      return "Intermediate";
+    case "PHASE_3":
+      return "Advanced";
+    default:
+      return phase || "Not Assigned";
+  }
+};
 
 export const StartJourney = () => {
   const router = useRouter();
 
-  const isSuccess = true;
+  const [startJourney] = useStartJourneyMutation();
+  const [triggerGetCurrentJourney] = useLazyGetCurrentJourneyQuery();
 
-  const [status, setStatus] = useState<JourneyStatus>("review");
+  const { start, status, finalData: journeyData } = useJobPolling<UserJourneyResponse>({
+    startTrigger: () => startJourney().unwrap(),
+    fetchFinalTrigger: () => triggerGetCurrentJourney().unwrap(),
+  });
 
   useEffect(() => {
-    const reviewTimer = setTimeout(() => {
-      setStatus("creating");
-    }, 2000);
-
-    const finishTimer = setTimeout(() => {
-      setStatus(isSuccess ? "success" : "error");
-    }, 4500);
-
-    return () => {
-      clearTimeout(reviewTimer);
-      clearTimeout(finishTimer);
-    };
+    start();
   }, []);
 
   return (
@@ -78,7 +101,7 @@ export const StartJourney = () => {
                 <p className="text-sm text-neutral">Current Group</p>
 
                 <h3 className="mt-2 text-lg font-semibold text-foreground">
-                  Frontend Development
+                  {mapGroup(journeyData?.group)}
                 </h3>
               </Card>
 
@@ -86,7 +109,7 @@ export const StartJourney = () => {
                 <p className="text-sm text-neutral">Current Phase</p>
 
                 <h3 className="mt-2 text-lg font-semibold text-foreground">
-                  Foundation
+                  {mapPhase(journeyData?.phase)}
                 </h3>
               </Card>
             </div>

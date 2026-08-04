@@ -38,8 +38,8 @@ const GeneralSettings = () => {
     formState: { errors, isSubmitting },
   } = methods;
 
-  const academicDescription = watch("academicDescription") ?? "";
-  const personalDescription = watch("personalDescription") ?? "";
+  const academicDescription = watch("academic_description") ?? "";
+  const personalDescription = watch("personal_description") ?? "";
 
   const onSubmit = (data: GeneralSettingsSchemaType) => {
     console.log(data);
@@ -76,7 +76,7 @@ const GeneralSettings = () => {
                   <Input
                     placeholder="XYZ University"
                     error={errors.institute_name?.message}
-                    {...register("instituteName")}
+                    {...register("institute_name")}
                   />
                 </div>
 
@@ -115,7 +115,7 @@ const GeneralSettings = () => {
                   maxLength={300}
                   minHeight={120}
                   maxHeight={220}
-                  {...register("academicDescription")}
+                  {...register("academic_description")}
                 />
               </div>
             </div>
@@ -138,7 +138,7 @@ const GeneralSettings = () => {
                   <Input
                     placeholder="AI, Web Development"
                     error={errors.interested_domains?.message}
-                    {...register("interestedDomains")}
+                    {...register("interested_domains")}
                   />
                 </div>
 
@@ -158,7 +158,7 @@ const GeneralSettings = () => {
                   <Input
                     placeholder="Become a Full Stack Developer"
                     error={errors.primary_goal?.message}
-                    {...register("primaryGoal")}
+                    {...register("primary_goal")}
                   />
                 </div>
 
@@ -187,7 +187,7 @@ const GeneralSettings = () => {
                   maxLength={300}
                   minHeight={120}
                   maxHeight={220}
-                  {...register("personalDescription")}
+                  {...register("personal_description")}
                 />
               </div>
             </div>

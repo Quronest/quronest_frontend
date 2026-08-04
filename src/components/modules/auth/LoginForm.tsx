@@ -13,6 +13,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { loginSchema, LoginFormSchemaType } from "@/schemas/LoginFormSchema";
 import { GoogleIcon } from "@/components/icons/GoogleIcon";
 
+const GOOGLE_LOGIN_URL = `${process.env.NEXT_PUBLIC_API_URI}/backend/oauth2/authorization/google`;
+const GITHUB_LOGIN_URL = `${process.env.NEXT_PUBLIC_API_URI}/backend/oauth2/authorization/github`;
+
 function LoginForm() {
   const { login, isLoggingIn } = useAuth();
   const router = useRouter();
@@ -32,6 +35,14 @@ function LoginForm() {
 
   const onSubmit = async (data: FieldValues) => {
     await login(data);
+  };
+
+  const handleGoogleLogin = () => {
+    window.location.href = GOOGLE_LOGIN_URL;
+  };
+
+  const handleGithubLogin = () => {
+    window.location.href = GITHUB_LOGIN_URL;
   };
 
   return (
@@ -82,6 +93,7 @@ function LoginForm() {
           type="button"
           variant="outline"
           className="w-full flex items-center justify-center gap-2"
+          onClick={handleGoogleLogin}
         >
           <GoogleIcon />
           <span className="text-md font-semibold">Google</span>
@@ -89,8 +101,10 @@ function LoginForm() {
 
         {/* GitHub */}
         <Button
+          type="button"
           variant="outline"
           className="w-full flex items-center justify-center gap-2"
+          onClick={handleGithubLogin}
           disabled={isLoggingIn}
         >
           <GithubIcon className="w-5 h-5 text-white" />

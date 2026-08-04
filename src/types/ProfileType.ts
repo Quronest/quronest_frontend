@@ -13,11 +13,11 @@ export interface CurrentSummary {
 }
 
 export interface PersonalData {
-  personal_description: string | null;
+  description: string | null;
   experience: string | null;
   primary_goal: string | null;
-  interested_domains: string;
-  skills: string;
+  interested_domains: string[] | null;
+  skills: string[] | null;
 }
 
 export interface AcademicData {

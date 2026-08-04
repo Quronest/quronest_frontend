@@ -44,6 +44,7 @@ export default function AcademicForm({ onNext }: Props) {
   const onSubmit = async (data: AcademicData) => {
     console.log("Academic-data ", data);
     await asyncHandler(() => setAcademicData(data).unwrap());
+    onNext();
   };
 
   return (

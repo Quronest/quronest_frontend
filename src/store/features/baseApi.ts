@@ -40,6 +40,6 @@ const baseQueryWithErrorHandling: BaseQueryFn = async (
 export const baseApi = createApi({
   reducerPath: "api",
   baseQuery: baseQueryWithErrorHandling,
-  tagTypes: ["User"],
+  tagTypes: ["User","User_Journey", "Daily_Plan"],
   endpoints: () => ({}),
 });

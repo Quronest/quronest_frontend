@@ -13,6 +13,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { signUpSchema, SignUpFormSchemaType } from "@/schemas/SignUpFormSchema";
 import Input from "@/components/ui/Input";
 
+const GOOGLE_LOGIN_URL =
+  `${process.env.NEXT_PUBLIC_API_URI}/backend/oauth2/authorization/google`;
+const GITHUB_LOGIN_URL =
+  `${process.env.NEXT_PUBLIC_API_URI}/backend/oauth2/authorization/github`;
+
 function SignupForm() {
   const router = useRouter();
   const { register: registerUser, isSigningIn } = useAuth();
@@ -37,6 +42,14 @@ function SignupForm() {
     const { confirmPassword, ...registerData } = data;
     await registerUser(registerData);
     reset();
+  };
+
+  const handleGoogleLogin = () => {
+    window.location.href = GOOGLE_LOGIN_URL;
+  };
+
+  const handleGithubLogin = () => {
+    window.location.href = GITHUB_LOGIN_URL;
   };
 
   return (
@@ -113,6 +126,7 @@ function SignupForm() {
           type="button"
           variant="outline"
           className="w-full flex items-center justify-center gap-2"
+          onClick={handleGoogleLogin}
         >
           <GoogleIcon />
           <span className="text-md font-semibold">Google</span>
@@ -123,6 +137,7 @@ function SignupForm() {
           type="button"
           variant="outline"
           className="w-full flex items-center justify-center gap-2"
+          onClick={handleGithubLogin}
         >
           <GithubIcon className="text-white" />
           <span className="text-md font-semibold">GitHub</span>

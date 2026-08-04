@@ -2,7 +2,7 @@ import React from "react";
 
 function AuthFormContainer({ children }: { children: React.ReactNode }) {
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center">
+    <div className="min-h-screen w-full flex flex-col items-center justify-center">
       {children}
     </div>
   );

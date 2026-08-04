@@ -5,17 +5,43 @@ import { Award, Flame, Users } from "lucide-react";
 
 import { Card } from "@/components/ui/Card";
 
-import type { CurrentSummary } from "@/types/ProfileType";
+import type { CurrentSummary } from "@/store/features/user/userType";
 
 interface StatsSectionProps {
   currentSummary: CurrentSummary;
 }
 
+const mapGroupLabel = (group?: string) => {
+  switch (group) {
+    case "GROUP_A":
+      return "Group A";
+    case "GROUP_B":
+      return "Group B";
+    case "GROUP_C":
+      return "Group C";
+    default:
+      return group || "-";
+  }
+};
+
+const mapPhaseLabel = (phase?: string) => {
+  switch (phase) {
+    case "PHASE_1":
+      return "Phase 1";
+    case "PHASE_2":
+      return "Phase 2";
+    case "PHASE_3":
+      return "Phase 3";
+    default:
+      return phase || "-";
+  }
+};
+
 const StatsSection = ({ currentSummary }: StatsSectionProps) => {
   const statCards = [
     {
       title: "Group",
-      value: currentSummary.group ?? "-",
+      value: mapGroupLabel(currentSummary?.group),
       subtitle: "Elite Cohort",
       icon: Users,
       color: "text-cyan-400",
@@ -23,7 +49,7 @@ const StatsSection = ({ currentSummary }: StatsSectionProps) => {
     },
     {
       title: "Phase",
-      value: currentSummary.phase ?? "-",
+      value: mapPhaseLabel(currentSummary?.phase),
       subtitle: "Current Progress",
       icon: Award,
       color: "text-amber-400",

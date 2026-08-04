@@ -15,6 +15,8 @@ import {
 import { useSetPersonalDataMutation } from "@/store/features/user/userApi";
 import clsx from "clsx";
 import { asyncHandler } from "@/utils/asyncHandler";
+import { Router } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 type Props = {
   onNext: () => void;
@@ -37,7 +39,7 @@ export default function PersonalForm({ onNext }: Props) {
       personal_description: "",
     },
   });
-
+  const router = useRouter();
   const [setPersonalData, result] = useSetPersonalDataMutation();
 
   const personalDescription = watch("personal_description") ?? "";
@@ -45,6 +47,7 @@ export default function PersonalForm({ onNext }: Props) {
   const onSubmit = async (data: PersonalFormSchemaType) => {
     console.log("Personal:", data);
     await asyncHandler(() => setPersonalData(data).unwrap());
+    onNext();
   };
 
   return (

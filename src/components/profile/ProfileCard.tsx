@@ -6,13 +6,12 @@ import Button from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Tag } from "@/components/ui/Tag";
 
-import type { ProfileResponse } from "@/types/ProfileType";
-
 import Avatar from "../ui/Avatar";
+import type { User } from "@/store/features/user/userType";
 import ProfileSocialLink from "./ProfileSocialLink";
 
 interface ProfileCardProps {
-  profile: ProfileResponse;
+  profile: User;
 }
 
 const ProfileCard = ({ profile }: ProfileCardProps) => {
@@ -86,7 +85,7 @@ const ProfileCard = ({ profile }: ProfileCardProps) => {
         <h3 className="mb-3 font-semibold">Skills</h3>
 
         <div className="flex flex-wrap gap-2">
-          {profile.personal_data.skills.map((skill) => (
+          {profile.personal_data.skills?.map((skill) => (
             <Tag key={skill} label={skill} />
           ))}
         </div>
@@ -98,7 +97,7 @@ const ProfileCard = ({ profile }: ProfileCardProps) => {
 
         <div className="flex items-center justify-center gap-3">
           {profile.other_data.social_links.map((socialLink) => (
-            <ProfileSocialLink key={socialLink.type} socialLink={socialLink} />
+            <ProfileSocialLink key={socialLink.type} socialLink={socialLink as any} />
           ))}
         </div>
       </div>

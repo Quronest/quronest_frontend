@@ -38,12 +38,42 @@ type RenderAnnotation = {
 
 export const DocsRenderer = () => {
  
-  const { tabData, taskId } = useTab();
+  const { tabData, taskId, tabRef } = useTab();
   const { markdown } = tabData as ResourceTabDataType;
   const { highlights } = useAppSelector(selectHighlight);
+  const { notes } = useAppSelector((state) => state.note);
+  const { discussions } = useAppSelector((state) => state.discussion);
+
   const resourceHighlights = highlights.filter(
     (highlight) => highlight.anchor?.referenceId === taskId,
   );
+  const resourceNotes = notes.filter(
+    (note) => note.taskId === taskId,
+  );
+  const resourceDiscussions = discussions.filter(
+    (discussion) => discussion.taskId === taskId,
+  );
+
+  const anchors = useMemo(() => {
+    const list: SelectionAnchor[] = [];
+
+    resourceHighlights.forEach((h) => {
+      if (h.anchor) list.push(h.anchor);
+    });
+
+    resourceNotes.forEach((n) => {
+      if (n.anchor) list.push(n.anchor);
+    });
+
+    resourceDiscussions.forEach((d) => {
+      d.messages.forEach((m) => {
+        if (m.anchor) list.push(m.anchor);
+      });
+    });
+
+    return list;
+  }, [resourceHighlights, resourceNotes, resourceDiscussions]);
+
   const dispatch = useAppDispatch();
   const { panes, activePaneId, isSplitView } = useWorkspace();
 
@@ -194,6 +224,8 @@ export const DocsRenderer = () => {
       referenceId={taskId}
       markdown={markdown}
       highlights={resourceHighlights}
+      anchors={anchors}
+      resizeContainerRef={tabRef}
       onSelect={setSelectionInfo}
       selectionToolBar={
         <SelectionToolBar

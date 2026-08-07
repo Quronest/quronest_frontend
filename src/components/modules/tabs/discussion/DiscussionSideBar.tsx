@@ -8,9 +8,9 @@ import { DiscussTabDataType } from "@/types/WorkspaceType";
 import { setActiveDiscussion } from "@/store/features/discussion/discussionSlice";
 import { updateTabData } from "@/store/features/workspace/workspaceSlice";
 import {
-  ResponsiveContainer,
-  useResponsiveContainer,
-} from "@/components/ui/ResponsiveContainer";
+  TabResponsiveContainer,
+  useTabResponsiveContainer,
+} from "@/components/ui/TabResponsiveContainer";
 
 type DiscussionSidebarProps = {
   collapsed: boolean;
@@ -29,7 +29,7 @@ export const DiscussionSidebar = ({
     ),
   );
 
-  const { width, breakpoint } = useResponsiveContainer();
+  const { width, breakpoint } = useTabResponsiveContainer();
 
   const isCompactView =
     breakpoint === "base" || breakpoint === "md" || breakpoint === "sm";

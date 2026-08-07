@@ -13,7 +13,7 @@ import { useAppDispatch, useAppSelector } from "@/store/store";
 import { TabItem } from "./TabItem";
 import { useWorkspace } from "@/hooks/useWorkspace";
 import { TabContext } from "@/context/Tabcontext";
-import { ResponsiveContainer } from "@/components/ui/ResponsiveContainer";
+import { TabResponsiveContainer } from "@/components/ui/TabResponsiveContainer";
 
 type PaneProps = {
   paneId: "left" | "right";
@@ -95,9 +95,9 @@ export const Pane = ({ paneId }: PaneProps) => {
       <div className="flex-1 min-h-0">
         {activeTab ? (
           <TabContext.Provider value={{ tabData: activeTab, containerRef }}>
-            <ResponsiveContainer className="h-full">
+            <TabResponsiveContainer className="h-full">
               <TabPanel tab={activeTab} ref={containerRef} />
-            </ResponsiveContainer>
+            </TabResponsiveContainer>
           </TabContext.Provider>
         ) : (
           <div className="flex items-center justify-center h-full text-neutral">

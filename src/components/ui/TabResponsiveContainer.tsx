@@ -9,32 +9,32 @@ export const breakpoints = {
 
 export type Breakpoint = "base" | keyof typeof breakpoints;
 
-type ResponsiveContainerProps = {
+type TabResponsiveContainerProps = {
   children: React.ReactNode;
   className?: string;
 };
-type ResponsiveContainerContextType = {
+type TabResponsiveContainerContextType = {
   width: number;
   breakpoint: Breakpoint;
 };
-const ResponsiveContainerContext = createContext<
-  ResponsiveContainerContextType | undefined
+const TabResponsiveContainerContext = createContext<
+  TabResponsiveContainerContextType | undefined
 >(undefined);
 
-export const useResponsiveContainer = () => {
-  const data = useContext(ResponsiveContainerContext);
+export const useTabResponsiveContainer = () => {
+  const data = useContext(TabResponsiveContainerContext);
   if (!data) {
     throw new Error(
-      "useResponsiveContainer must be used inside ResponsiveContainer",
+      "useTabResponsiveContainer must be used inside TabResponsiveContainer",
     );
   }
   return data;
 };
 
-export const ResponsiveContainer = ({
+export const TabResponsiveContainer = ({
   children,
   className,
-}: ResponsiveContainerProps) => {
+}: TabResponsiveContainerProps) => {
   const ref = useRef<HTMLDivElement>(null);
   const [width, setWidth] = useState(0);
 
@@ -62,10 +62,10 @@ export const ResponsiveContainer = ({
             : "base";
 
   return (
-    <ResponsiveContainerContext.Provider value={{ width, breakpoint }}>
+    <TabResponsiveContainerContext.Provider value={{ width, breakpoint }}>
       <div ref={ref} className={className}>
         {children}
       </div>
-    </ResponsiveContainerContext.Provider>
+    </TabResponsiveContainerContext.Provider>
   );
 };

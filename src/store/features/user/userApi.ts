@@ -42,7 +42,7 @@ export const userApi = baseApi.injectEndpoints({
       providesTags: ["User"],
     }),
 
-    setPersonalData: builder.mutation<any, PersonalFormSchemaType>({
+    setPersonalData: builder.mutation<User, PersonalFormSchemaType>({
       query: (data: PersonalFormSchemaType) => {
         const transformed = {
           interested_domains: data.interested_domains
@@ -67,31 +67,24 @@ export const userApi = baseApi.injectEndpoints({
           body: transformed,
         };
       },
-      // async onQueryStarted(arg, { dispatch, queryFulfilled }) {
-      //   try {
-      //     const { data } = await queryFulfilled;
-      //     if (data?.value) {
-      //       dispatch(
-      //         userApi.util.updateQueryData("getProfile", undefined, (draft) => {
-      //           if (draft) {
-      //             draft.account_status = "ACADEMIC_DATA_INCOMPLETE";
-      //             draft.personal_data = {
-      //               interested_domains: arg.interested_domains || "",
-      //               skills: arg.skills ? arg.skills.split(",").map((s) => s.trim()).filter(Boolean) : [],
-      //               primary_goal: arg.primary_goal,
-      //               experience: arg.experience,
-      //               personal_description: arg.personal_description,
-      //             };
-      //           }
-      //         })
-      //       );
-      //     }
-      //   } catch (err) {
-      //     console.error("Failed to update profile cache programmatically:", err);
-      //   }
-      // },
+      async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+        try {
+          const { data } = await queryFulfilled;
+          if (data) {
+            dispatch(
+              userApi.util.updateQueryData("getProfile", undefined, (draft) => {
+                if (draft) {
+                  Object.assign(draft, data);
+                }
+              })
+            );
+          }
+        } catch (err) {
+          console.error("Failed to update profile cache programmatically:", err);
+        }
+      },
     }),
-    setAcademicData: builder.mutation<any, AcademicFormSchemaType>({
+    setAcademicData: builder.mutation<User, AcademicFormSchemaType>({
       query: (data: AcademicFormSchemaType) => {
         const transformed = {
           institute_name: data.institute_name,
@@ -105,28 +98,22 @@ export const userApi = baseApi.injectEndpoints({
           body: transformed,
         };
       },
-      // async onQueryStarted(arg, { dispatch, queryFulfilled }) {
-      //   try {
-      //     const { data } = await queryFulfilled;
-      //     if (data?.value) {
-      //       dispatch(
-      //         userApi.util.updateQueryData("getProfile", undefined, (draft) => {
-      //           if (draft) {
-      //             draft.account_status = "JOURNEY_START_INCOMPLETE";
-      //             draft.academic_data = {
-      //               institute_name: arg.institute_name,
-      //               grade: arg.grade,
-      //               course: arg.course,
-      //               academic_description: arg.academic_description,
-      //             };
-      //           }
-      //         })
-      //       );
-      //     }
-      //   } catch (err) {
-      //     console.error("Failed to update profile cache programmatically:", err);
-      //   }
-      // },
+      async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+        try {
+          const { data } = await queryFulfilled;
+          if (data) {
+            dispatch(
+              userApi.util.updateQueryData("getProfile", undefined, (draft) => {
+                if (draft) {
+                  Object.assign(draft, data);
+                }
+              })
+            );
+          }
+        } catch (err) {
+          console.error("Failed to update profile cache programmatically:", err);
+        }
+      },
     }),
 
     startJourney: builder.mutation<JobStatusResponse, void>({

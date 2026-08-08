@@ -8,10 +8,11 @@ import Button from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import {
   useStartJourneyMutation,
-  useLazyGetCurrentJourneyQuery,
+  useGetCurrentJourneyQuery,
+  userApi,
 } from "@/store/features/user/userApi";
 import { useJobPolling } from "@/hooks/useJobPolling";
-import { UserJourneyResponse } from "@/store/features/user/userType";
+import { useAppDispatch } from "@/store/store";
 
 const mapGroup = (group?: string) => {
   switch (group) {
@@ -41,18 +42,27 @@ const mapPhase = (phase?: string) => {
 
 export const StartJourney = () => {
   const router = useRouter();
+  const dispatch = useAppDispatch();
 
   const [startJourney] = useStartJourneyMutation();
-  const [triggerGetCurrentJourney] = useLazyGetCurrentJourneyQuery();
 
-  const { start, status, finalData: journeyData } = useJobPolling<UserJourneyResponse>({
+  const { start, status } = useJobPolling<void>({
     startTrigger: () => startJourney().unwrap(),
-    fetchFinalTrigger: () => triggerGetCurrentJourney().unwrap(),
+  });
+
+  const { data: journeyData } = useGetCurrentJourneyQuery(undefined, {
+    skip: status !== "success",
   });
 
   useEffect(() => {
     start();
   }, []);
+
+  useEffect(() => {
+    if (status === "success") {
+      dispatch(userApi.util.invalidateTags(["User", "User_Journey"]));
+    }
+  }, [status, dispatch]);
 
   return (
     <main className="flex min-h-screen items-center justify-center px-6 py-12">
@@ -101,7 +111,7 @@ export const StartJourney = () => {
                 <p className="text-sm text-neutral">Current Group</p>
 
                 <h3 className="mt-2 text-lg font-semibold text-foreground">
-                  {mapGroup(journeyData?.group)}
+                  {journeyData ? mapGroup(journeyData.group) : "Loading..."}
                 </h3>
               </Card>
 
@@ -109,7 +119,7 @@ export const StartJourney = () => {
                 <p className="text-sm text-neutral">Current Phase</p>
 
                 <h3 className="mt-2 text-lg font-semibold text-foreground">
-                  {mapPhase(journeyData?.phase)}
+                  {journeyData ? mapPhase(journeyData.phase) : "Loading..."}
                 </h3>
               </Card>
             </div>

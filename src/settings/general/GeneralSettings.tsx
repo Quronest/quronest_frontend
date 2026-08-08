@@ -1,7 +1,10 @@
 "use client";
 
+import { useEffect } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FormProvider, useForm } from "react-hook-form";
+import { LoaderCircle } from "lucide-react";
+import { toast } from "react-toastify";
 
 import { Card } from "@/components/ui/Card";
 import Input from "@/components/ui/Input";
@@ -13,8 +16,18 @@ import {
   generalSettingsSchema,
   type GeneralSettingsSchemaType,
 } from "@/schemas/generalSettingsSchema";
+import {
+  useGetProfileQuery,
+  useSetPersonalDataMutation,
+  useSetAcademicDataMutation,
+} from "@/store/features/user/userApi";
+import { asyncHandler } from "@/utils/asyncHandler";
 
 const GeneralSettings = () => {
+  const { data: profile, isLoading } = useGetProfileQuery();
+  const [setPersonalData, personalResult] = useSetPersonalDataMutation();
+  const [setAcademicData, academicResult] = useSetAcademicDataMutation();
+
   const methods = useForm<GeneralSettingsSchemaType>({
     resolver: zodResolver(generalSettingsSchema),
     mode: "onBlur",
@@ -35,15 +48,61 @@ const GeneralSettings = () => {
     register,
     handleSubmit,
     watch,
-    formState: { errors, isSubmitting },
+    reset,
+    formState: { errors },
   } = methods;
+
+  const isSaving = personalResult.isLoading || academicResult.isLoading;
+
+  useEffect(() => {
+    if (profile) {
+      reset({
+        institute_name: profile.academic_data?.institute_name || "",
+        grade: profile.academic_data?.grade || "",
+        course: profile.academic_data?.course || "",
+        academic_description: profile.academic_data?.academic_description || "",
+        interested_domains: profile.personal_data?.interested_domains?.join(", ") || "",
+        skills: profile.personal_data?.skills?.join(", ") || "",
+        primary_goal: profile.personal_data?.primary_goal || "",
+        experience: profile.personal_data?.experience || "",
+        personal_description: profile.personal_data?.description || "",
+      });
+    }
+  }, [profile, reset]);
 
   const academicDescription = watch("academic_description") ?? "";
   const personalDescription = watch("personal_description") ?? "";
 
-  const onSubmit = (data: GeneralSettingsSchemaType) => {
-    console.log(data);
+  const onSubmit = async (data: GeneralSettingsSchemaType) => {
+    await asyncHandler(async () => {
+      const personalData = {
+        interested_domains: data.interested_domains,
+        skills: data.skills,
+        primary_goal: data.primary_goal,
+        experience: data.experience,
+        personal_description: data.personal_description,
+      };
+
+      const academicData = {
+        institute_name: data.institute_name,
+        course: data.course,
+        grade: data.grade,
+        academic_description: data.academic_description,
+      };
+
+      await setPersonalData(personalData).unwrap();
+      await setAcademicData(academicData).unwrap();
+      toast.success("Settings saved successfully");
+    });
   };
+
+  if (isLoading) {
+    return (
+      <div className="flex h-[50vh] w-full items-center justify-center">
+        <LoaderCircle className="h-10 w-10 animate-spin text-primary" />
+      </div>
+    );
+  }
 
   return (
     <div className="mx-auto w-full max-w-6xl px-6 py-8">
@@ -197,10 +256,10 @@ const GeneralSettings = () => {
             <Button
               type="submit"
               size="lg"
-              disabled={isSubmitting}
+              disabled={isSaving}
               className="rounded-xl px-8"
             >
-              {isSubmitting ? "Saving..." : "Save Changes"}
+              {isSaving ? "Saving..." : "Save Changes"}
             </Button>
           </div>
         </form>

@@ -1,10 +1,10 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { LoaderCircle, Calendar } from "lucide-react";
 
 import { CurrentTaskComponent } from "@/components/modules/homepage/CurrentTaskComponent";
-import { MockWeekProgress } from "@/components/modules/homepage/MockWeekProgress";
+import { WeeklyCalendarProgress } from "@/components/modules/homepage/WeeklyCalendarProgress";
 import { TasklistItemComponent } from "@/components/modules/homepage/TasklistItemComponent";
 import { WelcomeComponent } from "@/components/modules/homepage/WelcomeComponent";
 import { PageContainer } from "@/components/ui/PageContainer";
@@ -38,8 +38,25 @@ const getCenteredRange = (date: Date) => {
 };
 
 const formatToLocalDateString = (date: Date): string => {
-  const formatted = formatDate(date.toISOString());
-  return `${formatted.year}-${formatted.monthNumber}-${formatted.day}`;
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+};
+
+const parseLocalDate = (dateStr: string | undefined): Date | null => {
+  if (!dateStr) return null;
+  const match = dateStr.match(/^(\d{4})-(\d{2})-(\d{2})/);
+  if (match) {
+    const year = parseInt(match[1], 10);
+    const month = parseInt(match[2], 10) - 1;
+    const day = parseInt(match[3], 10);
+    return new Date(year, month, day, 0, 0, 0, 0);
+  }
+  const parsed = new Date(dateStr);
+  if (isNaN(parsed.getTime())) return null;
+  parsed.setHours(0, 0, 0, 0);
+  return parsed;
 };
 
 const mapDailyTaskToTaskType = (task: any): Tasktype => {
@@ -74,16 +91,39 @@ const HomePage = () => {
   const { weekStart, weekEnd, weekDates } = useMemo(() => getCenteredRange(selectedDate), [selectedDate]);
 
   const startDateStr = useMemo(() => formatToLocalDateString(weekStart), [weekStart]);
-  const endDateStr = useMemo(() => formatToLocalDateString(weekEnd), [weekEnd]);
 
   // Profile and Journey Queries
   const { data: profile } = useGetProfileQuery();
   const { data: journey } = useGetCurrentJourneyQuery();
 
+  const today = useMemo(() => {
+    const d = new Date();
+    d.setHours(0, 0, 0, 0);
+    return d;
+  }, []);
+
+  const queryRange = useMemo(() => {
+    let start = new Date(today);
+    start.setDate(today.getDate() - 30); // Default fallback
+
+    const journeyStart = parseLocalDate(journey?.creation_timestamp);
+    if (journeyStart) {
+      start = journeyStart;
+    }
+
+    const end = new Date(today);
+    end.setDate(today.getDate() + 60);
+
+    return {
+      startDateStr: formatToLocalDateString(start),
+      endDateStr: formatToLocalDateString(end),
+    };
+  }, [journey, today]);
+
   // Daily Plans Queries
   const { data: dailyPlans = [], isLoading, isFetching } = useGetDailyPlansByRangeQuery({
-    startDate: startDateStr,
-    endDate: endDateStr,
+    startDate: queryRange.startDateStr,
+    endDate: queryRange.endDateStr,
   });
 
   const [triggerGetDailyPlans] = useLazyGetDailyPlansByRangeQuery();
@@ -94,17 +134,61 @@ const HomePage = () => {
     startTrigger: () => generateDailyPlans().unwrap(),
     fetchFinalTrigger: async () => {
       const result = await triggerGetDailyPlans({
-        startDate: startDateStr,
-        endDate: endDateStr,
+        startDate: queryRange.startDateStr,
+        endDate: queryRange.endDateStr,
       }).unwrap();
       return result;
     },
   });
 
+  const minDate = useMemo(() => {
+    const journeyStart = parseLocalDate(journey?.creation_timestamp);
+    if (journeyStart) {
+      return journeyStart;
+    }
+    const d = new Date(today);
+    return d;
+  }, [journey, today]);
+
+  const maxDate = useMemo(() => {
+    let latestDate = new Date(today);
+
+    for (const plan of dailyPlans) {
+      if (plan.plan_date) {
+        const planDate = parseLocalDate(plan.plan_date);
+        if (planDate && planDate.getTime() > latestDate.getTime()) {
+          latestDate = planDate;
+        }
+      }
+    }
+
+    return latestDate;
+  }, [dailyPlans, today]);
+
+  // Ensure selectedDate is clamped when minDate or maxDate changes
+  useEffect(() => {
+    setSelectedDate((prev) => {
+      const prevClean = new Date(prev);
+      prevClean.setHours(0, 0, 0, 0);
+
+      if (prevClean.getTime() < minDate.getTime()) {
+        return new Date(minDate);
+      }
+      if (prevClean.getTime() > maxDate.getTime()) {
+        return new Date(maxDate);
+      }
+      return prev;
+    });
+  }, [minDate, maxDate]);
+
   const handlePrevDay = () => {
     setSelectedDate((prev) => {
       const newDate = new Date(prev);
       newDate.setDate(prev.getDate() - 1);
+      newDate.setHours(0, 0, 0, 0);
+      if (newDate.getTime() < minDate.getTime()) {
+        return new Date(minDate);
+      }
       return newDate;
     });
   };
@@ -113,6 +197,10 @@ const HomePage = () => {
     setSelectedDate((prev) => {
       const newDate = new Date(prev);
       newDate.setDate(prev.getDate() + 1);
+      newDate.setHours(0, 0, 0, 0);
+      if (newDate.getTime() > maxDate.getTime()) {
+        return new Date(maxDate);
+      }
       return newDate;
     });
   };
@@ -181,13 +269,15 @@ const HomePage = () => {
         </Card>
       ) : (
         <>
-          <MockWeekProgress
+          <WeeklyCalendarProgress
             weekDates={weekDates}
             dailyPlans={dailyPlans}
             selectedDate={selectedDate}
             onSelectDate={setSelectedDate}
             onPrevDay={handlePrevDay}
             onNextDay={handleNextDay}
+            minDate={minDate}
+            maxDate={maxDate}
           />
 
           {selectedPlan ? (
@@ -227,11 +317,25 @@ const HomePage = () => {
               </div>
             </>
           ) : (
-            <Card className="p-8 border border-border/50 rounded-2xl bg-card/20 text-center py-12">
-              <p className="text-neutral text-sm">
-                No daily plan generated for this specific day ({formatToLocalDateString(selectedDate)}).
-                Select another day from the weekly tracker.
-              </p>
+            <Card className="flex flex-col items-center justify-center p-8 border border-border/50 rounded-2xl bg-card/20 backdrop-blur-md text-center max-w-2xl mx-auto py-12 px-6 space-y-6 shadow-sm border-dashed">
+              <div className="rounded-full bg-primary/10 p-4 border border-primary/20">
+                <Calendar className="h-8 w-8 text-primary" />
+              </div>
+              <div className="space-y-2">
+                <h2 className="text-xl font-bold text-foreground">No Daily Plans Scheduled</h2>
+                <p className="text-neutral text-sm max-w-md mx-auto leading-relaxed">
+                  No daily plan generated for this specific day ({formatToLocalDateString(selectedDate)}).
+                  {selectedDate.getTime() === today.getTime() && " Let's generate your learning roadmap using our AI engine!"}
+                </p>
+              </div>
+              {selectedDate.getTime() === today.getTime() && (
+                <Button
+                  onClick={handleGenerate}
+                  className="font-bold bg-primary/80! hover:bg-primary! transition-colors px-6 py-2.5"
+                >
+                  Generate Daily Plans
+                </Button>
+              )}
             </Card>
           )}
         </>

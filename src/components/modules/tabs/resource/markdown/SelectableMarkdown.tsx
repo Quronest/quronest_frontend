@@ -1,9 +1,4 @@
-import React, {
-  createContext,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import React, { createContext, useEffect, useRef, useState } from "react";
 import { MarkdownProps, MarkdownRenderer } from "../MarkdownRenderer";
 import { SelectionAnchor, TextSelection } from "@/types/WorkspaceType";
 import clsx from "clsx";

@@ -15,6 +15,16 @@ const noteSlice = createSlice({
       state.notes.push(action.payload);
     },
 
+    addNotes: (state, action: PayloadAction<NoteType[]>) => {
+      const merged = [...state.notes, ...action.payload];
+      const seen = new Set<string>();
+      state.notes = merged.filter((n) => {
+        if (!n?.id || seen.has(n.id)) return false;
+        seen.add(n.id);
+        return true;
+      });
+    },
+
     updateNote: (state, action: PayloadAction<NoteType>) => {
       const index = state.notes.findIndex((note) => note.id === action.payload.id);
       if (index !== -1) {
@@ -67,6 +77,7 @@ const noteSlice = createSlice({
 
 export const {
   addNote,
+  addNotes,
   updateNote,
   deleteNote,
   updateNoteAnchor,

@@ -1,9 +1,9 @@
 import { MessageType } from "@/types/DiscussionType";
-import { SelectableMarkdown } from "../resource/markdown/SelectableMarkdown";
 import { useState } from "react";
 import { TextSelection } from "@/types/WorkspaceType";
-import { SelectionToolBar } from "../resource/SelectionToolBar";
 import clsx from "clsx";
+import { SelectableMarkdown } from "../reading/markdown/SelectableMarkdown";
+import { SelectionToolBar } from "../reading/SelectionToolBar";
 
 type Props = {
   message: MessageType;

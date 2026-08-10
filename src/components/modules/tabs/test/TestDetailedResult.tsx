@@ -12,9 +12,9 @@ import {
 } from "lucide-react";
 import Button from "@/components/ui/Button";
 import { CircularProgress } from "@/components/ui/CircularProgress";
-import { MarkdownRenderer } from "@/components/modules/tabs/resource/MarkdownRenderer";
 import { QuestionType } from "./mockQuestions";
 import clsx from "clsx";
+import { MarkdownRenderer } from "../reading/MarkdownRenderer";
 
 export type TestDetailedResultProps = {
   questions: QuestionType[];

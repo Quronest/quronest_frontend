@@ -1,9 +1,9 @@
 import React from "react";
 import { Option } from "./Option";
 import { QuestionType } from "./mockQuestions";
-import { MarkdownRenderer } from "@/components/modules/tabs/resource/MarkdownRenderer";
 import { Tag } from "@/components/ui/Tag";
 import clsx from "clsx";
+import { MarkdownRenderer } from "../reading/MarkdownRenderer";
 
 type QuestionProps = {
   question: QuestionType;

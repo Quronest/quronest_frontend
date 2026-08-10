@@ -4,9 +4,7 @@ import { extractHeadings } from "./contentTable/extractHeadings";
 import { TOC } from "./contentTable/TableOfContents";
 import { ResourceTabDataType, SelectionAnchor } from "@/types/WorkspaceType";
 import { useTab } from "@/hooks/useTab";
-import { useEffect, useRef } from "react";
-import { useAppSelector } from "@/store/store";
-import AnnotationLayer from "./AnnotationLayer";
+
 
 export const ResourceTab = () => {
   const { tabData, taskId, tabRef} = useTab();

@@ -1,12 +1,11 @@
 import { TabData } from "@/types/WorkspaceType";
 import React, { forwardRef } from "react";
 import { NoteTab } from "../tabs/note/NoteTab";
-import { ResourceTab } from "../tabs/resource/ResourceTab";
 import { ScrollArea } from "@/components/ui/ScrollArea";
-import { mockMarkdown } from "../../../mockData/mockMarkdown";
 import { tabTypes } from "@/enums/TabEnums";
 import DiscussTab from "../tabs/discussion/DiscussTab";
 import { TestTab } from "../tabs/test/TestTab";
+import { ResourceTab } from "../tabs/reading/ReadingTab";
 
 type TabPanelType = {
   tab: TabData<any>;

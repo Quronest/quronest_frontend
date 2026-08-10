@@ -1,6 +1,4 @@
-import { SelectableMarkdown } from "../resource/markdown/SelectableMarkdown";
 import { MessageRole, MessageType } from "@/types/DiscussionType";
-import { SelectionToolBar } from "../resource/SelectionToolBar";
 import { TextSelection } from "@/types/WorkspaceType";
 import { AnchorTypes } from "@/enums/AnchorEnums";
 import { useState } from "react";
@@ -12,6 +10,8 @@ import {
 import { useWorkspace } from "@/hooks/useWorkspace";
 import { tabTypes } from "@/enums/TabEnums";
 import { useTab } from "@/hooks/useTab";
+import { SelectableMarkdown } from "../reading/markdown/SelectableMarkdown";
+import { SelectionToolBar } from "../reading/SelectionToolBar";
 
 type AssistantMessageProps = {
   message: MessageType;

@@ -3,14 +3,12 @@
 import clsx from "clsx";
 import React, { forwardRef } from "react";
 
-type ScrollAreaProps = {
+type ScrollAreaProps = React.ComponentPropsWithoutRef<"div"> & {
   direction?: "vertical" | "horizontal" | "both";
-  className?: string;
-  children: React.ReactNode;
 };
 
 export const ScrollArea = forwardRef<HTMLDivElement, ScrollAreaProps>(
-  ({ direction = "vertical", className, children }, forwardedRef) => {
+  ({ direction = "vertical", className, children, ...props }, forwardedRef) => {
     return (
       <div
         ref={forwardedRef}
@@ -25,6 +23,7 @@ export const ScrollArea = forwardRef<HTMLDivElement, ScrollAreaProps>(
 
           className,
         )}
+        {...props}
       >
         {children}
       </div>

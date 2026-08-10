@@ -15,10 +15,12 @@ import React, { useEffect, useRef, useState } from "react";
 export const Note = ({
   note,
   onEdit,
+  onDelete,
   isActive,
 }: {
   note: NoteType;
   onEdit: () => void;
+  onDelete: () => void;
   isActive: boolean;
 }) => {
   const dispatch = useAppDispatch();
@@ -41,7 +43,7 @@ export const Note = ({
   }, [isActive]);
 
   const handleDeleteNote = () => {
-    dispatch(deleteNote({ id: note.id }));
+    onDelete();
   };
 
   return (

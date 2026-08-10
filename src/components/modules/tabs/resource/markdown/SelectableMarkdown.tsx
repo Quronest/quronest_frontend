@@ -1,9 +1,4 @@
-import React, {
-  createContext,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import React, { createContext, useEffect, useRef, useState } from "react";
 import { MarkdownProps, MarkdownRenderer } from "../MarkdownRenderer";
 import { SelectionAnchor, TextSelection } from "@/types/WorkspaceType";
 import clsx from "clsx";
@@ -22,6 +17,7 @@ type SelectableMarkdownType = {
   onSelect?: (selectionData: TextSelection | null) => void;
   anchors?: SelectionAnchor[];
   className?: string;
+  enableAnnotations?: boolean;
 } & MarkdownProps;
 
 export const SelectableMarkdown = ({
@@ -30,6 +26,7 @@ export const SelectableMarkdown = ({
   onSelect,
   className,
   anchors = [],
+  enableAnnotations = true,
   ...markdownProps
 }: SelectableMarkdownType) => {
   const [selectionInfo, setSelectionInfo] = useState<TextSelection | null>(
@@ -141,10 +138,9 @@ export const SelectableMarkdown = ({
       >
         <MarkdownRenderer {...markdownProps} />
         {selectionInfo && toolBar}
-        <AnnotationLayer
-          anchors={anchors}
-          containerRef={containerRef}
-        />
+        {enableAnnotations && (
+          <AnnotationLayer anchors={anchors} containerRef={containerRef} />
+        )}
       </div>
     </SelectableMarkdownContext.Provider>
   );

@@ -17,7 +17,7 @@ type SelectableMarkdownType = {
   onSelect?: (selectionData: TextSelection | null) => void;
   anchors?: SelectionAnchor[];
   className?: string;
-  enableAnnotations?: boolean;
+  resizeContainerRef?: React.RefObject<HTMLElement | Window | null>;
 } & MarkdownProps;
 
 export const SelectableMarkdown = ({
@@ -26,7 +26,7 @@ export const SelectableMarkdown = ({
   onSelect,
   className,
   anchors = [],
-  enableAnnotations = true,
+  resizeContainerRef,
   ...markdownProps
 }: SelectableMarkdownType) => {
   const [selectionInfo, setSelectionInfo] = useState<TextSelection | null>(
@@ -138,9 +138,11 @@ export const SelectableMarkdown = ({
       >
         <MarkdownRenderer {...markdownProps} />
         {selectionInfo && toolBar}
-        {enableAnnotations && (
-          <AnnotationLayer anchors={anchors} containerRef={containerRef} />
-        )}
+        <AnnotationLayer
+          anchors={anchors}
+          containerRef={containerRef}
+          resizeContainerRef={resizeContainerRef}
+        />
       </div>
     </SelectableMarkdownContext.Provider>
   );

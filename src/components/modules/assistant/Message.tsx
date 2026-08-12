@@ -7,6 +7,7 @@ import { Bot, Copy, RefreshCcw } from "lucide-react";
 import Button from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 
+import { MarkdownRenderer } from "@/components/modules/tabs/resource/MarkdownRenderer";
 import { SelectableMarkdown } from "@/components/modules/tabs/resource/markdown/SelectableMarkdown";
 import { SelectionToolBar } from "@/components/modules/tabs/resource/SelectionToolBar";
 
@@ -32,16 +33,28 @@ export default function Message({
 
   if (message.role === "user") {
     return (
-      <div className="flex justify-end">
+      <div className="flex flex-col items-end gap-1.5">
+        {!!message.topic && (
+          <span
+            className={clsx(
+              "inline-flex items-center rounded-full border border-border/50 bg-card-hover px-2.5 py-0.5 text-[11px] font-medium text-foreground/80 shadow-sm",
+            )}
+          >
+            <span>Topic: {message.topic}</span>
+          </span>
+        )}
         <Card
           className={clsx(
             "max-w-3xl rounded-3xl border-border px-5 py-4",
             "bg-card",
           )}
         >
-          <p className="whitespace-pre-wrap text-sm leading-7 text-foreground">
-            {message.content}
-          </p>
+          <div className="prose prose-invert max-w-none text-sm leading-7 text-foreground prose-p:my-0 prose-blockquote:my-2">
+            <MarkdownRenderer
+              markdown={message.content}
+              showCopyButton={false}
+            />
+          </div>
         </Card>
       </div>
     );
@@ -58,7 +71,6 @@ export default function Message({
           <p className="py-2 text-sm text-neutral">Thinking...</p>
         ) : (
           <SelectableMarkdown
-            enableAnnotations={false}
             markdown={message.content}
             referenceId={message.id}
             onSelect={setSelection}

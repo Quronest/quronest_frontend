@@ -105,3 +105,12 @@ useEffect(() => {
     messages: [],
   },
 ];
+
+export const TOPIC_OPTIONS: string[] = [
+  "Ask Doubt",
+  "Code Review",
+  "Concept Explanation",
+  "Debugging & Error Help",
+  "System Design",
+  "Interview Prep",
+];

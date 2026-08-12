@@ -41,8 +41,11 @@ export default function ChatArea({ conversation, onMessagesChange }: Props) {
   );
 
   const [input, setInput] = useState("");
+  const [quotedText, setQuotedText] = useState<string | null>(null);
+  const [selectedTopic, setSelectedTopic] = useState<string | null>(null);
 
   const bottomRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
     setMessages(conversation.messages);
@@ -57,16 +60,23 @@ export default function ChatArea({ conversation, onMessagesChange }: Props) {
   const handleSend = () => {
     const text = input.trim();
 
-    if (!text) {
+    if (!text && !quotedText) {
       return;
     }
+
+    const fullContent = quotedText
+      ? text
+        ? `> ${quotedText.split("\n").join("\n> ")}\n\n${text}`
+        : `> ${quotedText.split("\n").join("\n> ")}`
+      : text;
 
     const userMessage: ChatMessage = {
       id: crypto.randomUUID(),
       role: "user",
-      content: text,
+      content: fullContent,
       createdAt: new Date().toISOString(),
       status: "completed",
+      topic: selectedTopic || undefined,
     };
 
     const assistantMessage: ChatMessage = {
@@ -82,6 +92,8 @@ export default function ChatArea({ conversation, onMessagesChange }: Props) {
     setMessages(nextMessages);
     onMessagesChange(nextMessages);
     setInput("");
+    setQuotedText(null);
+    setSelectedTopic(null);
 
     setTimeout(() => {
       const updatedMessages = nextMessages.map((message) =>
@@ -89,7 +101,7 @@ export default function ChatArea({ conversation, onMessagesChange }: Props) {
           ? {
               ...message,
               status: "completed" as const,
-              content: getMockResponse(text),
+              content: getMockResponse(text || quotedText || ""),
             }
           : message,
       );
@@ -100,19 +112,52 @@ export default function ChatArea({ conversation, onMessagesChange }: Props) {
   };
 
   const handleAskDoubt = (selection: TextSelection | null) => {
-    if (!selection) {
+    if (!selection || !selection.selectedText) {
       return;
     }
 
-    console.log(selection);
+    const textToQuote = selection.selectedText.trim();
+    if (!textToQuote) return;
+
+    setQuotedText(textToQuote);
+    setSelectedTopic("Ask Doubt");
+
+    if (typeof window !== "undefined") {
+      window.getSelection()?.removeAllRanges();
+    }
+
+    setTimeout(() => {
+      if (inputRef.current) {
+        inputRef.current.focus();
+      }
+    }, 0);
   };
 
   const handleAnalyze = (selection: TextSelection | null) => {
-    if (!selection) {
+    if (!selection || !selection.selectedText) {
       return;
     }
 
-    console.log(selection);
+    const textToQuote = selection.selectedText.trim();
+    if (!textToQuote) return;
+
+    setQuotedText(textToQuote);
+    setInput("Please analyze this.");
+    setSelectedTopic("Code Review");
+
+    if (typeof window !== "undefined") {
+      window.getSelection()?.removeAllRanges();
+    }
+
+    setTimeout(() => {
+      if (inputRef.current) {
+        inputRef.current.focus();
+      }
+    }, 0);
+  };
+
+  const handleRemoveQuote = () => {
+    setQuotedText(null);
   };
 
   const handleCopy = async (message: ChatMessage) => {
@@ -155,7 +200,16 @@ export default function ChatArea({ conversation, onMessagesChange }: Props) {
       </div>
 
       <div className="shrink-0 bg-background px-6 pb-5 pt-3">
-        <MessageInput value={input} onChange={setInput} onSend={handleSend} />
+        <MessageInput
+          inputRef={inputRef}
+          value={input}
+          onChange={setInput}
+          onSend={handleSend}
+          quotedText={quotedText}
+          onRemoveQuote={handleRemoveQuote}
+          selectedTopic={selectedTopic}
+          onSelectTopic={setSelectedTopic}
+        />
       </div>
     </section>
   );

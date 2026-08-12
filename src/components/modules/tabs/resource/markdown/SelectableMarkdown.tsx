@@ -1,4 +1,7 @@
+"use client";
+
 import React, { createContext, useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { MarkdownProps, MarkdownRenderer } from "../MarkdownRenderer";
 import { SelectionAnchor, TextSelection } from "@/types/WorkspaceType";
 import clsx from "clsx";
@@ -34,12 +37,38 @@ export const SelectableMarkdown = ({
   );
   const containerRef = useRef<HTMLDivElement | null>(null);
 
-  if (!containerRef) return;
+  // Keep a ref to onSelect to avoid stale closures in event listeners
+  const onSelectRef = useRef(onSelect);
+  onSelectRef.current = onSelect;
+
+  // Track mouse button state to avoid selectionchange race condition
+  const isMouseDownRef = useRef(false);
+
+  const handleMouseDown = () => {
+    isMouseDownRef.current = true;
+  };
+
   const handleMouseUp = () => {
+    isMouseDownRef.current = false;
+
     const selection = window.getSelection();
-    if (!selection) return;
+    if (!selection || selection.rangeCount === 0) return;
 
     const range = selection.getRangeAt(0);
+    const text = selection.toString().trim();
+
+    if (!text) {
+      setSelectionInfo(null);
+      onSelectRef.current?.(null);
+      return;
+    }
+
+    // multi node selection feature not required as of now
+    if (range.startContainer !== range.endContainer) {
+      setSelectionInfo(null);
+      onSelectRef.current?.(null);
+      return;
+    }
 
     let element =
       range.commonAncestorContainer.nodeType === Node.TEXT_NODE
@@ -48,28 +77,20 @@ export const SelectableMarkdown = ({
 
     const blockElement = element?.closest<HTMLElement>("[data-block-start]");
 
-    const nodeStart = getNodeOffset(blockElement!, range.startContainer);
+    // Guard: if no block element found (e.g. list items without data-block-start),
+    // still show the toolbar but skip block offset calculation
+    const nodeStart = blockElement
+      ? getNodeOffset(blockElement, range.startContainer)
+      : 0;
 
     const absoluteStart = nodeStart + range.startOffset;
     const absoluteEnd = nodeStart + range.endOffset;
 
-    const startOffset = Number(blockElement?.getAttribute("data-block-start"));
+    const startOffset = Number(blockElement?.getAttribute("data-block-start") ?? 0);
+    const endOffset = Number(blockElement?.getAttribute("data-block-end") ?? 0);
 
-    const endOffset = Number(blockElement?.getAttribute("data-block-end"));
+    const rect = range.getBoundingClientRect();
 
-    const rect = selection?.getRangeAt(0).getBoundingClientRect();
-    const text = selection.toString().trim();
-
-    // multi node selection feature not required as of now
-    if (range.startContainer !== range.endContainer) {
-      return;
-    }
-
-    if (!text) {
-      setSelectionInfo(null);
-      onSelect?.(null);
-      return;
-    }
     const selectionData: TextSelection = {
       selectedText: text,
 
@@ -106,15 +127,21 @@ export const SelectableMarkdown = ({
       }),
     };
     setSelectionInfo(selectionData);
-    onSelect?.(selectionData);
+    onSelectRef.current?.(selectionData);
   };
 
   useEffect(() => {
     const handleSelectionChange = () => {
+      // Don't clear selection while the mouse button is still held down —
+      // avoids a race condition where selectionchange fires during/right after
+      // mouseup before handleMouseUp has committed the new selection state.
+      if (isMouseDownRef.current) return;
+
       const selection = window.getSelection();
 
       if (!selection?.toString().trim()) {
         setSelectionInfo(null);
+        onSelectRef.current?.(null);
       }
     };
 
@@ -124,10 +151,11 @@ export const SelectableMarkdown = ({
       document.removeEventListener("selectionchange", handleSelectionChange);
     };
   }, []);
-  console.log("selectable markdown rendered");
+
   return (
     <SelectableMarkdownContext.Provider value={{ selection: selectionInfo }}>
       <div
+        onMouseDown={handleMouseDown}
         onMouseUp={handleMouseUp}
         className={clsx(
           "prose prose-invert w-full prose-pre:bg-transparent prose-pre:p-0 prose-pre:m-0 ",
@@ -137,7 +165,9 @@ export const SelectableMarkdown = ({
         ref={containerRef}
       >
         <MarkdownRenderer {...markdownProps} />
-        {selectionInfo && toolBar}
+        {selectionInfo &&
+          typeof document !== "undefined" &&
+          createPortal(toolBar, document.body)}
         <AnnotationLayer
           anchors={anchors}
           containerRef={containerRef}

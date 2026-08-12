@@ -7,23 +7,45 @@ import { TopicsCovered } from "./TopicsCovered";
 import { BookOpen, ChartBar, Play } from "lucide-react";
 import Button from "@/components/ui/Button";
 
-const topicsCovered = [
-  "Generics",
-  "Mapped Types",
-  "Conditional Types",
-  "Decorators",
-  "Utility Types",
-  "Infer",
-  "Template Literals",
-];
+export const TestOverviewSection = ({
+  questions = [],
+  title,
+  description,
+  level,
+  onStart,
+}: {
+  questions?: any[];
+  title?: string;
+  description?: string;
+  level?: string;
+  onStart?: () => void;
+}) => {
+  const finalTitle = title || "TypeScript Advanced Patterns";
+  const finalDescription = description || "Test your understanding of generics, conditional types, mapped types, decorators, and advanced compiler internals.";
+  const finalLevel = level || "easy";
 
-export const TestOverviewSection = ({ onStart }: { onStart?: () => void }) => {
+  const topicsCovered = React.useMemo(() => {
+    if (questions && questions.length > 0) {
+      const uniqueTopics = Array.from(new Set(questions.map((q: any) => q.topic).filter(Boolean)));
+      return uniqueTopics.length > 0 ? (uniqueTopics as string[]) : ["General Quiz"];
+    }
+    return [
+      "Generics",
+      "Mapped Types",
+      "Conditional Types",
+      "Decorators",
+      "Utility Types",
+      "Infer",
+      "Template Literals",
+    ];
+  }, [questions]);
+
   return (
     <div className="w-full max-w-7xl mx-auto space-y-4 mt-8">
       <TestOverviewHeader
-        level="easy"
-        title="TypeScript Advanced Patterns"
-        description="Test your understanding of generics, conditional types, mapped types, decorators, and advanced compiler internals."
+        level={finalLevel}
+        title={finalTitle}
+        description={finalDescription}
       />
       <div className="grid grid-cols-3 gap-5">
         {/* Details and instruction */}

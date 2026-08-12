@@ -14,9 +14,19 @@ export const useTab = () => {
   switch (tab.type) {
     case tabTypes.RESOURCE: {
       tabData = tab.data as ResourceTabDataType;
+      break;
     }
     case tabTypes.NOTE: {
       tabData = tab.data as NoteTabDataType;
+      break;
+    }
+    case tabTypes.TEST: {
+      tabData = tab.data;
+      break;
+    }
+    case tabTypes.CODE: {
+      tabData = tab.data;
+      break;
     }
   }
 

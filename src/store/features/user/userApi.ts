@@ -1,5 +1,5 @@
 import { baseApi } from "../baseApi";
-import { User, JobStatusResponse, UserJourneyResponse, DailyPlanDto } from "./userType";
+import { User, JobStatusResponse, UserJourneyResponse } from "./userType";
 import { PersonalFormSchemaType } from "@/schemas/personalFormSchema";
 import { AcademicFormSchemaType } from "@/schemas/academicFormSchema";
 
@@ -74,7 +74,7 @@ export const userApi = baseApi.injectEndpoints({
             dispatch(
               userApi.util.updateQueryData("getProfile", undefined, (draft) => {
                 if (draft) {
-                  Object.assign(draft, data);
+                   Object.assign(draft, data);
                 }
               })
             );
@@ -131,22 +131,6 @@ export const userApi = baseApi.injectEndpoints({
       query: () => "user/current-journey",
       providesTags: ["User_Journey"],
     }),
-
-    generateDailyPlans: builder.mutation<JobStatusResponse, void>({
-      query: () => ({
-        url: "daily-plans/generate-next-plans",
-        method: "POST",
-      }),
-      invalidatesTags: ["Daily_Plan"],
-    }),
-
-    getDailyPlansByRange: builder.query<DailyPlanDto[], { startDate: string; endDate: string }>({
-      query: ({ startDate, endDate }) => ({
-        url: "daily-plans/by-date-range",
-        params: { startDate, endDate },
-      }),
-      providesTags: ["Daily_Plan"],
-    }),
   }),
 });
 
@@ -161,7 +145,4 @@ export const {
   useLazyGetJobStatusQuery,
   useGetCurrentJourneyQuery,
   useLazyGetCurrentJourneyQuery,
-  useGenerateDailyPlansMutation,
-  useGetDailyPlansByRangeQuery,
-  useLazyGetDailyPlansByRangeQuery,
 } = userApi;

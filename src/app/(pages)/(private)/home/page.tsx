@@ -13,10 +13,12 @@ import { Card } from "@/components/ui/Card";
 import {
   useGetProfileQuery,
   useGetCurrentJourneyQuery,
+} from "@/store/features/user/userApi";
+import {
   useGetDailyPlansByRangeQuery,
   useGenerateDailyPlansMutation,
   useLazyGetDailyPlansByRangeQuery,
-} from "@/store/features/user/userApi";
+} from "@/store/features/dailyplan/dailyplanApi";
 import { useJobPolling } from "@/hooks/useJobPolling";
 import { DailyPlanDto } from "@/store/features/user/userType";
 import { Tasktype } from "@/types/Tasktype";

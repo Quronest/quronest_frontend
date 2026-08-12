@@ -6,6 +6,7 @@ import { tabTypes } from "@/enums/TabEnums";
 import DiscussTab from "../tabs/discussion/DiscussTab";
 import { TestTab } from "../tabs/test/TestTab";
 import { ResourceTab } from "../tabs/reading/ReadingTab";
+import { CodingTab } from "../tabs/coding/CodingTab";
 
 type TabPanelType = {
   tab: TabData<any>;
@@ -29,6 +30,10 @@ export const TabPanel = forwardRef<HTMLDivElement, TabPanelType>(
 
       case tabTypes.TEST:
         content = <TestTab />;
+        break;
+
+      case tabTypes.CODE:
+        content = <CodingTab />;
         break;
 
       default:

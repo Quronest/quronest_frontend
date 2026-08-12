@@ -4,17 +4,22 @@ import React, { useState, useEffect } from "react";
 import { Layers } from "lucide-react";
 import { TestRoomHeader } from "./TestRoomHeader";
 import { Question } from "./Question";
-import { mockQuestions } from "./mockQuestions";
+import { QuestionType, mockQuestions } from "./mockQuestions";
 import { TestSubmissionModal } from "./TestSubmissionModal";
 import { TestDetailedResult } from "./TestDetailedResult";
 import clsx from "clsx";
 import { ScrollArea } from "@/components/ui/ScrollArea";
 
 type TestRoomProps = {
+  questions?: QuestionType[];
+  title?: string;
   onExit: () => void;
 };
 
-export const TestRoom = ({ onExit }: TestRoomProps) => {
+export const TestRoom = ({ questions: propQuestions, title: propTitle, onExit }: TestRoomProps) => {
+  const questions = propQuestions && propQuestions.length > 0 ? propQuestions : mockQuestions;
+  const title = propTitle || "TypeScript Advanced Patterns";
+
   // --- STATE ---
   const [answers, setAnswers] = useState<Record<number, number | null>>({});
   const [timeRemaining, setTimeRemaining] = useState(2700); // 45 minutes
@@ -59,7 +64,7 @@ export const TestRoom = ({ onExit }: TestRoomProps) => {
   };
 
   // --- COMPUTED STATS ---
-  const totalQuestions = mockQuestions.length;
+  const totalQuestions = questions.length;
 
   const answeredCount = Object.keys(answers).filter(
     (key) =>
@@ -82,7 +87,7 @@ export const TestRoom = ({ onExit }: TestRoomProps) => {
   if (isSubmitted) {
     return (
       <TestDetailedResult
-        questions={mockQuestions}
+        questions={questions}
         answers={answers}
         timeTaken={timeTaken}
         onRetake={handleRetake}
@@ -96,7 +101,7 @@ export const TestRoom = ({ onExit }: TestRoomProps) => {
     <ScrollArea className=" space-y-6 flex flex-col">
       {/* Top Header Row */}
       <TestRoomHeader
-        title="TypeScript Advanced Patterns"
+        title={title}
         answeredCount={answeredCount}
         totalQuestions={totalQuestions}
         timeRemaining={timeRemaining}
@@ -107,7 +112,7 @@ export const TestRoom = ({ onExit }: TestRoomProps) => {
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 items-start w-full max-w-7xl mx-auto">
         {/* Left Section: Continuous Questions List */}
         <div className="col-span-1 lg:col-span-3 space-y-6 flex flex-col">
-          {mockQuestions.map((question, index) => (
+          {questions.map((question, index) => (
             <div
               key={question.id || index}
               id={`question-${index}`}
@@ -139,7 +144,7 @@ export const TestRoom = ({ onExit }: TestRoomProps) => {
 
             {/* Palette Grid */}
             <div className="grid grid-cols-5 gap-2">
-              {mockQuestions.map((_, index) => {
+              {questions.map((_, index) => {
                 const isAnswered =
                   answers[index] !== null && answers[index] !== undefined;
 

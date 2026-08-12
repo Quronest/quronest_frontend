@@ -14,6 +14,7 @@ type Props = {
   selectedConversationId: string;
   onConversationSelect: (id: string) => void;
   onNewConversation: () => void;
+  onDeleteConversation?: (id: string) => void;
 };
 
 export default function ConversationSidebar({
@@ -21,6 +22,7 @@ export default function ConversationSidebar({
   selectedConversationId,
   onConversationSelect,
   onNewConversation,
+  onDeleteConversation,
 }: Props) {
   return (
     <aside
@@ -41,23 +43,31 @@ export default function ConversationSidebar({
       </div>
 
       <ScrollArea className="min-h-0 flex-1">
-        <div className="px-3 py-4">
-          <p className="mb-3 px-2 text-xs font-medium uppercase tracking-wider text-neutral">
-            Chats
+        <div className="px-3 py-3">
+          <p className="mb-2 px-2 text-[11px] font-semibold uppercase tracking-wider text-neutral/70">
+            Recent Chats
           </p>
 
-          <div className="space-y-1">
-            {conversations.map((conversation) => (
-              <ConversationItem
-                key={conversation.id}
-                conversation={conversation}
-                active={conversation.id === selectedConversationId}
-                onClick={() => onConversationSelect(conversation.id)}
-              />
-            ))}
-          </div>
+          {conversations.length === 0 ? (
+            <p className="px-2 py-4 text-center text-xs text-neutral">
+              No chat history yet
+            </p>
+          ) : (
+            <div className="space-y-0.5">
+              {conversations.map((conversation) => (
+                <ConversationItem
+                  key={conversation.id}
+                  conversation={conversation}
+                  active={conversation.id === selectedConversationId}
+                  onClick={() => onConversationSelect(conversation.id)}
+                  onDelete={onDeleteConversation}
+                />
+              ))}
+            </div>
+          )}
         </div>
       </ScrollArea>
     </aside>
   );
 }
+

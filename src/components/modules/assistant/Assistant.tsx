@@ -8,6 +8,14 @@ import ConversationSidebar from "./ConversationSidebar";
 import { mockConversations } from "./mockData";
 import { ChatMessage, ConversationWithMessages } from "./types";
 
+const fallbackConversation: ConversationWithMessages = {
+  id: "default-empty",
+  title: "New Chat",
+  createdAt: new Date().toISOString(),
+  updatedAt: new Date().toISOString(),
+  messages: [],
+};
+
 export default function Assistant() {
   const [conversations, setConversations] =
     useState<ConversationWithMessages[]>(mockConversations);
@@ -20,7 +28,7 @@ export default function Assistant() {
     () =>
       conversations.find(
         (conversation) => conversation.id === selectedConversationId,
-      ) ?? conversations[0],
+      ) ?? conversations[0] ?? fallbackConversation,
     [conversations, selectedConversationId],
   );
 
@@ -37,9 +45,31 @@ export default function Assistant() {
     setSelectedConversationId(conversation.id);
   };
 
+  const handleDeleteConversation = (id: string) => {
+    setConversations((prev) => {
+      const updated = prev.filter((c) => c.id !== id);
+      if (selectedConversationId === id) {
+        setSelectedConversationId(updated[0]?.id ?? "");
+      }
+      return updated;
+    });
+  };
+
   const handleMessagesChange = (messages: ChatMessage[]) => {
-    setConversations((prev) =>
-      prev.map((conversation) => {
+    setConversations((prev) => {
+      const exists = prev.some((c) => c.id === selectedConversation.id);
+      if (!exists) {
+        const newConv = {
+          ...selectedConversation,
+          messages,
+          updatedAt: new Date().toISOString(),
+          title: messages.find((m) => m.role === "user")?.content.slice(0, 50) || "New Chat",
+        };
+        setSelectedConversationId(newConv.id);
+        return [newConv, ...prev];
+      }
+
+      return prev.map((conversation) => {
         if (conversation.id !== selectedConversationId) {
           return conversation;
         }
@@ -56,13 +86,9 @@ export default function Assistant() {
             ? firstUserMessage.content.slice(0, 50)
             : "New Chat",
         };
-      }),
-    );
+      });
+    });
   };
-
-  if (!selectedConversation) {
-    return null;
-  }
 
   return (
     <div
@@ -70,9 +96,10 @@ export default function Assistant() {
     >
       <ConversationSidebar
         conversations={conversations}
-        selectedConversationId={selectedConversationId}
+        selectedConversationId={selectedConversation.id}
         onConversationSelect={setSelectedConversationId}
         onNewConversation={handleNewConversation}
+        onDeleteConversation={handleDeleteConversation}
       />
 
       <main
@@ -89,3 +116,4 @@ export default function Assistant() {
     </div>
   );
 }
+

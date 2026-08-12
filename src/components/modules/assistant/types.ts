@@ -8,6 +8,7 @@ export interface ChatMessage {
   content: string;
   createdAt: string;
   status?: MessageStatus;
+  topic?: string;
 }
 
 export interface Conversation {
@@ -19,12 +20,4 @@ export interface Conversation {
 
 export interface ConversationWithMessages extends Conversation {
   messages: ChatMessage[];
-}
-
-export interface TextSelection {
-  selectedText: string;
-  position: {
-    x: number;
-    y: number;
-  };
 }

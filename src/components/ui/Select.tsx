@@ -14,12 +14,20 @@ type SelectProps = {
   options: Option[];
   value: string;
   onChange: (value: string) => void;
+  placeholder?: string;
+  direction?: "up" | "down";
+  buttonClassName?: string;
+  menuClassName?: string;
 };
 
 export const Select = ({
   options,
   value,
   onChange,
+  placeholder = "Select...",
+  direction = "down",
+  buttonClassName,
+  menuClassName,
 }: SelectProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [highlightedIndex, setHighlightedIndex] = useState(0);
@@ -130,27 +138,30 @@ export const Select = ({
         onClick={() => setIsOpen((prev) => !prev)}
         onKeyDown={handleKeyDown}
         className={clsx(
-          "inline-flex h-11 items-center gap-2",
-          "rounded-lg border border-neutral",
-          "bg-background",
-          "px-5",
-          "text-sm font-medium",
-          "transition-all duration-200",
-          "outline-none",
-          "hover:border-primary/40 hover:bg-card",
-          "focus:ring-2 focus:ring-primary/30",
-          isOpen &&
-            "border-primary bg-card ring-2 ring-primary/20"
+          buttonClassName ||
+            clsx(
+              "inline-flex h-11 items-center gap-2",
+              "rounded-lg border border-neutral",
+              "bg-background",
+              "px-5",
+              "text-sm font-medium",
+              "transition-all duration-200",
+              "outline-none",
+              "hover:border-primary/40 hover:bg-card",
+              "focus:ring-2 focus:ring-primary/30",
+              isOpen &&
+                "border-primary bg-card ring-2 ring-primary/20"
+            )
         )}
       >
         <span className="whitespace-nowrap">
-          {selectedOption?.label ?? "Select..."}
+          {selectedOption?.label ?? placeholder}
         </span>
 
         <ChevronDown
-          size={18}
+          size={16}
           className={clsx(
-            "transition-transform duration-200",
+            "shrink-0 transition-transform duration-200",
             isOpen && "rotate-180"
           )}
         />
@@ -160,12 +171,9 @@ export const Select = ({
         <ul
           role="listbox"
           className={clsx(
-            "absolute left-0 top-full z-50 mt-2",
-            "min-w-full",
-            "max-h-64 overflow-y-auto",
-            "rounded-xl border border-neutral",
-            "bg-background p-1",
-            "shadow-xl"
+            "absolute z-50 min-w-full max-h-64 overflow-y-auto rounded-xl border border-border bg-card p-1 shadow-xl",
+            direction === "up" ? "bottom-full mb-2 left-0" : "top-full mt-2 left-0",
+            menuClassName
           )}
         >
           {options.map((option, index) => {
@@ -190,12 +198,12 @@ export const Select = ({
                 }}
                 className={clsx(
                   "flex cursor-pointer items-center justify-between rounded-lg",
-                  "px-3 py-2 text-sm transition-colors",
+                  "px-3 py-2 text-xs transition-colors whitespace-nowrap gap-3",
                   selected &&
-                    "bg-primary text-primary-foreground",
+                    "bg-primary text-primary-foreground font-medium",
                   highlighted &&
                     !selected &&
-                    "bg-card",
+                    "bg-card-hover text-foreground",
                   option.disabled &&
                     "cursor-not-allowed opacity-40"
                 )}
@@ -204,7 +212,7 @@ export const Select = ({
 
                 {selected && (
                   <Check
-                    size={16}
+                    size={14}
                     strokeWidth={2.5}
                   />
                 )}

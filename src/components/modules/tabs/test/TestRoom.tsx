@@ -4,27 +4,39 @@ import React, { useState, useEffect } from "react";
 import { Layers } from "lucide-react";
 import { TestRoomHeader } from "./TestRoomHeader";
 import { Question } from "./Question";
-import { QuestionType, mockQuestions } from "./mockQuestions";
 import { TestSubmissionModal } from "./TestSubmissionModal";
 import { TestDetailedResult } from "./TestDetailedResult";
 import clsx from "clsx";
 import { ScrollArea } from "@/components/ui/ScrollArea";
+import { McqQuestion } from "@/types/TaskType";
+
 
 type TestRoomProps = {
-  questions?: QuestionType[];
+  questions?: McqQuestion[];
   title?: string;
+  duration?: number;
+  domain?: string;
   onExit: () => void;
 };
 
-export const TestRoom = ({ questions: propQuestions, title: propTitle, onExit }: TestRoomProps) => {
-  const questions = propQuestions && propQuestions.length > 0 ? propQuestions : mockQuestions;
-  const title = propTitle || "TypeScript Advanced Patterns";
-
+export const TestRoom = ({
+  questions = [],
+  title = "Quiz",
+  duration,
+  domain,
+  onExit,
+}: TestRoomProps) => {
   // --- STATE ---
+  const totalSeconds = duration ? duration * 60 : 2700;
   const [answers, setAnswers] = useState<Record<number, number | null>>({});
-  const [timeRemaining, setTimeRemaining] = useState(2700); // 45 minutes
+  const [timeRemaining, setTimeRemaining] = useState(totalSeconds);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+
+  // Sync initial timer value if duration changes
+  useEffect(() => {
+    setTimeRemaining(totalSeconds);
+  }, [totalSeconds]);
 
   // --- TIMER EFFECT ---
   useEffect(() => {
@@ -59,7 +71,7 @@ export const TestRoom = ({ questions: propQuestions, title: propTitle, onExit }:
 
   const handleRetake = () => {
     setAnswers({});
-    setTimeRemaining(2700);
+    setTimeRemaining(totalSeconds);
     setIsSubmitted(false);
   };
 
@@ -74,7 +86,7 @@ export const TestRoom = ({ questions: propQuestions, title: propTitle, onExit }:
   const leftCount = totalQuestions - answeredCount;
 
   // Format time elapsed
-  const timeTaken = 2700 - timeRemaining;
+  const timeTaken = totalSeconds - timeRemaining;
 
   const scrollToQuestion = (index: number) => {
     const element = document.getElementById(`question-${index}`);
@@ -92,6 +104,7 @@ export const TestRoom = ({ questions: propQuestions, title: propTitle, onExit }:
         timeTaken={timeTaken}
         onRetake={handleRetake}
         onExit={onExit}
+        topic={domain}
       />
     );
   }
@@ -126,6 +139,7 @@ export const TestRoom = ({ questions: propQuestions, title: propTitle, onExit }:
                 onSelectOption={(optionIndex) =>
                   handleSelectOption(index, optionIndex)
                 }
+                topic={domain}
               />
             </div>
           ))}
@@ -201,4 +215,5 @@ export const TestRoom = ({ questions: propQuestions, title: propTitle, onExit }:
     </ScrollArea>
   );
 };
+
 export default TestRoom;

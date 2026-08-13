@@ -1,11 +1,24 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import { Pane } from "@/components/modules/workspace/Pane";
 import { Group, Panel } from "react-resizable-panels";
 import { useWorkspace } from "@/hooks/useWorkspace";
+import { useAppDispatch } from "@/store/store";
+import { setDailyPlanId } from "@/store/features/workspace/workspaceSlice";
 
-export const WorkspaceLayout = () => {
+type WorkspaceLayoutProps = {
+  dailyPlanId: string;
+};
+
+export const WorkspaceLayout = ({ dailyPlanId }: WorkspaceLayoutProps) => {
+  const dispatch = useAppDispatch();
   const { panes } = useWorkspace();
+
+  useEffect(() => {
+    if (dailyPlanId) {
+      dispatch(setDailyPlanId(dailyPlanId));
+    }
+  }, [dailyPlanId, dispatch]);
 
   return (
     <Group className="h-full w-full min-w-0">

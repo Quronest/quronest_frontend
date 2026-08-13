@@ -2,16 +2,17 @@ import { useEffect, useState } from "react";
 import AnnotationIcon from "./AnnotationIcon";
 import { getAnnotationPosition } from "./helper/getAnnotationPosition";
 import { SelectionAnchor } from "@/types/WorkspaceType";
+import { TaskAnchor } from "@/types/TaskType";
 
 type Props = {
-  anchors: (SelectionAnchor | undefined)[];
+  anchors: TaskAnchor[] | [];
   containerRef: React.RefObject<HTMLDivElement | null>;
   onAnnotationClick?: (id: string) => void;
   resizeContainerRef?: React.RefObject<HTMLElement | Window | null>;
 };
 
 type Position = {
-  anchor: SelectionAnchor | undefined;
+  anchor: TaskAnchor | undefined;
   position: {
     x: number;
     y: number;
@@ -78,14 +79,14 @@ export default function AnnotationLayer({
     <>
       {positions.map((item) => {
         const anchor = item!.anchor!;
-        const key = `${anchor.type}-${anchor.blockOffset.start}-${anchor.selectionOffset.start}`;
+        const key = `${anchor.type}-${anchor.block_offset.start}-${anchor.selection_offset.start}`;
         return (
           <AnnotationIcon
             key={key}
             type={anchor.type}
             x={item!.position!.x}
             y={item!.position!.y}
-            onClick={() => onAnnotationClick?.(anchor.referenceId)}
+            onClick={() => onAnnotationClick?.(anchor.reference_id)}
           />
         );
       })}

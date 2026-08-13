@@ -6,9 +6,7 @@ import { useWorkspace } from "@/hooks/useWorkspace";
 import { tabTypes } from "@/enums/TabEnums";
 import { TabData } from "@/types/WorkspaceType";
 import { DailyTaskSummaryDto } from "@/store/features/dailyplan/dailyplanType";
-import { DailyTaskDto } from "@/store/features/task/taskType";
-import { useGetDailyPlansByRangeQuery } from "@/store/features/dailyplan/dailyplanApi";
-import { useTaskGeneration } from "@/hooks/useTaskGeneration";
+import { useGetDailyPlanByIdQuery } from "@/store/features/dailyplan/dailyplanApi";
 import {
   addToPane,
   closeSidebar,
@@ -16,15 +14,17 @@ import {
 } from "@/store/features/workspace/workspaceSlice";
 import { useAppDispatch } from "@/store/store";
 import clsx from "clsx";
-import { ChevronLeft, SquareSplitHorizontal, LoaderCircle } from "lucide-react";
-import React, { useState, useMemo } from "react";
-
-const formatToLocalDateString = (date: Date): string => {
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, "0");
-  const day = String(date.getDate()).padStart(2, "0");
-  return `${year}-${month}-${day}`;
-};
+import {
+  ChevronLeft,
+  SquareSplitHorizontal,
+  LoaderCircle,
+  BookOpen,
+  HelpCircle,
+  Code2,
+  AlignLeft,
+} from "lucide-react";
+import React from "react";
+import { useParams } from "next/navigation";
 
 const mapTaskTypeToTabType = (type: string) => {
   switch (type) {
@@ -39,86 +39,39 @@ const mapTaskTypeToTabType = (type: string) => {
   }
 };
 
-const mapTaskDtoToTab = (task: DailyTaskDto): TabData<any> => {
-  const type = mapTaskTypeToTabType(task.task_type);
-  let data: any = {};
-
-  if (type === tabTypes.RESOURCE && task.content) {
-    data = {
-      markdown: (task.content as any).markdown_content || (task.content as any).markdownContent || "",
-      anchors: (task.content as any).selection_anchors || (task.content as any).selectionAnchors || [],
-    };
-  } else if (type === tabTypes.TEST && task.content) {
-    const questionnaires = (task.content as any).questionnaires || [];
-    const questions = questionnaires.map((q: any) => {
-      const solutionIndex = q.options?.findIndex((o: any) => o.id === q.solution?.id);
-      return {
-        id: q.id,
-        question: q.title,
-        options: q.options?.map((o: any) => o.text) || [],
-        solution: solutionIndex >= 0 ? solutionIndex : 0,
-        explanation: q.explanation || "",
-        topic: task.domain || "Quiz",
-        type: "Single Choice",
-      };
-    });
-
-    data = {
-      questions,
-      title: task.title,
-      description: task.description,
-      level: task.level,
-    };
-  } else if (type === tabTypes.CODE) {
-    data = {};
-  }
-
-  return {
-    id: `task-${task.id}`,
-    taskId: task.id,
-    label: task.title,
-    type,
-    data,
-  };
+const taskIconMap: Record<string, React.ComponentType<any>> = {
+  READING: BookOpen,
+  QUIZ: HelpCircle,
+  CODING: Code2,
+  DESCRIPTIVE: AlignLeft,
 };
 
 export const WorkspaceSideBar = () => {
   const dispatch = useAppDispatch();
   const { isSidebarCollapsed } = useWorkspace();
+  const { dailyPlanId } = useParams<{ dailyPlanId: string }>();
 
-  const [loadingTaskId, setLoadingTaskId] = useState<string | null>(null);
-  const { loadTask } = useTaskGeneration();
+  const { data: dailyPlan, isLoading: isPlanLoading } = useGetDailyPlanByIdQuery(
+    dailyPlanId || "",
+    { skip: !dailyPlanId }
+  );
 
-  const todayStr = useMemo(() => {
-    return formatToLocalDateString(new Date());
-  }, []);
+  const tasks = dailyPlan?.tasks || [];
 
-  const { data: dailyPlans = [], isLoading: isPlansLoading } = useGetDailyPlansByRangeQuery({
-    startDate: todayStr,
-    endDate: todayStr,
-  });
+  const mapTaskSummaryToTab = (task: DailyTaskSummaryDto): TabData<any> => {
+    const type = mapTaskTypeToTabType(task.task_type);
+    return {
+      id: `task-${task.id}`,
+      taskId: task.id,
+      label: task.title,
+      type,
+      data: null, // starts as null to trigger loader wrapper inside tab
+    };
+  };
 
-  const todayPlan = useMemo(() => {
-    return dailyPlans.find((p) => p.plan_date === todayStr) || null;
-  }, [dailyPlans, todayStr]);
-
-  const tasks = todayPlan?.tasks || [];
-
-  const handleTaskClick = async (taskSummary: DailyTaskSummaryDto) => {
-    if (loadingTaskId) return;
-    setLoadingTaskId(taskSummary.id);
-
-    try {
-      const loadedTask = await loadTask(taskSummary.id);
-      if (loadedTask) {
-        const tab = mapTaskDtoToTab(loadedTask);
-        dispatch(addToPane({ tab }));
-      }
-    } catch (err) {
-      console.error("Failed to load task:", err);
-    } finally {
-      setLoadingTaskId(null);
-    }
+  const handleTaskClick = (taskSummary: DailyTaskSummaryDto) => {
+    const tab = mapTaskSummaryToTab(taskSummary);
+    dispatch(addToPane({ tab }));
   };
 
   return (
@@ -161,7 +114,7 @@ export const WorkspaceSideBar = () => {
             </div>
           </div>
           <ScrollArea className="space-y-0 py-2">
-            {isPlansLoading ? (
+            {isPlanLoading ? (
               <div className="flex justify-center items-center py-8">
                 <LoaderCircle className="animate-spin text-primary" size={24} />
               </div>
@@ -171,19 +124,16 @@ export const WorkspaceSideBar = () => {
               </div>
             ) : (
               tasks.map((task) => {
-                const isLoading = loadingTaskId === task.id;
+                const IconComponent = taskIconMap[task.task_type] || AlignLeft;
                 return (
                   <Button
                     key={task.id}
                     variant="list"
-                    disabled={!!loadingTaskId}
                     onClick={() => handleTaskClick(task)}
-                    className="flex justify-between items-center w-full"
+                    className="flex items-center gap-3 w-full"
                   >
-                    <span>{task.title}</span>
-                    {isLoading && (
-                      <LoaderCircle className="animate-spin text-accent ml-2" size={16} />
-                    )}
+                    <IconComponent className="h-4 w-4 text-neutral shrink-0" />
+                    <span className="truncate flex-1 text-left">{task.title}</span>
                   </Button>
                 );
               })

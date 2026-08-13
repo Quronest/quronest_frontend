@@ -13,11 +13,6 @@ const navopts: Record<string, any>[] = [
     icon: <Home size={24}/>,
   },
   {
-    label: "Workspace",
-    key: "workspace",
-    icon: <IdCardLanyard size={24} />,
-  },
-  {
     label: "Logout",
     key: "logout",
     icon: <LogOut size={24}/>,
@@ -49,7 +44,7 @@ const SideNavBar = ({ className }: { className?: string }) => {
       <div className="flex flex-col justify-between items-center h-full">
         <div className="space-y-2">
           {navopts.map((opt, index) => {
-            if (index < 2)
+            if (opt.key === "home")
               return (
                 <NavIcon
                   key={index}
@@ -63,7 +58,7 @@ const SideNavBar = ({ className }: { className?: string }) => {
         </div>
         <div className="space-y-2">
           {navopts.map((opt, index) => {
-            if (index >= 2)
+            if (opt.key !== "home")
               return (
                 <NavIcon
                   key={index}

@@ -1,8 +1,9 @@
 import { SelectionAnchor } from "@/types/WorkspaceType";
 import { buildRange } from "./buildRange";
+import { TaskAnchor } from "@/types/TaskType";
 
 export function getAnnotationPosition(
-  anchor: SelectionAnchor,
+  anchor: TaskAnchor,
   root: HTMLElement,
 ) {
   const range = buildRange(anchor, root);

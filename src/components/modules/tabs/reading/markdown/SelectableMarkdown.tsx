@@ -9,6 +9,7 @@ import { SelectionAnchor, TextSelection } from "@/types/WorkspaceType";
 import clsx from "clsx";
 import { getNodeOffset } from "../helper/getNodeOffset";
 import AnnotationLayer from "../AnnotationLayer";
+import { TaskAnchor } from "@/types/TaskType";
 
 const SelectableMarkdownContext = createContext<{
   selection: TextSelection | null;
@@ -20,7 +21,7 @@ type SelectableMarkdownType = {
   referenceId: string;
   selectionToolBar: React.ReactNode;
   onSelect?: (selectionData: TextSelection | null) => void;
-  anchors?: SelectionAnchor[];
+  anchors?: TaskAnchor[];
   className?: string;
   resizeContainerRef?: React.RefObject<HTMLElement | Window | null>;
 } & MarkdownProps;
@@ -96,6 +97,7 @@ export const SelectableMarkdown = ({
       },
 
       createAnchor: (referenceId, type) => ({
+        id: crypto.randomUUID(),
         referenceId: referenceId,
         type,
         blockOffset: {

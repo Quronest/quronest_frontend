@@ -12,33 +12,22 @@ export const TestOverviewSection = ({
   title,
   description,
   level,
+  duration,
+  domain,
   onStart,
 }: {
   questions?: any[];
   title?: string;
   description?: string;
   level?: string;
+  duration?: number;
+  domain?: string;
   onStart?: () => void;
 }) => {
-  const finalTitle = title || "TypeScript Advanced Patterns";
-  const finalDescription = description || "Test your understanding of generics, conditional types, mapped types, decorators, and advanced compiler internals.";
+  const finalTitle = title || "Quiz";
+  const finalDescription = description || "Test your understanding with this quiz.";
   const finalLevel = level || "easy";
-
-  const topicsCovered = React.useMemo(() => {
-    if (questions && questions.length > 0) {
-      const uniqueTopics = Array.from(new Set(questions.map((q: any) => q.topic).filter(Boolean)));
-      return uniqueTopics.length > 0 ? (uniqueTopics as string[]) : ["General Quiz"];
-    }
-    return [
-      "Generics",
-      "Mapped Types",
-      "Conditional Types",
-      "Decorators",
-      "Utility Types",
-      "Infer",
-      "Template Literals",
-    ];
-  }, [questions]);
+  const topicsCovered = domain ? [domain] : ["General Quiz"];
 
   return (
     <div className="w-full max-w-7xl mx-auto space-y-4 mt-8">
@@ -50,7 +39,11 @@ export const TestOverviewSection = ({
       <div className="grid grid-cols-3 gap-5">
         {/* Details and instruction */}
         <div className="space-y-5 col-span-2">
-          <TestDetails />
+          <TestDetails
+            duration={duration}
+            questionsCount={questions.length}
+            level={finalLevel}
+          />
           <TestInstructions />
         </div>
 

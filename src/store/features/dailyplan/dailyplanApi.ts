@@ -20,6 +20,11 @@ export const dailyplanApi = baseApi.injectEndpoints({
       }),
       providesTags: ["Daily_Plan"],
     }),
+
+    getDailyPlanById: builder.query<DailyPlanDto, string>({
+      query: (id) => `daily-plans/${id}`,
+      providesTags: (result, error, id) => [{ type: "Daily_Plan", id }],
+    }),
   }),
 });
 
@@ -27,4 +32,6 @@ export const {
   useGenerateDailyPlansMutation,
   useGetDailyPlansByRangeQuery,
   useLazyGetDailyPlansByRangeQuery,
+  useGetDailyPlanByIdQuery,
+  useLazyGetDailyPlanByIdQuery,
 } = dailyplanApi;

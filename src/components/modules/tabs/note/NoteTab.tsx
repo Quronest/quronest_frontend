@@ -9,10 +9,15 @@ import { ScrollArea } from "@/components/ui/ScrollArea";
 import { TextArea } from "@/components/ui/TextArea";
 import { TabHeader } from "../../../ui/TabHeader";
 import { TabContainer } from "../../../ui/TabContainer";
-import { NoteTabDataType } from "@/types/WorkspaceType";
+import { NoteTabPayloadType } from "@/types/WorkspaceType";
 import { useAppDispatch, useAppSelector } from "@/store/store";
 import { useTab } from "@/hooks/useTab";
-import { addNote, addNotes, updateNote, deleteNote } from "@/store/features/notes/noteSlice";
+import {
+  addNote,
+  addNotes,
+  updateNote,
+  deleteNote,
+} from "@/store/features/notes/noteSlice";
 import {
   useLazyGetNotesQuery,
   useCreateNoteMutation,
@@ -26,17 +31,28 @@ export type NoteTabProps = {
   activeNoteId?: string | null;
 };
 
-export const NoteTab = ({ activeNoteId: propActiveNoteId }: NoteTabProps = {}) => {
+export const NoteTab = ({
+  activeNoteId: propActiveNoteId,
+}: NoteTabProps = {}) => {
   const dispatch = useAppDispatch();
-  const { tabData, taskId } = useTab();
-  const { draftNote, activeNoteId: tabActiveNoteId } = (tabData as NoteTabDataType) || {};
-  const activeNoteId = propActiveNoteId !== undefined ? propActiveNoteId : tabActiveNoteId;
+  const { tabData } = useTab();
+  const tabPayload = tabData.payload;
+  const {
+    taskId,
+    draftNote,
+    activeNoteId: tabActiveNoteId,
+  } = (tabPayload as NoteTabPayloadType) || {};
+  const activeNoteId =
+    propActiveNoteId !== undefined ? propActiveNoteId : tabActiveNoteId;
 
   // Retrieve notes and sort chronologically (ascending) for WhatsApp style rendering
   const notes = useAppSelector((state) =>
     state.note.notes
       .filter((note) => note?.taskId === taskId)
-      .sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()),
+      .sort(
+        (a, b) =>
+          new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
+      ),
   );
 
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -60,6 +76,7 @@ export const NoteTab = ({ activeNoteId: propActiveNoteId }: NoteTabProps = {}) =
     updatedAt: dto.update_timestamp || undefined,
     anchor: dto.reference_text
       ? {
+          id: crypto.randomUUID(),
           referenceId: dto.task_id,
           type: AnchorTypes.NOTE,
           selectedText: dto.reference_text,
@@ -141,7 +158,8 @@ export const NoteTab = ({ activeNoteId: propActiveNoteId }: NoteTabProps = {}) =
         // Adjust scroll position to prevent view jumping
         setTimeout(() => {
           const newScrollHeight = container.scrollHeight;
-          container.scrollTop = container.scrollTop + (newScrollHeight - oldScrollHeight);
+          container.scrollTop =
+            container.scrollTop + (newScrollHeight - oldScrollHeight);
         }, 0);
       } catch (err) {
         console.error("Failed to load more notes:", err);

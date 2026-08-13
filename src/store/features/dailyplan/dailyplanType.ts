@@ -1,20 +1,11 @@
 import { Group, Phase } from "../user/userType";
+import { DailyTaskStatus, DailyTaskType, DailyTaskSummaryDto } from "@/types/TaskType";
+export type { DailyTaskStatus, DailyTaskType, DailyTaskSummaryDto };
+
 
 export type DailyPlanStatus = "PENDING" | "COMPLETED" | "PARTIAL" | "SKIPPED";
-export type DailyTaskStatus = "PENDING" | "COMPLETED" | "PARTIAL" | "SKIPPED";
-export type DailyTaskType = "READING" | "QUIZ" | "CODING" | "DESCRIPTIVE";
 
-export interface DailyTaskSummaryDto {
-  id: string;
-  order: number;
-  title: string;
-  task_type: DailyTaskType;
-  status: DailyTaskStatus;
-  expected_total_time: number; // in minutes
-  actual_time_spent: number;
-  progress_percent: number;
-  is_optional: boolean;
-}
+
 
 export interface DailyPlanDto {
   id: string;

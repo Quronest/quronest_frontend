@@ -1,16 +1,18 @@
 import React from "react";
 import { Option } from "./Option";
-import { QuestionType } from "./mockQuestions";
 import { Tag } from "@/components/ui/Tag";
 import clsx from "clsx";
 import { MarkdownRenderer } from "../reading/MarkdownRenderer";
+import { McqQuestion } from "@/types/TaskType";
+
 
 type QuestionProps = {
-  question: QuestionType;
+  question: McqQuestion;
   questionNumber: number;
   totalQuestions: number;
   selectedOptionIndex: number | null;
   onSelectOption: (optionIndex: number) => void;
+  topic?: string;
 };
 
 export const Question = ({
@@ -19,6 +21,7 @@ export const Question = ({
   totalQuestions,
   selectedOptionIndex,
   onSelectOption,
+  topic,
 }: QuestionProps) => {
   return (
     <div className="bg-card border border-border rounded-xl p-6 space-y-6">
@@ -29,8 +32,8 @@ export const Question = ({
           <div className="bg-primary/15 border border-primary/20 text-primary text-sm font-semibold px-3 py-1 rounded-full">
             Q{questionNumber} / {totalQuestions}
           </div>
-          <Tag label={question.type} tagType="secondary" />
-          <Tag label={question.topic} tagType="neutral" />
+          <Tag label="Single Choice" tagType="secondary" />
+          <Tag label={topic || "Quiz"} tagType="neutral" />
         </div>
       </div>
 
@@ -41,15 +44,15 @@ export const Question = ({
           " max-w-none text-lg leading-relaxed text-foreground/90",
         )}
       >
-        <MarkdownRenderer markdown={question.question} showCopyButton={false} />
+        <MarkdownRenderer markdown={question.title} showCopyButton={false} />
       </div>
 
       {/* Options Stack */}
       <div className="flex flex-col gap-3">
         {question.options.map((option, index) => (
           <Option
-            key={index}
-            text={option}
+            key={option.id}
+            text={option.text}
             isSelected={selectedOptionIndex === index}
             onClick={() => onSelectOption(index)}
           />

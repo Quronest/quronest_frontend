@@ -4,7 +4,6 @@ import React from "react";
 import {
   Sparkles,
   RotateCcw,
-  ArrowLeft,
   Layers,
   CheckCircle2,
   XCircle,
@@ -12,16 +11,18 @@ import {
 } from "lucide-react";
 import Button from "@/components/ui/Button";
 import { CircularProgress } from "@/components/ui/CircularProgress";
-import { QuestionType } from "./mockQuestions";
 import clsx from "clsx";
 import { MarkdownRenderer } from "../reading/MarkdownRenderer";
+import { McqQuestion } from "@/types/TaskType";
+
 
 export type TestDetailedResultProps = {
-  questions: QuestionType[];
+  questions: McqQuestion[];
   answers: Record<number, number | null>;
   timeTaken: number;
   onRetake: () => void;
   onExit: () => void;
+  topic?: string;
 };
 
 export const TestDetailedResult = ({
@@ -30,6 +31,7 @@ export const TestDetailedResult = ({
   timeTaken,
   onRetake,
   onExit,
+  topic,
 }: TestDetailedResultProps) => {
   // --- COMPUTED STATS ---
   const totalQuestions = questions.length;
@@ -38,11 +40,17 @@ export const TestDetailedResult = ({
     (key) => answers[Number(key)] !== null && answers[Number(key)] !== undefined
   ).length;
 
-  // Grade compilation
+  // Grade compilation (verifies if the chosen option ID matches the correct solution ID)
   const correctCount = questions.reduce((acc, question, index) => {
-    return answers[index] === question.solution ? acc + 1 : acc;
+    const userAnswerIndex = answers[index];
+    const isUserCorrect =
+      userAnswerIndex !== null &&
+      userAnswerIndex !== undefined &&
+      question.options[userAnswerIndex]?.id === question.solution.id;
+    return isUserCorrect ? acc + 1 : acc;
   }, 0);
-  const scorePercent = Math.round((correctCount / totalQuestions) * 100);
+
+  const scorePercent = totalQuestions > 0 ? Math.round((correctCount / totalQuestions) * 100) : 0;
   const isPassed = scorePercent >= 70;
 
   // Format time elapsed
@@ -61,7 +69,7 @@ export const TestDetailedResult = ({
             Quiz Results
           </h1>
           <p className="text-neutral text-sm">
-            TypeScript Advanced Patterns • Review your answers and explanations below.
+            {topic || "Quiz"} • Review your answers and explanations below.
           </p>
         </div>
         <div className="flex items-center gap-3">
@@ -122,7 +130,7 @@ export const TestDetailedResult = ({
             </div>
             <div className="space-y-1">
               <span className="text-neutral text-xs uppercase font-bold tracking-wider">Passing Score</span>
-              <p className="text-xl font-bold text-neutral">70% (7/10)</p>
+              <p className="text-xl font-bold text-neutral">70%</p>
             </div>
           </div>
         </div>
@@ -138,7 +146,10 @@ export const TestDetailedResult = ({
         <div className="space-y-6">
           {questions.map((question, qIdx) => {
             const userAnswer = answers[qIdx];
-            const isCorrect = userAnswer === question.solution;
+            const isCorrect =
+              userAnswer !== null &&
+              userAnswer !== undefined &&
+              question.options[userAnswer]?.id === question.solution.id;
 
             return (
               <div
@@ -155,7 +166,7 @@ export const TestDetailedResult = ({
                       Question {qIdx + 1}
                     </span>
                     <span className="text-xs px-2 py-0.5 bg-white/5 border border-white/10 text-neutral rounded-md">
-                      {question.topic}
+                      {topic || "Quiz"}
                     </span>
                   </div>
 
@@ -176,18 +187,18 @@ export const TestDetailedResult = ({
 
                 {/* Question Body */}
                 <div className="prose prose-invert max-w-none text-base mb-6 text-foreground/95">
-                  <MarkdownRenderer markdown={question.question} />
+                  <MarkdownRenderer markdown={question.title} />
                 </div>
 
                 {/* Options List */}
                 <div className="flex flex-col gap-3">
-                  {question.options.map((optionText, optIdx) => {
-                    const isCorrectOption = optIdx === question.solution;
+                  {question.options.map((option, optIdx) => {
+                    const isCorrectOption = option.id === question.solution.id;
                     const isUserSelected = optIdx === userAnswer;
 
                     return (
                       <div
-                        key={optIdx}
+                        key={option.id}
                         className={clsx(
                           "rounded-xl border p-4 flex items-center gap-4 text-sm font-medium transition-all duration-300",
                           isCorrectOption && "border-emerald-500 bg-emerald-500/10 text-emerald-400",
@@ -208,7 +219,7 @@ export const TestDetailedResult = ({
                           {isUserSelected && !isCorrectOption && <XCircle className="h-4 w-4 fill-red-500/10" />}
                           {!isCorrectOption && !isUserSelected && <div className="w-1.5 h-1.5 rounded-full bg-transparent" />}
                         </div>
-                        <span>{optionText}</span>
+                        <span>{option.text}</span>
                       </div>
                     );
                   })}

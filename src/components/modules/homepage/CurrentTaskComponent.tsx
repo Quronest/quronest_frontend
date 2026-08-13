@@ -4,10 +4,13 @@ import { ProgressBar } from "@/components/ui/ProgressBar";
 import { Tag } from "@/components/ui/Tag";
 import { DailyTaskSummaryDto } from "@/store/features/user/userType";
 import { CheckCircle2 } from "lucide-react";
+import React from "react";
+import Link from "next/link";
 
 interface CurrentTaskProps {
   task: DailyTaskSummaryDto | null;
   dayNumber?: number;
+  dailyPlanId?: string;
 }
 
 const getTagType = (status: string) => {
@@ -21,7 +24,7 @@ const getTagType = (status: string) => {
   }
 };
 
-export const CurrentTaskComponent = ({ task, dayNumber }: CurrentTaskProps) => {
+export const CurrentTaskComponent = ({ task, dayNumber, dailyPlanId }: CurrentTaskProps) => {
   if (!task) {
     return (
       <Card className="w-full flex flex-col justify-center items-center h-48 relative border-green-500/20 bg-green-500/5 text-center p-6">
@@ -39,6 +42,12 @@ export const CurrentTaskComponent = ({ task, dayNumber }: CurrentTaskProps) => {
       </Card>
     );
   }
+
+  const innerButton = (
+    <Button className="font-bold shrink-0 bg-accent2/80! hover:bg-accent2! transition-colors">
+      {task.status === "COMPLETED" ? "Review Work" : "Resume Work"}
+    </Button>
+  );
 
   return (
     <Card className="w-full flex flex-col justify-between h-48 relative p-6">
@@ -58,11 +67,14 @@ export const CurrentTaskComponent = ({ task, dayNumber }: CurrentTaskProps) => {
       </div>
       <div className="flex items-center gap-5 mt-4">
         <ProgressBar value={task.progress_percent || 0} />
-        <Button className="font-bold shrink-0 bg-accent2/80! hover:bg-accent2! transition-colors">
-          {task.status === "COMPLETED" ? "Review Work" : "Resume Work"}
-        </Button>
+        {dailyPlanId ? (
+          <Link href={`/workspace/${dailyPlanId}`}>
+            {innerButton}
+          </Link>
+        ) : (
+          innerButton
+        )}
       </div>
     </Card>
   );
 };
-

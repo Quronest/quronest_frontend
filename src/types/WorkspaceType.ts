@@ -1,8 +1,8 @@
-import { tabTypes } from "@/enums/TabEnums";
+import { TabTypes } from "@/enums/TabEnums";
 import { NoteType } from "./NoteType";
-import { ValueOf } from "next/dist/shared/lib/constants";
 import { MessageType } from "./DiscussionType";
 import { AnchorTypes } from "@/enums/AnchorEnums";
+import { TaskSummaryType } from "./TaskType";
 
 export type Pane = {
   tabs: TabData<any>[];
@@ -10,6 +10,7 @@ export type Pane = {
 };
 
 export type WorkspaceState = {
+  dailyPlanId: string | null;
   panes: {
     left: Pane;
     right?: Pane;
@@ -18,51 +19,29 @@ export type WorkspaceState = {
   isSidebarCollapsed: boolean;
 };
 
-export type TabType = ValueOf<typeof tabTypes>;
-
 export type TabData<T> = {
   id: string;
-  taskId: string;
   label: string;
-
-  type: TabType;
-
-  data: T;
+  type: TabTypes;
+  payload: TaskTabPayloadType | NoteTabPayloadType | DiscussTabPayloadType;
 };
 
-export type ResourceTabDataType = {
-  // resourceId: string;
-  markdown: string;
-  anchors: SelectionAnchor[];
-};
+export type TaskTabPayloadType = TaskSummaryType;
 
-export type ResourceTabType = TabData<ResourceTabDataType> & {
-  type: typeof tabTypes.RESOURCE;
-};
-
-export type NoteTabType = TabData<NoteTabDataType> & {
-  type: typeof tabTypes.NOTE;
-};
-
-export type DiscussTabType = TabData<DiscussTabDataType> & {
-  type: typeof tabTypes.DISCUSS;
-};
-
-export type NoteTabDataType = {
-  // resourceId: string;
-
+export type NoteTabPayloadType = {
+  taskId: string;
   activeNoteId: string | null;
-
   draftNote?: NoteType;
 };
 
-export type DiscussTabDataType = {
-  // resourceId: string;
+export type DiscussTabPayloadType = {
+  taskId: string;
   activeDiscussionId: string;
   draftMessage?: MessageType;
 };
 
 export type SelectionAnchor = {
+  id: string;
   referenceId: string;
   type: AnchorTypes;
   blockOffset: {
@@ -76,30 +55,6 @@ export type SelectionAnchor = {
   };
 
   selectedText?: string;
-};
-
-export type ResourceSelection = {
-  anchor: SelectionAnchor;
-
-  position: {
-    x: number;
-    y: number;
-  };
-
-  range: Range;
-};
-
-export type DiscussionSelection = {
-  messageId: string;
-
-  selectedText: string;
-
-  position: {
-    x: number;
-    y: number;
-  };
-
-  range: Range;
 };
 
 export type TextSelection = {

@@ -3,28 +3,37 @@ import {
   useLazyGetDailyTaskByIdQuery,
   useCreateTaskGenerateJobMutation,
 } from "@/store/features/task/taskApi";
-import { DailyTaskDto } from "@/store/features/task/taskType";
+import { DailyTaskType } from "@/types/TaskType";
+
 import { useLazyGetJobStatusQuery } from "@/store/features/user/userApi";
 
 export type TaskPollingStatus =
   | "idle"
-  | "loading"     // fetching initial task
-  | "generating"  // job is in progress (polling)
-  | "success"     // completed and fetched
+  | "loading" // fetching initial task
+  | "generating" // job is in progress (polling)
+  | "success" // completed and fetched
   | "error";
 
-export const useTaskGeneration = (intervalMs = 2000) => {
+type useTaskGenerationProps = {
+  triggerGetTask: (taskId: string) => Promise<DailyTaskType>;
+  intervalMs?: number;
+};
+
+export const useTaskGeneration = ({
+  triggerGetTask,
+  intervalMs = 2000,
+}: useTaskGenerationProps) => {
   const [status, setStatus] = useState<TaskPollingStatus>("idle");
   const [error, setError] = useState<any>(null);
-  const [task, setTask] = useState<DailyTaskDto | null>(null);
+  const [task, setTask] = useState<DailyTaskType | null>(null);
 
-  const [triggerGetTask] = useLazyGetDailyTaskByIdQuery();
+  // const [triggerGetTask] = useLazyGetDailyTaskByIdQuery();
   const [triggerGenerateTask] = useCreateTaskGenerateJobMutation();
   const [triggerGetJobStatus] = useLazyGetJobStatusQuery();
 
   const activeTaskIdRef = useRef<string | null>(null);
 
-  const loadTask = async (taskId: string): Promise<DailyTaskDto | null> => {
+  const loadTask = async (taskId: string): Promise<DailyTaskType | null> => {
     activeTaskIdRef.current = taskId;
     setStatus("loading");
     setError(null);
@@ -32,8 +41,8 @@ export const useTaskGeneration = (intervalMs = 2000) => {
 
     try {
       // 1. Get the task
-      const taskResult = await triggerGetTask(taskId, false).unwrap();
-      
+      const taskResult = await triggerGetTask(taskId);
+
       // If task already has content generated, we don't need to generate or poll
       if (taskResult.content) {
         setTask(taskResult);
@@ -51,7 +60,9 @@ export const useTaskGeneration = (intervalMs = 2000) => {
       }
 
       if (!jobId) {
-        throw new Error("Failed to get or start a generation job for the task.");
+        throw new Error(
+          "Failed to get or start a generation job for the task.",
+        );
       }
 
       // 3. Poll the job status
@@ -90,7 +101,7 @@ export const useTaskGeneration = (intervalMs = 2000) => {
         return null;
       }
 
-      const finalTask = await triggerGetTask(taskId, false).unwrap();
+      const finalTask = await triggerGetTask(taskId);
       setTask(finalTask);
       setStatus("success");
       return finalTask;

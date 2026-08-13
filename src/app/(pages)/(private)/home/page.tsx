@@ -21,8 +21,8 @@ import {
 } from "@/store/features/dailyplan/dailyplanApi";
 import { useJobPolling } from "@/hooks/useJobPolling";
 import { DailyPlanDto } from "@/store/features/user/userType";
-import { Tasktype } from "@/types/Tasktype";
-import { formatDate } from "@/utils/date";
+import { Tasktype } from "@/types/TaskType";
+
 
 const getCenteredRange = (date: Date) => {
   const dates = Array.from({ length: 7 }, (_, i) => {
@@ -229,120 +229,124 @@ const HomePage = () => {
   }
 
   return (
-    <PageContainer className="space-y-6 pt-20 pb-12 overflow-y-auto px-6 max-h-screen">
-      <WelcomeComponent
-        fullname={profile?.fullname}
-        currentDay={journey?.current_day}
-      />
+    <div className="w-full h-screen overflow-y-auto scrollbar-thin scrollbar-thumb-card-hover scrollbar-track-transparent">
+      <div className="max-w-7xl mx-auto px-6 pt-20 pb-12 space-y-6">
+        <WelcomeComponent
+          fullname={profile?.fullname}
+          currentDay={journey?.current_day}
+        />
 
-      {isGenerating ? (
-        <Card className="flex flex-col items-center justify-center p-12 border border-border/50 rounded-2xl bg-card/30 backdrop-blur-md shadow-sm text-center space-y-6 max-w-lg mx-auto my-10">
-          <LoaderCircle className="h-10 w-10 animate-spin text-primary" />
-          <div>
-            <h2 className="text-xl font-semibold text-foreground">
-              {pollingStatus === "review" ? "Analyzing Goals..." : "Generating Plans..."}
-            </h2>
-            <p className="text-neutral mt-2 text-sm max-w-xs mx-auto leading-relaxed">
-              {pollingStatus === "review"
-                ? "We are analyzing your learning progress and goals to structure your next steps."
-                : "Our AI is crafting your personalized daily plans. This will take a few seconds."}
-            </p>
-          </div>
-        </Card>
-      ) : dailyPlans.length === 0 ? (
-        <Card className="flex flex-col items-center justify-center p-8 border border-border/50 rounded-2xl bg-card/20 backdrop-blur-md text-center max-w-2xl mx-auto my-12 py-12 px-6 space-y-6 shadow-sm border-dashed">
-          <div className="rounded-full bg-primary/10 p-4 border border-primary/20">
-            <Calendar className="h-8 w-8 text-primary" />
-          </div>
-          <div className="space-y-2">
-            <h2 className="text-xl font-bold text-foreground">No Daily Plans Scheduled</h2>
-            <p className="text-neutral text-sm max-w-md mx-auto leading-relaxed">
-              You don't have any daily plans generated for the week of{" "}
-              <span className="text-primary font-semibold">{startDateStr}</span>.
-              Let's generate your learning roadmap using our AI engine!
-            </p>
-          </div>
-          <Button
-            onClick={handleGenerate}
-            className="font-bold bg-primary/80! hover:bg-primary! transition-colors px-6 py-2.5"
-          >
-            Generate Daily Plans
-          </Button>
-        </Card>
-      ) : (
-        <>
-          <WeeklyCalendarProgress
-            weekDates={weekDates}
-            dailyPlans={dailyPlans}
-            selectedDate={selectedDate}
-            onSelectDate={setSelectedDate}
-            onPrevDay={handlePrevDay}
-            onNextDay={handleNextDay}
-            minDate={minDate}
-            maxDate={maxDate}
-          />
+        {isGenerating ? (
+          <Card className="flex flex-col items-center justify-center p-12 border border-border/50 rounded-2xl bg-card/30 backdrop-blur-md shadow-sm text-center space-y-6 max-w-lg mx-auto my-10">
+            <LoaderCircle className="h-10 w-10 animate-spin text-primary" />
+            <div>
+              <h2 className="text-xl font-semibold text-foreground">
+                {pollingStatus === "review" ? "Analyzing Goals..." : "Generating Plans..."}
+              </h2>
+              <p className="text-neutral mt-2 text-sm max-w-xs mx-auto leading-relaxed">
+                {pollingStatus === "review"
+                  ? "We are analyzing your learning progress and goals to structure your next steps."
+                  : "Our AI is crafting your personalized daily plans. This will take a few seconds."}
+              </p>
+            </div>
+          </Card>
+        ) : dailyPlans.length === 0 ? (
+          <Card className="flex flex-col items-center justify-center p-8 border border-border/50 rounded-2xl bg-card/20 backdrop-blur-md text-center max-w-2xl mx-auto my-12 py-12 px-6 space-y-6 shadow-sm border-dashed">
+            <div className="rounded-full bg-primary/10 p-4 border border-primary/20">
+              <Calendar className="h-8 w-8 text-primary" />
+            </div>
+            <div className="space-y-2">
+              <h2 className="text-xl font-bold text-foreground">No Daily Plans Scheduled</h2>
+              <p className="text-neutral text-sm max-w-md mx-auto leading-relaxed">
+                You don't have any daily plans generated for the week of{" "}
+                <span className="text-primary font-semibold">{startDateStr}</span>.
+                Let's generate your learning roadmap using our AI engine!
+              </p>
+            </div>
+            <Button
+              onClick={handleGenerate}
+              className="font-bold bg-primary/80! hover:bg-primary! transition-colors px-6 py-2.5"
+            >
+              Generate Daily Plans
+            </Button>
+          </Card>
+        ) : (
+          <>
+            <WeeklyCalendarProgress
+              weekDates={weekDates}
+              dailyPlans={dailyPlans}
+              selectedDate={selectedDate}
+              onSelectDate={setSelectedDate}
+              onPrevDay={handlePrevDay}
+              onNextDay={handleNextDay}
+              minDate={minDate}
+              maxDate={maxDate}
+            />
 
-          {selectedPlan ? (
-            <>
-              <div className="space-y-1">
-                <h2 className="text-2xl font-semibold text-foreground">
-                  {selectedPlan.title}
-                </h2>
-                <p className="text-neutral text-sm max-w-3xl">
-                  {selectedPlan.description}
-                </p>
-              </div>
-
-              <CurrentTaskComponent
-                task={currentTask}
-                dayNumber={selectedPlan.day_number}
-              />
-
-              <div className="space-y-4">
-                <h3 className="text-lg font-medium text-foreground">
-                  Today's Tasks ({selectedPlan.tasks?.length || 0})
-                </h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {selectedPlan.tasks && selectedPlan.tasks.length > 0 ? (
-                    selectedPlan.tasks.map((task) => (
-                      <TasklistItemComponent
-                        task={mapDailyTaskToTaskType(task)}
-                        key={task.id}
-                      />
-                    ))
-                  ) : (
-                    <div className="col-span-2 text-center py-6 text-neutral text-sm">
-                      No tasks found for this plan.
-                    </div>
-                  )}
+            {selectedPlan ? (
+              <>
+                <div className="space-y-1">
+                  <h2 className="text-2xl font-semibold text-foreground">
+                    {selectedPlan.title}
+                  </h2>
+                  <p className="text-neutral text-sm max-w-3xl">
+                    {selectedPlan.description}
+                  </p>
                 </div>
-              </div>
-            </>
-          ) : (
-            <Card className="flex flex-col items-center justify-center p-8 border border-border/50 rounded-2xl bg-card/20 backdrop-blur-md text-center max-w-2xl mx-auto py-12 px-6 space-y-6 shadow-sm border-dashed">
-              <div className="rounded-full bg-primary/10 p-4 border border-primary/20">
-                <Calendar className="h-8 w-8 text-primary" />
-              </div>
-              <div className="space-y-2">
-                <h2 className="text-xl font-bold text-foreground">No Daily Plans Scheduled</h2>
-                <p className="text-neutral text-sm max-w-md mx-auto leading-relaxed">
-                  No daily plan generated for this specific day ({formatToLocalDateString(selectedDate)}).
-                  {selectedDate.getTime() === today.getTime() && " Let's generate your learning roadmap using our AI engine!"}
-                </p>
-              </div>
-              {selectedDate.getTime() === today.getTime() && (
-                <Button
-                  onClick={handleGenerate}
-                  className="font-bold bg-primary/80! hover:bg-primary! transition-colors px-6 py-2.5"
-                >
-                  Generate Daily Plans
-                </Button>
-              )}
-            </Card>
-          )}
-        </>
-      )}
-    </PageContainer>
+
+                <CurrentTaskComponent
+                  task={currentTask}
+                  dayNumber={selectedPlan.day_number}
+                  dailyPlanId={selectedPlan.id}
+                />
+
+                <div className="space-y-4">
+                  <h3 className="text-lg font-medium text-foreground">
+                    Today's Tasks ({selectedPlan.tasks?.length || 0})
+                  </h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {selectedPlan.tasks && selectedPlan.tasks.length > 0 ? (
+                      selectedPlan.tasks.map((task) => (
+                        <TasklistItemComponent
+                          task={mapDailyTaskToTaskType(task)}
+                          dailyPlanId={selectedPlan.id}
+                          key={task.id}
+                        />
+                      ))
+                    ) : (
+                      <div className="col-span-2 text-center py-6 text-neutral text-sm">
+                        No tasks found for this plan.
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </>
+            ) : (
+              <Card className="flex flex-col items-center justify-center p-8 border border-border/50 rounded-2xl bg-card/20 backdrop-blur-md text-center max-w-2xl mx-auto py-12 px-6 space-y-6 shadow-sm border-dashed">
+                <div className="rounded-full bg-primary/10 p-4 border border-primary/20">
+                  <Calendar className="h-8 w-8 text-primary" />
+                </div>
+                <div className="space-y-2">
+                  <h2 className="text-xl font-bold text-foreground">No Daily Plans Scheduled</h2>
+                  <p className="text-neutral text-sm max-w-md mx-auto leading-relaxed">
+                    No daily plan generated for this specific day ({formatToLocalDateString(selectedDate)}).
+                    {selectedDate.getTime() === today.getTime() && " Let's generate your learning roadmap using our AI engine!"}
+                  </p>
+                </div>
+                {selectedDate.getTime() === today.getTime() && (
+                  <Button
+                    onClick={handleGenerate}
+                    className="font-bold bg-primary/80! hover:bg-primary! transition-colors px-6 py-2.5"
+                  >
+                    Generate Daily Plans
+                  </Button>
+                )}
+              </Card>
+            )}
+          </>
+        )}
+      </div>
+    </div>
   );
 };
 

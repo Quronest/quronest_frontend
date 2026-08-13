@@ -17,11 +17,11 @@ import { useAppDispatch } from "@/store/store";
 const mapGroup = (group?: string) => {
   switch (group) {
     case "GROUP_A":
-      return "Frontend Development";
+      return "Group A";
     case "GROUP_B":
-      return "Backend Development";
+      return "Group B";
     case "GROUP_C":
-      return "Fullstack Development";
+      return "Group C";
     default:
       return group || "Not Assigned";
   }

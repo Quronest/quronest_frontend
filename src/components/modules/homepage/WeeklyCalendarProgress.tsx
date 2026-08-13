@@ -100,8 +100,6 @@ export const WeeklyCalendarProgress = ({
                   : isDisabled 
                     ? "" 
                     : "hover:scale-105"
-              } ${
-                isToday ? "border-b-2 border-primary pb-0.5" : ""
               }`}>
                 <CircularProgress
                   value={plan ? plan.progress_percent : 0}

@@ -2,6 +2,7 @@ import { TabData, WorkspaceState } from "@/types/WorkspaceType";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 const initialState: WorkspaceState = {
+  dailyPlanId: null,
   panes: {
     left: {
       tabs: [] as TabData<any>[],
@@ -16,6 +17,19 @@ const workspaceSlice = createSlice({
   name: "workspace",
   initialState,
   reducers: {
+    setDailyPlanId: (state, action: PayloadAction<string>) => {
+      if (state.dailyPlanId !== action.payload) {
+        state.dailyPlanId = action.payload;
+        state.panes = {
+          left: {
+            tabs: [],
+            activeTabId: null,
+          },
+        };
+        state.activePaneId = "left";
+      }
+    },
+
     openSidebar: (state) => {
       state.isSidebarCollapsed = false;
     },
@@ -115,6 +129,7 @@ export const selectWorkspace = (state: { workspace: WorkspaceState }) =>
   state.workspace;
 
 export const {
+  setDailyPlanId,
   addToPane,
   switchTab,
   closeTab,

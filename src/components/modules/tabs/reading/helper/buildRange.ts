@@ -1,3 +1,4 @@
+import { TaskAnchor } from "@/types/TaskType";
 import { SelectionAnchor } from "@/types/WorkspaceType";
 
 type TextPosition = {
@@ -31,17 +32,17 @@ function findTextPosition(
 }
 
 export function buildRange(
-  anchor: SelectionAnchor,
+  anchor: TaskAnchor,
   root: HTMLElement,
 ): Range | null {
   const block = root.querySelector<HTMLElement>(
-    `[data-block-start="${anchor.blockOffset.start}"]`,
+    `[data-block-start="${anchor.block_offset.start}"]`,
   );
 
   if (!block) return null;
 
-  const start = findTextPosition(block, anchor.selectionOffset.start);
-  const end = findTextPosition(block, anchor.selectionOffset.end);
+  const start = findTextPosition(block, anchor.selection_offset.start);
+  const end = findTextPosition(block, anchor.selection_offset.end);
 
   if (!start || !end) return null;
 

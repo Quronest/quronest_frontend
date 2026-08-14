@@ -4,7 +4,7 @@ import { NoteTab } from "../tabs/note/NoteTab";
 import { ScrollArea } from "@/components/ui/ScrollArea";
 import { TabTypes } from "@/enums/TabEnums";
 import DiscussTab from "../tabs/discussion/DiscussTab";
-import { TestTab } from "../tabs/test/TestTab";
+import { QuizTab } from "../tabs/test/QuizTab";
 import { ReadingTab } from "../tabs/reading/ReadingTab";
 import { CodingTab } from "../tabs/coding/CodingTab";
 import { TaskLoaderWrapper } from "./TaskLoaderWrapper";
@@ -30,7 +30,7 @@ export const TabPanel = forwardRef<HTMLDivElement, TabPanelType>(
         break;
 
       case TabTypes.QUIZ:
-        content = <TestTab />;
+        content = <QuizTab />;
         break;
 
       case TabTypes.CODING:

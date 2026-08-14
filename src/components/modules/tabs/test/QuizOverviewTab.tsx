@@ -9,8 +9,7 @@ import { TaskTabPayloadType } from "@/types/WorkspaceType";
 import { useLazyGetQuizTaskQuery } from "@/store/features/task/taskApi";
 import { useTaskGeneration } from "@/hooks/useTaskGeneration";
 
-export const TestTab = () => {
-  const [isPlaying, setIsPlaying] = useState(false);
+export const QuizOverviewTab = () => {
   const { tabData } = useTab();
   const { id: taskId } = tabData.payload as TaskTabPayloadType;
 
@@ -24,36 +23,21 @@ export const TestTab = () => {
     if (!taskId) return;
     loadTask(taskId);
   }, [taskId]);
-  const {
-    questionnaires = [],
-    title,
-    description,
-    level,
-    expected_total_time,
-    domain,
-  } = (tabData as any) || {};
 
-  return (
-    <TabContainer className="pt-0!">
-      {isPlaying ? (
-        <TestRoom
-          questions={questionnaires}
-          title={title}
-          duration={expected_total_time}
-          domain={domain}
-          onExit={() => setIsPlaying(false)}
-        />
-      ) : (
+  if (status === "success" && task?.content) {
+    return (
+      <TabContainer className="pt-0!">
         <TestOverviewSection
-          questions={questionnaires}
-          title={title}
-          description={description}
-          level={level}
-          duration={expected_total_time}
-          domain={domain}
-          onStart={() => setIsPlaying(true)}
+          quizTaskData={task}
+          onStart={() => console.log("route to /quiz/attempt")}
         />
-      )}
-    </TabContainer>
-  );
+      </TabContainer>
+    );
+  } else {
+    return (
+      <div className="flex items-center justify-center h-full text-3xl">
+        Quiz Loading
+      </div>
+    );
+  }
 };

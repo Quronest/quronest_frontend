@@ -1,11 +1,11 @@
-import { TabTypes } from "@/enums/TabEnums";
+import { JSX } from "react";
 import { NoteType } from "./NoteType";
 import { MessageType } from "./DiscussionType";
 import { AnchorTypes } from "@/enums/AnchorEnums";
 import { TaskSummaryType } from "./TaskType";
 
 export type Pane = {
-  tabs: TabData<any>[];
+  tabs: TabData[];
   activeTabId: string | null;
 };
 
@@ -19,10 +19,11 @@ export type WorkspaceState = {
   isSidebarCollapsed: boolean;
 };
 
-export type TabData<T> = {
+export type TabData = {
   id: string;
-  label: string;
-  type: TabTypes;
+  path: string;
+  component: () => JSX.Element;
+  title: string;
   payload: TaskTabPayloadType | NoteTabPayloadType | DiscussTabPayloadType;
 };
 

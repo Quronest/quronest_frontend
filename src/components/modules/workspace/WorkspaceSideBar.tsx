@@ -3,12 +3,12 @@
 import Button from "@/components/ui/Button";
 import { ScrollArea } from "@/components/ui/ScrollArea";
 import { useWorkspace } from "@/hooks/useWorkspace";
-import { tabTypes } from "@/enums/TabEnums";
+import { TabTypes } from "@/enums/TabEnums";
 import { TabData } from "@/types/WorkspaceType";
-import { DailyTaskSummaryDto } from "@/store/features/dailyplan/dailyplanType";
+import { TaskSummaryType } from "@/store/features/dailyplan/dailyplanType";
 import { useGetDailyPlanByIdQuery } from "@/store/features/dailyplan/dailyplanApi";
 import {
-  addToPane,
+  openTab,
   closeSidebar,
   openSplitPane,
 } from "@/store/features/workspace/workspaceSlice";
@@ -25,19 +25,7 @@ import {
 } from "lucide-react";
 import React from "react";
 import { useParams } from "next/navigation";
-
-const mapTaskTypeToTabType = (type: string) => {
-  switch (type) {
-    case "READING":
-      return tabTypes.RESOURCE;
-    case "QUIZ":
-      return tabTypes.TEST;
-    case "CODING":
-      return tabTypes.CODE;
-    default:
-      return tabTypes.NOTE;
-  }
-};
+import { RawTabDataType } from "@/utils/tabDataConvertor";
 
 const taskIconMap: Record<string, React.ComponentType<any>> = {
   READING: BookOpen,
@@ -46,32 +34,34 @@ const taskIconMap: Record<string, React.ComponentType<any>> = {
   DESCRIPTIVE: AlignLeft,
 };
 
+const taskPathMap: Record<string, string> = {
+  READING: "/reading",
+  QUIZ: "/quiz",
+  CODING: "/coding",
+};
+
 export const WorkspaceSideBar = () => {
   const dispatch = useAppDispatch();
   const { isSidebarCollapsed } = useWorkspace();
   const { dailyPlanId } = useParams<{ dailyPlanId: string }>();
 
-  const { data: dailyPlan, isLoading: isPlanLoading } = useGetDailyPlanByIdQuery(
-    dailyPlanId || "",
-    { skip: !dailyPlanId }
-  );
+  const { data: dailyPlan, isLoading: isPlanLoading } =
+    useGetDailyPlanByIdQuery(dailyPlanId || "", { skip: !dailyPlanId });
 
   const tasks = dailyPlan?.tasks || [];
 
-  const mapTaskSummaryToTab = (task: DailyTaskSummaryDto): TabData<any> => {
-    const type = mapTaskTypeToTabType(task.task_type);
+  const mapTaskSummaryToTab = (task: TaskSummaryType): RawTabDataType => {
     return {
-      id: `task-${task.id}`,
-      taskId: task.id,
-      label: task.title,
-      type,
-      data: null, // starts as null to trigger loader wrapper inside tab
+      id:task.id,
+      title: task.title,
+      path: taskPathMap[task.task_type],
+      payload: task,
     };
   };
 
-  const handleTaskClick = (taskSummary: DailyTaskSummaryDto) => {
+  const handleTaskClick = (taskSummary: TaskSummaryType) => {
     const tab = mapTaskSummaryToTab(taskSummary);
-    dispatch(addToPane({ tab }));
+    dispatch(openTab({ tab }));
   };
 
   return (
@@ -133,7 +123,9 @@ export const WorkspaceSideBar = () => {
                     className="flex items-center gap-3 w-full"
                   >
                     <IconComponent className="h-4 w-4 text-neutral shrink-0" />
-                    <span className="truncate flex-1 text-left">{task.title}</span>
+                    <span className="truncate flex-1 text-left">
+                      {task.title}
+                    </span>
                   </Button>
                 );
               })

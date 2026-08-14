@@ -6,28 +6,24 @@ import { TestPerformance } from "./TestPerformance";
 import { TopicsCovered } from "./TopicsCovered";
 import { BookOpen, ChartBar, Play } from "lucide-react";
 import Button from "@/components/ui/Button";
+import { DailyTaskType, QuizTaskContentType } from "@/types/TaskType";
+
+type TestOverviewSectionProps = {
+  quizTaskData: DailyTaskType;
+  onStart: () => void;
+};
 
 export const TestOverviewSection = ({
-  questions = [],
-  title,
-  description,
-  level,
-  duration,
-  domain,
+  quizTaskData,
   onStart,
-}: {
-  questions?: any[];
-  title?: string;
-  description?: string;
-  level?: string;
-  duration?: number;
-  domain?: string;
-  onStart?: () => void;
-}) => {
-  const finalTitle = title || "Quiz";
-  const finalDescription = description || "Test your understanding with this quiz.";
-  const finalLevel = level || "easy";
-  const topicsCovered = domain ? [domain] : ["General Quiz"];
+}: TestOverviewSectionProps) => {
+  const finalTitle = quizTaskData.title || "Quiz";
+  const finalDescription =
+    quizTaskData.description || "Test your understanding with this quiz.";
+  const finalLevel = quizTaskData.level || "easy";
+  const topicsCovered = quizTaskData.domain
+    ? [quizTaskData.domain]
+    : ["General Quiz"];
 
   return (
     <div className="w-full max-w-7xl mx-auto space-y-4 mt-8">
@@ -40,8 +36,11 @@ export const TestOverviewSection = ({
         {/* Details and instruction */}
         <div className="space-y-5 col-span-2">
           <TestDetails
-            duration={duration}
-            questionsCount={questions.length}
+            duration={quizTaskData.expected_total_time}
+            questionsCount={
+              (quizTaskData.content as QuizTaskContentType).questionnaires
+                .length
+            }
             level={finalLevel}
           />
           <TestInstructions />
@@ -57,7 +56,7 @@ export const TestOverviewSection = ({
               className="justify-center w-full rounded-lg gap-3 items-center brightness-80!"
               onClick={onStart}
             >
-              <Play fill="white"/>
+              <Play fill="white" />
               Start Quiz
             </Button>
             <Button
@@ -65,12 +64,11 @@ export const TestOverviewSection = ({
               size="lg"
               className="justify-center w-full rounded-lg border-border! border! gap-3 items-center"
             >
-              <ChartBar size={20}/>
+              <ChartBar size={20} />
               Review Previous Attempts
             </Button>
-            
           </div>
-          <TopicsCovered topics={topicsCovered} className="flex-1"/>
+          <TopicsCovered topics={topicsCovered} className="flex-1" />
         </div>
       </div>
     </div>

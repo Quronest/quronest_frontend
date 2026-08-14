@@ -5,29 +5,26 @@ import { Layers } from "lucide-react";
 import { TestRoomHeader } from "./TestRoomHeader";
 import { Question } from "./Question";
 import { TestSubmissionModal } from "./TestSubmissionModal";
-import { TestDetailedResult } from "./TestDetailedResult";
+import { QuizResultSection } from "./QuizResultSection";
 import clsx from "clsx";
 import { ScrollArea } from "@/components/ui/ScrollArea";
-import { McqQuestion } from "@/types/TaskType";
-
+import {
+  DailyTaskType,
+  QuizTaskContentType,
+} from "@/types/TaskType";
 
 type TestRoomProps = {
-  questions?: McqQuestion[];
-  title?: string;
-  duration?: number;
-  domain?: string;
+  quizTaskData: DailyTaskType;
   onExit: () => void;
 };
 
-export const TestRoom = ({
-  questions = [],
-  title = "Quiz",
-  duration,
-  domain,
-  onExit,
-}: TestRoomProps) => {
+export const TestRoom = ({ quizTaskData, onExit }: TestRoomProps) => {
+
+  const quizTaskContent = quizTaskData.content as QuizTaskContentType;
   // --- STATE ---
-  const totalSeconds = duration ? duration * 60 : 2700;
+  const totalSeconds = quizTaskData.expected_total_time
+    ? quizTaskData.expected_total_time * 60
+    : 2700;
   const [answers, setAnswers] = useState<Record<number, number | null>>({});
   const [timeRemaining, setTimeRemaining] = useState(totalSeconds);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -76,7 +73,8 @@ export const TestRoom = ({
   };
 
   // --- COMPUTED STATS ---
-  const totalQuestions = questions.length;
+  const totalQuestions = (quizTaskContent)
+    .questionnaires.length;
 
   const answeredCount = Object.keys(answers).filter(
     (key) =>
@@ -98,13 +96,13 @@ export const TestRoom = ({
   // --- SUBMITTED / RESULTS DASHBOARD ---
   if (isSubmitted) {
     return (
-      <TestDetailedResult
-        questions={questions}
+      <QuizResultSection
+        questions={(quizTaskContent).questionnaires}
         answers={answers}
         timeTaken={timeTaken}
         onRetake={handleRetake}
         onExit={onExit}
-        topic={domain}
+        topic={quizTaskData.domain}
       />
     );
   }
@@ -114,7 +112,7 @@ export const TestRoom = ({
     <ScrollArea className=" space-y-6 flex flex-col">
       {/* Top Header Row */}
       <TestRoomHeader
-        title={title}
+        title={quizTaskData.title}
         answeredCount={answeredCount}
         totalQuestions={totalQuestions}
         timeRemaining={timeRemaining}
@@ -125,7 +123,7 @@ export const TestRoom = ({
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 items-start w-full max-w-7xl mx-auto">
         {/* Left Section: Continuous Questions List */}
         <div className="col-span-1 lg:col-span-3 space-y-6 flex flex-col">
-          {questions.map((question, index) => (
+          {quizTaskContent.questionnaires.map((question, index) => (
             <div
               key={question.id || index}
               id={`question-${index}`}
@@ -139,7 +137,7 @@ export const TestRoom = ({
                 onSelectOption={(optionIndex) =>
                   handleSelectOption(index, optionIndex)
                 }
-                topic={domain}
+                topic={quizTaskData.domain}
               />
             </div>
           ))}
@@ -158,7 +156,7 @@ export const TestRoom = ({
 
             {/* Palette Grid */}
             <div className="grid grid-cols-5 gap-2">
-              {questions.map((_, index) => {
+              {quizTaskContent.questionnaires.map((_, index) => {
                 const isAnswered =
                   answers[index] !== null && answers[index] !== undefined;
 

@@ -1,13 +1,10 @@
 import { Group, Phase } from "../user/userType";
-import { DailyTaskStatus, DailyTaskType, DailyTaskSummaryDto } from "@/types/TaskType";
-export type { DailyTaskStatus, DailyTaskType, DailyTaskSummaryDto };
-
+import { DailyTaskType, TaskSummaryType } from "@/types/TaskType";
+export type { DailyTaskType, TaskSummaryType };
 
 export type DailyPlanStatus = "PENDING" | "COMPLETED" | "PARTIAL" | "SKIPPED";
 
-
-
-export interface DailyPlanDto {
+export interface DailyPlanType {
   id: string;
   user_id: string;
   plan_date: string; // ISO date string (YYYY-MM-DD)
@@ -26,5 +23,5 @@ export interface DailyPlanDto {
   version: number;
   creation_timestamp: string;
   update_timestamp: string;
-  tasks: DailyTaskSummaryDto[];
+  tasks: TaskSummaryType[];
 }

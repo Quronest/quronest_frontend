@@ -3,11 +3,11 @@ import { Option } from "./Option";
 import { Tag } from "@/components/ui/Tag";
 import clsx from "clsx";
 import { MarkdownRenderer } from "../reading/MarkdownRenderer";
-import { McqQuestion } from "@/types/TaskType";
+import { McqQuestion, QuizQuestionType } from "@/types/TaskType";
 
 
 type QuestionProps = {
-  question: McqQuestion;
+  question: QuizQuestionType;
   questionNumber: number;
   totalQuestions: number;
   selectedOptionIndex: number | null;

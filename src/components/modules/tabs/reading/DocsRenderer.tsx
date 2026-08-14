@@ -14,7 +14,7 @@ import { useTab } from "@/hooks/useTab";
 import { useWorkspace } from "@/hooks/useWorkspace";
 import { NoteType } from "@/types/NoteType";
 import {
-  addToPane,
+  openTab,
   openSplitPane,
   setActivePane,
   switchTab,
@@ -32,15 +32,20 @@ import { SelectionToolBar } from "./SelectionToolBar";
 import { AnchorTypes } from "@/enums/AnchorEnums";
 import { DailyTaskType } from "@/store/features/user/userType";
 import { ReadingTaskContentType, TaskAnchor } from "@/types/TaskType";
+import { NoteTab } from "../note/NoteTab";
+import DiscussTab from "../discussion/DiscussTab";
 
-
-export const DocsRenderer = ({readingTaskData}: {readingTaskData: DailyTaskType}) => {
+export const DocsRenderer = ({
+  readingTaskData,
+}: {
+  readingTaskData: DailyTaskType;
+}) => {
   const taskId = readingTaskData.id;
-  const markdown = (readingTaskData.content as ReadingTaskContentType).markdown_content;
+  const markdown = (readingTaskData.content as ReadingTaskContentType)
+    .markdown_content;
   const anchors = readingTaskData.anchors as TaskAnchor[] | [];
   const { tabData, tabRef } = useTab();
   const { highlights } = useAppSelector(selectHighlight);
-  
 
   const resourceHighlights = highlights.filter(
     (highlight) => highlight.anchor?.referenceId === taskId,
@@ -85,10 +90,12 @@ export const DocsRenderer = ({readingTaskData}: {readingTaskData: DailyTaskType}
       }
     } else {
       dispatch(openSplitPane());
-      targetPane = undefined;
+      targetPane = panes["right"];
     }
     const notesTab = targetPane?.tabs.find(
-      (tab) => tab.type === TabTypes.NOTE && (tab.payload as NoteTabPayloadType).taskId === anchor.referenceId,
+      (tab) =>
+        tab.type === TabTypes.NOTE &&
+        (tab.payload as NoteTabPayloadType).taskId === anchor.referenceId,
     );
     if (notesTab) {
       dispatch(
@@ -108,10 +115,12 @@ export const DocsRenderer = ({readingTaskData}: {readingTaskData: DailyTaskType}
       );
     } else {
       dispatch(
-        addToPane({
+        openTab({
           tab: {
             id: crypto.randomUUID(),
-            label: "Notes",
+            path: "/note",
+            component: <NoteTab />,
+            title: "Notes",
             type: TabTypes.NOTE,
             payload: {
               taskId: anchor.referenceId,
@@ -159,14 +168,15 @@ export const DocsRenderer = ({readingTaskData}: {readingTaskData: DailyTaskType}
     };
     const discussionTab = targetPane?.tabs.find(
       (tab) =>
-        tab.type === TabTypes.DISCUSS && (tab.payload as DiscussTabPayloadType).taskId === anchor.referenceId,
+        tab.type === TabTypes.DISCUSS &&
+        (tab.payload as DiscussTabPayloadType).taskId === anchor.referenceId,
     );
     if (discussionTab) {
       dispatch(
         updateTabData({
           tabId: discussionTab.id,
           data: {
-            resourceId: anchor.referenceId,
+            taskId: anchor.referenceId,
             activeDiscussionId: newDiscussion.id,
             draftMessage,
           },
@@ -174,10 +184,12 @@ export const DocsRenderer = ({readingTaskData}: {readingTaskData: DailyTaskType}
       );
     } else {
       dispatch(
-        addToPane({
+        openTab({
           tab: {
             id: newDiscussion.id,
-            label: "Discussion Tab",
+            path: "/discuss",
+            component: <DiscussTab />,
+            title: "Discussion Tab",
             type: TabTypes.DISCUSS,
             payload: {
               taskId: taskId,

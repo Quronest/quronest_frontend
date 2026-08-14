@@ -1,5 +1,5 @@
 import { baseApi } from "../baseApi";
-import { DailyPlanDto } from "./dailyplanType";
+import { DailyPlanType } from "./dailyplanType";
 import { JobStatusResponse } from "../user/userType";
 
 export const dailyplanApi = baseApi.injectEndpoints({
@@ -13,7 +13,7 @@ export const dailyplanApi = baseApi.injectEndpoints({
       invalidatesTags: ["Daily_Plan"],
     }),
 
-    getDailyPlansByRange: builder.query<DailyPlanDto[], { startDate: string; endDate: string }>({
+    getDailyPlansByRange: builder.query<DailyPlanType[], { startDate: string; endDate: string }>({
       query: ({ startDate, endDate }) => ({
         url: "daily-plans/by-date-range",
         params: { startDate, endDate },
@@ -21,7 +21,7 @@ export const dailyplanApi = baseApi.injectEndpoints({
       providesTags: ["Daily_Plan"],
     }),
 
-    getDailyPlanById: builder.query<DailyPlanDto, string>({
+    getDailyPlanById: builder.query<DailyPlanType, string>({
       query: (id) => `daily-plans/${id}`,
       providesTags: (result, error, id) => [{ type: "Daily_Plan", id }],
     }),

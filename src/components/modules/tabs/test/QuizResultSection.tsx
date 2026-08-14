@@ -2,7 +2,6 @@
 
 import React from "react";
 import {
-  Sparkles,
   RotateCcw,
   Layers,
   CheckCircle2,
@@ -13,11 +12,11 @@ import Button from "@/components/ui/Button";
 import { CircularProgress } from "@/components/ui/CircularProgress";
 import clsx from "clsx";
 import { MarkdownRenderer } from "../reading/MarkdownRenderer";
-import { McqQuestion } from "@/types/TaskType";
+import { QuizQuestionType } from "@/types/TaskType";
 
 
 export type TestDetailedResultProps = {
-  questions: McqQuestion[];
+  questions: QuizQuestionType[];
   answers: Record<number, number | null>;
   timeTaken: number;
   onRetake: () => void;
@@ -25,7 +24,7 @@ export type TestDetailedResultProps = {
   topic?: string;
 };
 
-export const TestDetailedResult = ({
+export const QuizResultSection = ({
   questions,
   answers,
   timeTaken,

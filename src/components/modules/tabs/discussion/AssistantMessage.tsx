@@ -4,7 +4,7 @@ import { AnchorTypes } from "@/enums/AnchorEnums";
 import { useState } from "react";
 import { useAppDispatch } from "@/store/store";
 import {
-  addToPane,
+  openTab,
   updateTabData,
 } from "@/store/features/workspace/workspaceSlice";
 import { useWorkspace } from "@/hooks/useWorkspace";
@@ -52,7 +52,7 @@ export const AssistantMessage = ({ message }: AssistantMessageProps) => {
       );
     } else {
       dispatch(
-        addToPane({
+        openTab({
           tab: {
             id: message.discussionId,
             label: "Discussion Tab",

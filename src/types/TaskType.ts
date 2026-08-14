@@ -107,4 +107,3 @@ export type TaskSummaryType = {
   is_optional: boolean;
 };
 
-export type DailyTaskSummaryDto = TaskSummaryType;

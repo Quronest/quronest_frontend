@@ -90,7 +90,7 @@ export type {
   DailyTaskStatus,
   DailyTaskType,
   DailyTaskSummaryDto,
-  DailyPlanDto,
+  DailyPlanType as DailyPlanDto,
 } from "../dailyplan/dailyplanType";
 
 

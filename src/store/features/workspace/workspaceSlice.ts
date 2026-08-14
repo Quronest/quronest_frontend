@@ -1,11 +1,19 @@
-import { TabData, WorkspaceState } from "@/types/WorkspaceType";
+import { ReadingTaskContentType } from "@/types/TaskType";
+import {
+  DiscussTabPayloadType,
+  NoteTabPayloadType,
+  TabData,
+  TaskTabPayloadType,
+  WorkspaceState,
+} from "@/types/WorkspaceType";
+import { RawTabDataType, tabDataConvertor } from "@/utils/tabDataConvertor";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 const initialState: WorkspaceState = {
   dailyPlanId: null,
   panes: {
     left: {
-      tabs: [] as TabData<any>[],
+      tabs: [] as TabData[],
       activeTabId: null,
     },
   },
@@ -68,16 +76,28 @@ const workspaceSlice = createSlice({
       }
     },
 
-    addToPane: (state, action: PayloadAction<{ tab: TabData<any> }>) => {
+    createTab: (state, action: PayloadAction<{ tab: TabData }>) => {
+      const tabData = tabDataConvertor(action.payload.tab);
       const activePaneId = state.activePaneId;
       const pane = state.panes[activePaneId];
       if (!pane) return;
 
       const exists = pane.tabs.find((t) => t.id === action.payload.tab.id);
 
-      if (!exists) pane.tabs.push(action.payload.tab);
+      if (!exists) pane.tabs.push(tabData);
+    },
 
-      pane.activeTabId = action.payload.tab.id;
+    openTab: (state, action: PayloadAction<{ tab: RawTabDataType }>) => {
+      const tabData = tabDataConvertor(action.payload.tab);
+      const activePaneId = state.activePaneId;
+      const pane = state.panes[activePaneId];
+      if (!pane) return;
+
+      const exists = pane.tabs.find((t) => t.id === action.payload.tab.id);
+
+      if (!exists) pane.tabs.push(tabData);
+
+      pane.activeTabId = tabData.id;
     },
 
     switchTab: (state, action: PayloadAction<{ tabId: string }>) => {
@@ -105,7 +125,7 @@ const workspaceSlice = createSlice({
       state,
       action: PayloadAction<{
         tabId: string;
-        data: Partial<TabData<unknown>["data"]>;
+        data: Partial<TabData["payload"]>;
       }>,
     ) => {
       const { tabId, data } = action.payload;
@@ -114,10 +134,10 @@ const workspaceSlice = createSlice({
         const tab = pane.tabs.find((tab) => tab.id === tabId);
 
         if (tab) {
-          tab.data = {
-            ...(tab.data as object),
+          tab.payload = {
+            ...(tab.payload as object),
             ...(data as object),
-          };
+          } as TaskTabPayloadType | NoteTabPayloadType | DiscussTabPayloadType;
           return;
         }
       }
@@ -130,7 +150,7 @@ export const selectWorkspace = (state: { workspace: WorkspaceState }) =>
 
 export const {
   setDailyPlanId,
-  addToPane,
+  openTab,
   switchTab,
   closeTab,
   updateTabData,

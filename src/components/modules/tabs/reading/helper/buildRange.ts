@@ -35,12 +35,13 @@ export function buildRange(
   anchor: TaskAnchor,
   root: HTMLElement,
 ): Range | null {
+  if (!anchor.block_offset) return null;
   const block = root.querySelector<HTMLElement>(
     `[data-block-start="${anchor.block_offset.start}"]`,
   );
 
   if (!block) return null;
-
+  if (!anchor.selection_offset) return null;
   const start = findTextPosition(block, anchor.selection_offset.start);
   const end = findTextPosition(block, anchor.selection_offset.end);
 

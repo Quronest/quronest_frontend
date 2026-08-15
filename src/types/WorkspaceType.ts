@@ -45,17 +45,17 @@ export type SelectionAnchor = {
   id?: string;
   referenceId?: string;
   type: AnchorTypes;
-  blockOffset: {
+  block_offset: {
     start: number;
     end: number;
   };
 
-  selectionOffset: {
+  selection_offset: {
     start: number;
     end: number;
   };
 
-  selectedText?: string;
+  selected_text?: string;
 };
 
 

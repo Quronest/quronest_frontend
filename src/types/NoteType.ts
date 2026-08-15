@@ -2,13 +2,12 @@ import { SelectionAnchor } from "./WorkspaceType";
 
 export type NoteType = {
   id: string;
-  taskId: string;
+  task_id: string;
   anchor?: SelectionAnchor;
-
   content: string;
 
-  createdAt: string;
-  updatedAt?: string;
+  creation_timestamp: string;
+  updated_timestamp?: string;
 };
 
 

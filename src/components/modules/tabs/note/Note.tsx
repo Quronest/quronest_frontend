@@ -24,7 +24,7 @@ export const Note = ({
   isActive: boolean;
 }) => {
   const dispatch = useAppDispatch();
-  const formattedDate = formatDate(note.createdAt);
+  const formattedDate = formatDate(note.creation_timestamp);
   const noteRef = useRef<HTMLDivElement>(null);
   const [pulse, setPulse] = useState(false);
 
@@ -52,7 +52,7 @@ export const Note = ({
         <div className="relative flex items-start justify-between gap-4 mb-2">
           <div className="flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.24em] text-neutral/80">
             <span className="h-1 w-1 rounded-full bg-primary/70" />
-            <time dateTime={note.createdAt}>{formattedDate.dateTime}</time>
+            <time dateTime={note.creation_timestamp}>{formattedDate.dateTime}</time>
           </div>
 
           <CardActions>
@@ -75,8 +75,8 @@ export const Note = ({
           </CardActions>
         </div>
 
-        {note?.anchor?.selectedText && (
-          <HighlightBox text={note.anchor.selectedText} />
+        {note?.anchor?.selected_text && (
+          <HighlightBox text={note.anchor.selected_text} />
         )}
 
         <div

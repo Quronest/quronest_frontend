@@ -45,15 +45,17 @@ export const NoteTab = ({
     propActiveNoteId !== undefined ? propActiveNoteId : tabActiveNoteId;
 
   // Retrieve notes and sort chronologically (ascending) for WhatsApp style rendering
-  const notes = useAppSelector((state) =>
-    state.note.notes
-      .filter((note) => note?.taskId === taskId)
-      .sort(
-        (a, b) =>
-          new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
-      ),
-  );
+  // const notes = useAppSelector((state) =>
+  //   state.note.notes
+  //     .filter((note) => note?.taskId === taskId)
+  //     .sort(
+  //       (a, b) =>
+  //         new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
+  //     ),
+  // );
 
+  // const notes: NoteType[] = [];
+  const [notes, setNotes] = useState<NoteType[] | []>([]);
   const scrollRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -67,27 +69,12 @@ export const NoteTab = ({
   const [isLoadingMore, setIsLoadingMore] = useState(false);
 
   // Map Backend DTO to Frontend NoteType
-  // const mapDtoToNoteType = (dto: NoteType): NoteType => ({
-  //   id: dto.id,
-  //   taskId: dto.task_id,
-  //   content: dto.message,
-  //   createdAt: dto.creation_timestamp,
-  //   updatedAt: dto.update_timestamp || undefined,
-  //   anchor: dto.reference_text
-  //     ? {
-  //         type: AnchorTypes.NOTE,
-  //         selectedText: dto.reference_text,
-  //         blockOffset: { start: 0, end: 0 },
-  //         selectionOffset: { start: 0, end: 0 },
-  //       }
-  //     : undefined,
-  // });
 
   const emptyNoteData: NoteType = {
     id: "",
     content: "",
-    createdAt: new Date().toISOString(),
-    taskId: taskId,
+    creation_timestamp: new Date().toISOString(),
+    task_id: taskId,
   };
   const draftNoteData = draftNote ?? emptyNoteData;
   const [noteData, setNoteData] = useState<NoteType>(draftNoteData);
@@ -110,7 +97,9 @@ export const NoteTab = ({
         }).unwrap();
 
         const mapped = res.content;
-        dispatch(addNotes(mapped));
+        setNotes(() => [...mapped]);
+        // notes.push(...mapped);
+        // dispatch(addNotes(mapped));
         setPage(0);
         setHasMore(!res.last);
 
@@ -148,7 +137,9 @@ export const NoteTab = ({
         }).unwrap();
 
         const mapped = res.content;
-        dispatch(addNotes(mapped));
+        // dispatch(addNotes(mapped));
+        // notes.push(...mapped);
+        setNotes((prevNotes) => [...prevNotes, ...mapped]);
         setPage(nextPage);
         setHasMore(!res.last);
 
@@ -182,7 +173,10 @@ export const NoteTab = ({
           message: noteData.content,
         }).unwrap();
 
-        dispatch(updateNote(res));
+        const updatedNote = res;
+        setNotes((prevNotes) =>
+          prevNotes.map((n) => (n.id === updatedNote.id ? updatedNote : n)),
+        );
         setNoteData(emptyNoteData);
       } catch (err) {
         console.error("Failed to edit note:", err);
@@ -193,12 +187,19 @@ export const NoteTab = ({
         const res = await createNoteMutation({
           taskId,
           message: noteData.content,
-          anchor:noteData.anchor,
-          reference_text: noteData.anchor?.selectedText,
+          anchor: noteData.anchor
+            ? {
+                type: noteData.anchor.type,
+                block_offset: noteData.anchor.block_offset,
+                selection_offset: noteData.anchor.selection_offset,
+                selected_text: noteData.anchor.selected_text || "",
+              }
+            : undefined,
+          reference_text: noteData.anchor?.selected_text,
         }).unwrap();
 
         const newNote = res;
-        dispatch(addNote(newNote));
+        setNotes((prevNotes) => [...prevNotes, newNote]);
         setNoteData(emptyNoteData);
 
         // Scroll to bottom
@@ -251,14 +252,14 @@ export const NoteTab = ({
       </ScrollArea>
       <div className="mx-auto w-full max-w-4xl px-4">
         <div className="mt-5 rounded-3xl border border-card-hover bg-card p-3">
-          {!!noteData?.anchor?.selectedText && (
+          {!!noteData?.anchor?.selected_text && (
             <div className="mb-3 rounded-2xl bg-card-hover p-3 flex items-center gap-3">
               <div className="text-white relative -top-2">
                 <CornerDownRight size={25} />
               </div>
               <div className="flex items-center justify-between gap-3 flex-1">
                 <p className="line-clamp-3 text-sm text-foreground/90">
-                  {noteData.anchor.selectedText}
+                  {noteData.anchor.selected_text}
                 </p>
                 <Button
                   variant="nav"

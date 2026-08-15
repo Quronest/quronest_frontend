@@ -100,16 +100,16 @@ export const SelectableMarkdown = ({
         id: crypto.randomUUID(),
         referenceId: referenceId,
         type,
-        blockOffset: {
+        block_offset: {
           start: startOffset,
           end: endOffset,
         },
 
-        selectionOffset: {
+        selection_offset: {
           start: absoluteStart,
           end: absoluteEnd,
         },
-        selectedText: text,
+        selected_text: text,
       }),
     };
     setSelectionInfo(selectionData);

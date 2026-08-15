@@ -94,3 +94,41 @@ export function formatDate(isoString: string): DateFormatResult {
 }
 
 export type { DateFormatResult };
+
+export const getCenteredRange = (date: Date) => {
+  const dates = Array.from({ length: 7 }, (_, i) => {
+    const d = new Date(date);
+    d.setDate(date.getDate() - 3 + i);
+    d.setHours(0, 0, 0, 0);
+    return d;
+  });
+
+  const weekStart = dates[0];
+  const weekEnd = new Date(dates[6]);
+  weekEnd.setHours(23, 59, 59, 999);
+
+  return { weekStart, weekEnd, weekDates: dates };
+};
+
+export const formatToLocalDateString = (date: Date): string => {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+};
+
+export const parseLocalDate = (dateStr: string | undefined): Date | null => {
+  if (!dateStr) return null;
+  const match = dateStr.match(/^(\d{4})-(\d{2})-(\d{2})/);
+  if (match) {
+    const year = parseInt(match[1], 10);
+    const month = parseInt(match[2], 10) - 1;
+    const day = parseInt(match[3], 10);
+    return new Date(year, month, day, 0, 0, 0, 0);
+  }
+  const parsed = new Date(dateStr);
+  if (isNaN(parsed.getTime())) return null;
+  parsed.setHours(0, 0, 0, 0);
+  return parsed;
+};
+

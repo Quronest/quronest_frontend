@@ -4,7 +4,8 @@ import { Pane } from "@/components/modules/workspace/Pane";
 import { Group, Panel } from "react-resizable-panels";
 import { useWorkspace } from "@/hooks/useWorkspace";
 import { useAppDispatch } from "@/store/store";
-import { setDailyPlanId } from "@/store/features/workspace/workspaceSlice";
+import { openTab, setDailyPlanId } from "@/store/features/workspace/workspaceSlice";
+import { mapTaskSummaryToTab } from "./WorkspaceSideBar";
 
 type WorkspaceLayoutProps = {
   dailyPlanId: string;
@@ -17,6 +18,14 @@ export const WorkspaceLayout = ({ dailyPlanId }: WorkspaceLayoutProps) => {
   useEffect(() => {
     if (dailyPlanId) {
       dispatch(setDailyPlanId(dailyPlanId));
+      const activeTaskData = localStorage.getItem("autoMountTaskData");
+      if (activeTaskData) {
+        const activeTaskSummary = JSON.parse(activeTaskData);
+
+        const activeTaskTabData = mapTaskSummaryToTab(activeTaskSummary);
+        dispatch(openTab({ tab: activeTaskTabData }));
+        localStorage.removeItem("autoMountTaskData");
+      }
     }
   }, [dailyPlanId, dispatch]);
 

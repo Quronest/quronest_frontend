@@ -2,6 +2,7 @@ import Button from "@/components/ui/Button";
 import { CircularProgress } from "@/components/ui/CircularProgress";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { DailyPlanDto } from "@/store/features/user/userType";
+import { formatToLocalDateString } from "@/utils/date";
 
 interface WeeklyCalendarProgressProps {
   weekDates: Date[];
@@ -13,13 +14,6 @@ interface WeeklyCalendarProgressProps {
   minDate?: Date | null;
   maxDate?: Date | null;
 }
-
-const formatToLocalDateString = (date: Date): string => {
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, "0");
-  const day = String(date.getDate()).padStart(2, "0");
-  return `${year}-${month}-${day}`;
-};
 
 export const WeeklyCalendarProgress = ({
   weekDates,

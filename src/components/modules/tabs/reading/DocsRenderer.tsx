@@ -26,7 +26,7 @@ export const DocsRenderer = ({
   const markdown = (readingTaskData.content as ReadingTaskContentType)
     .markdown_content;
   const anchors = readingTaskData.anchors as TaskAnchor[] | [];
-  const { tabData, tabRef } = useTab();
+  const { tabRef } = useTab();
   const { highlights } = useAppSelector(selectHighlight);
 
   const resourceHighlights = highlights.filter(
@@ -58,10 +58,10 @@ export const DocsRenderer = ({
     const anchor = selection?.createAnchor(taskId, AnchorTypes.NOTE);
     const draftNote: NoteType = {
       id: "",
-      taskId: taskId,
+      task_id: taskId,
       anchor,
       content: "",
-      createdAt: new Date().toISOString(),
+      creation_timestamp: new Date().toISOString(),
     };
     const noteTabData: RawTabDataType = {
       id: "note-" + readingTaskData.id,

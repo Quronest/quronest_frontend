@@ -1,6 +1,5 @@
 "use client";
-import React, { useRef } from "react";
-import { TabPanel } from "./TabPanel";
+import React from "react";
 import Button from "@/components/ui/Button";
 import { ChevronRight, PanelLeftClose, PanelRightClose, X } from "lucide-react";
 import clsx from "clsx";
@@ -9,11 +8,9 @@ import {
   openSidebar,
   setActivePane,
 } from "@/store/features/workspace/workspaceSlice";
-import { useAppDispatch, useAppSelector } from "@/store/store";
+import { useAppDispatch } from "@/store/store";
 import { TabItem } from "./TabItem";
 import { useWorkspace } from "@/hooks/useWorkspace";
-import { TabContext } from "@/context/Tabcontext";
-import { TabResponsiveContainer } from "@/components/ui/TabResponsiveContainer";
 import { TabsRenderer } from "./TabsRenderer";
 
 type PaneProps = {
@@ -30,7 +27,6 @@ export const Pane = ({ paneId }: PaneProps) => {
   if (!pane) return null;
 
   const { tabs: tabList, activeTabId } = pane;
-  const activeTab = tabList.find((tab) => tab.id === activeTabId);
 
   return (
     <div

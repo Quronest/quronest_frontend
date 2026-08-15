@@ -34,7 +34,7 @@ export const TestRoom = ({
   const [timeRemaining, setTimeRemaining] = useState(totalSeconds);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const [answersRecord, setAnswersRecord] = useState<Record<number, number>[]>(
+  const [answersRecord, setAnswersRecord] = useState<Record<number, number>>(
     [],
   );
 
@@ -63,16 +63,7 @@ export const TestRoom = ({
 
   // --- ACTIONS ---
   const handleSelectOption = (questionId: number, optionId: number) => {
-    const exists = answersRecord.some((record) => questionId in record);
-    if (exists) {
-      setAnswersRecord((prev) =>
-        prev.map((record) =>
-          questionId in record ? { [questionId]: optionId } : record,
-        ),
-      );
-    } else {
-      setAnswersRecord((prev) => [...prev, { [questionId]: optionId }]);
-    }
+    setAnswersRecord((prev) => ({ ...prev, [questionId]: optionId }));
   };
 
   const handleSubmit = async () => {
@@ -80,7 +71,7 @@ export const TestRoom = ({
       const response = await triggerQuizSubmit({
         quizAnswerData: {
           answers: answersRecord,
-          total_time_spent: totalSeconds - timeRemaining,
+          total_time_spent: timeTaken,
         },
         taskId,
       }).unwrap();
@@ -93,24 +84,13 @@ export const TestRoom = ({
     }
   };
 
-  const handleRetake = () => {
-    setAnswers({});
-    setTimeRemaining(totalSeconds);
-    setIsSubmitted(false);
-  };
-
   // --- COMPUTED STATS ---
   const totalQuestions = quizTaskContent.questionnaires.length;
+  const answerCount = Object.keys(answersRecord).length;
+  const leftCount = totalQuestions - Object.keys(answersRecord).length;
 
-  const answeredCount = Object.keys(answers).filter(
-    (key) =>
-      answers[Number(key)] !== null && answers[Number(key)] !== undefined,
-  ).length;
-
-  const leftCount = totalQuestions - answeredCount;
-
-  // Format time elapsed
-  const timeTaken = totalSeconds - timeRemaining;
+  // time elapsed
+  const timeTaken = (totalSeconds - timeRemaining);
 
   const scrollToQuestion = (questionId: number) => {
     const element = document.getElementById(`${questionId}`);
@@ -125,7 +105,7 @@ export const TestRoom = ({
       {/* Top Header Row */}
       <TestRoomHeader
         title={quizTaskData.title}
-        answeredCount={answeredCount}
+        answeredCount={answerCount}
         totalQuestions={totalQuestions}
         timeRemaining={timeRemaining}
         onSubmitClick={() => setIsModalOpen(true)}
@@ -145,11 +125,7 @@ export const TestRoom = ({
                 question={question}
                 questionNumber={index + 1}
                 totalQuestions={totalQuestions}
-                selectedOptionId={
-                  answersRecord?.find((record) => question.id in record)?.[
-                    question.id
-                  ] ?? null
-                }
+                selectedOptionId={answersRecord[question.id] ?? null}
                 onSelectOption={(optionId) =>
                   handleSelectOption(question.id, optionId)
                 }
@@ -173,10 +149,7 @@ export const TestRoom = ({
             {/* Palette Grid */}
             <div className="grid grid-cols-5 gap-2">
               {quizTaskContent.questionnaires.map((question, index) => {
-                const isAnswered = answersRecord.some(
-                  (record) => question.id in record,
-                );
-
+                const isAnswered = answersRecord[question.id] ? true : false;
                 return (
                   <button
                     key={index}
@@ -198,7 +171,7 @@ export const TestRoom = ({
             <div className="grid grid-cols-2 gap-2 border-t border-border/40 pt-4">
               <div className="bg-card-hover/20 border border-border/80 p-2.5 rounded-lg flex flex-col items-center justify-center text-center">
                 <span className="text-lg font-bold text-emerald-400">
-                  {answeredCount}
+                  {answerCount}
                 </span>
                 <span className="text-[10px] text-neutral uppercase font-bold">
                   Answered
@@ -223,7 +196,7 @@ export const TestRoom = ({
         onClose={() => setIsModalOpen(false)}
         onSubmit={handleSubmit}
         stats={{
-          answered: answeredCount,
+          answered: answerCount,
           left: leftCount,
         }}
         disabled={isSubmittingQuiz}

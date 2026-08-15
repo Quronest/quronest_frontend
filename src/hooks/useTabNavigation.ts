@@ -43,7 +43,6 @@ export const routes: RouteObjectType[] = [
 ];
 
 export const useTabNavigation = () => {
-  console.log("ReadingTab: ", ReadingTab);
   const { panes, activePaneId, isSplitView } = useWorkspace();
   const dispatch = useAppDispatch();
   const navigate = ({

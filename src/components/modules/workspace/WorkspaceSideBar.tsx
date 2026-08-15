@@ -40,6 +40,15 @@ const taskPathMap: Record<string, string> = {
   CODING: "/coding",
 };
 
+export const mapTaskSummaryToTab = (task: TaskSummaryType): RawTabDataType => {
+  return {
+    id: task.id,
+    title: task.title,
+    path: taskPathMap[task.task_type],
+    payload: task,
+  };
+};
+
 export const WorkspaceSideBar = () => {
   const dispatch = useAppDispatch();
   const { isSidebarCollapsed } = useWorkspace();
@@ -50,25 +59,16 @@ export const WorkspaceSideBar = () => {
 
   const tasks = dailyPlan?.tasks || [];
 
-  const mapTaskSummaryToTab = (task: TaskSummaryType): RawTabDataType => {
-    return {
-      id: task.id,
-      title: task.title,
-      path: taskPathMap[task.task_type],
-      payload: task,
-    };
-  };
+  // useEffect(() => {
+  //   const activeTaskData = localStorage.getItem("autoMountTaskData");
+  //   if (activeTaskData) {
+  //     const activeTaskSummary = JSON.parse(activeTaskData);
 
-  useEffect(() => {
-    const activeTaskData = localStorage.getItem("autoMountTaskData");
-    if (activeTaskData) {
-      const activeTaskSummary = JSON.parse(activeTaskData);
-
-      const activeTaskTabData = mapTaskSummaryToTab(activeTaskSummary);
-      dispatch(openTab({ tab: activeTaskTabData }));
-      localStorage.removeItem("autoMountTaskData");
-    }
-  }, []);
+  //     const activeTaskTabData = mapTaskSummaryToTab(activeTaskSummary);
+  //     dispatch(openTab({ tab: activeTaskTabData }));
+  //     localStorage.removeItem("autoMountTaskData");
+  //   }
+  // }, []);
 
   const handleTaskClick = (taskSummary: TaskSummaryType) => {
     const tab = mapTaskSummaryToTab(taskSummary);

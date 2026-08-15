@@ -11,7 +11,7 @@ export type QuizTaskContentType = {
 };
 
 export type QuizSubmitRequestType = {
-  answers: Record<number, number>[];
+  answers: Record<number, number>;
   total_time_spent: number;
 };
 

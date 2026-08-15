@@ -42,7 +42,6 @@ export default function AcademicForm({ onNext }: Props) {
   const academicDescription = watch("academic_description") ?? "";
 
   const onSubmit = async (data: AcademicData) => {
-    console.log("Academic-data ", data);
     await asyncHandler(() => setAcademicData(data).unwrap());
     onNext();
   };

@@ -10,7 +10,7 @@ import { CodingTab } from "../tabs/coding/CodingTab";
 import { TaskLoaderWrapper } from "./TaskLoaderWrapper";
 
 type TabPanelType = {
-  tab: TabData<any>;
+  tab: TabData;
 };
 
 export const TabPanel = forwardRef<HTMLDivElement, TabPanelType>(

@@ -74,7 +74,6 @@ export default function AnnotationLayer({
   }, [anchors, containerRef, width]);
 
   if (!positions) return null;
-  console.log("Anchors: ", anchors);
   return (
     <>
       {positions.map((item) => {

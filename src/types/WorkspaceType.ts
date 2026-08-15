@@ -1,6 +1,6 @@
-import { JSX } from "react";
+import { ComponentType, JSX } from "react";
 import { NoteType } from "./NoteType";
-import { MessageType } from "./DiscussionType";
+import { DraftMessageType, MessageType } from "./DiscussionType";
 import { AnchorTypes } from "@/enums/AnchorEnums";
 import { TaskSummaryType } from "./TaskType";
 
@@ -22,7 +22,7 @@ export type WorkspaceState = {
 export type TabData = {
   id: string;
   path: string;
-  component: () => JSX.Element;
+  // component: ComponentType;
   title: string;
   payload: TaskTabPayloadType | NoteTabPayloadType | DiscussTabPayloadType;
 };
@@ -38,12 +38,12 @@ export type NoteTabPayloadType = {
 export type DiscussTabPayloadType = {
   taskId: string;
   activeDiscussionId: string;
-  draftMessage?: MessageType;
+  draftMessage?: DraftMessageType;
 };
 
 export type SelectionAnchor = {
-  id: string;
-  referenceId: string;
+  id?: string;
+  referenceId?: string;
   type: AnchorTypes;
   blockOffset: {
     start: number;
@@ -57,6 +57,8 @@ export type SelectionAnchor = {
 
   selectedText?: string;
 };
+
+
 
 export type TextSelection = {
   selectedText: string;

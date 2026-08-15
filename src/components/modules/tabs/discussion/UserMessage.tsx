@@ -37,8 +37,8 @@ export const UserMessage = ({ message }: Props) => {
           {message.content}
         </div> */}
         <SelectableMarkdown
-          markdown={message.content}
-          referenceId={message.discussionId}
+          markdown={message.content!}
+          referenceId={message.discussionId!}
           onSelect={setSelectionInfo}
           className={clsx(
             "rounded-2xl bg-primary px-5 py-3 text-background",

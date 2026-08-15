@@ -1,5 +1,9 @@
-import { MessageRole, MessageType } from "@/types/DiscussionType";
-import { TextSelection } from "@/types/WorkspaceType";
+import {
+  DraftMessageType,
+  MessageRole,
+  MessageType,
+} from "@/types/DiscussionType";
+import { DiscussTabPayloadType, TextSelection } from "@/types/WorkspaceType";
 import { AnchorTypes } from "@/enums/AnchorEnums";
 import { useState } from "react";
 import { useAppDispatch } from "@/store/store";
@@ -8,7 +12,7 @@ import {
   updateTabData,
 } from "@/store/features/workspace/workspaceSlice";
 import { useWorkspace } from "@/hooks/useWorkspace";
-import { tabTypes } from "@/enums/TabEnums";
+import { TabTypes } from "@/enums/TabEnums";
 import { useTab } from "@/hooks/useTab";
 import { SelectableMarkdown } from "../reading/markdown/SelectableMarkdown";
 import { SelectionToolBar } from "../reading/SelectionToolBar";
@@ -23,28 +27,27 @@ export const AssistantMessage = ({ message }: AssistantMessageProps) => {
   );
   const dispatch = useAppDispatch();
   const { activePane } = useWorkspace();
-  const { taskId } = useTab();
+  const { tabData } = useTab();
   const handleAskDoubt = (selection: TextSelection | null) => {
     if (!selection) return;
-    const anchor = selection.createAnchor(taskId, AnchorTypes.DOUBT);
-    const draftMessage: MessageType = {
-      id: "",
-      discussionId: message.discussionId,
+    const anchor = selection.createAnchor(
+      (tabData.payload as DiscussTabPayloadType).taskId,
+      AnchorTypes.DOUBT,
+    );
+    const draftMessage: DraftMessageType = {
       anchor,
-      content: "",
-      createdAt: new Date().toISOString(),
-      role: "user" as MessageRole,
     };
     const discussionTab = activePane?.tabs.find(
       (tab) =>
-        tab.type === tabTypes.DISCUSS && tab.taskId === anchor.referenceId,
+        tab.path === "/discuss" &&
+        (tab.payload as DiscussTabPayloadType).taskId === anchor.referenceId,
     );
     if (discussionTab) {
       dispatch(
         updateTabData({
           tabId: discussionTab!.id,
           data: {
-            resourceId: anchor.referenceId,
+            taskId: anchor.referenceId,
             activeDiscussionId: message.discussionId,
             draftMessage,
           },
@@ -55,13 +58,12 @@ export const AssistantMessage = ({ message }: AssistantMessageProps) => {
         openTab({
           tab: {
             id: message.discussionId,
-            label: "Discussion Tab",
-            taskId: taskId,
-            type: tabTypes.DISCUSS,
-            data: {
+            title: "Discussion Tab",
+            path: "/discuss",
+            payload: {
               draftMessage,
-              resourceId: anchor.referenceId,
-              activeDiscussionId: message.discussionId,
+              taskId: anchor.referenceId,
+              activeDiscussionId: message.discussionId!,
             },
           },
         }),
@@ -79,8 +81,8 @@ export const AssistantMessage = ({ message }: AssistantMessageProps) => {
       </span>
       <div className=" rounded-2xl border border-card-hover bg-transparent px-6 py-4">
         <SelectableMarkdown
-          markdown={message.content}
-          referenceId={message.discussionId}
+          markdown={message?.content!}
+          referenceId={message.discussionId!}
           onSelect={setSelectionInfo}
           selectionToolBar={
             <SelectionToolBar

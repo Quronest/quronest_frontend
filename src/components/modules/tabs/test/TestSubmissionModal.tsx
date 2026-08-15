@@ -12,6 +12,7 @@ type TestSubmissionModalProps = {
     answered: number;
     left: number;
   };
+  disabled: boolean;
 };
 
 export const TestSubmissionModal = ({
@@ -19,6 +20,7 @@ export const TestSubmissionModal = ({
   onClose,
   onSubmit,
   stats,
+  disabled,
 }: TestSubmissionModalProps) => {
   return (
     <Modal open={open} onClose={onClose} className="p-6 max-w-md bg-card">
@@ -60,6 +62,7 @@ export const TestSubmissionModal = ({
             variant="primary"
             onClick={onSubmit}
             className="rounded-lg px-5 py-2 font-semibold shadow-lg bg-primary hover:brightness-110 w-full"
+            disabled={disabled}
           >
             Submit Test
           </Button>

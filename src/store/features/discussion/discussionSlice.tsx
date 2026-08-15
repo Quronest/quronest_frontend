@@ -16,8 +16,11 @@ const discussionSlice = createSlice({
   initialState,
   reducers: {
     addDiscussion: (state, action: PayloadAction<DiscussionType>) => {
+      const newDiscussion = action.payload;
+      newDiscussion.id = action.payload.id ?? crypto.randomUUID();
+      newDiscussion.createdAt = Date.now().toLocaleString();
       state.discussions.push(action.payload);
-      state.activeDiscussionId = action.payload.id;
+      state.activeDiscussionId = action.payload.id!;
     },
 
     deleteDiscussion: (state, action: PayloadAction<string>) => {

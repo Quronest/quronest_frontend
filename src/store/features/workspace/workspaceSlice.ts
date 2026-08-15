@@ -18,7 +18,7 @@ const initialState: WorkspaceState = {
     },
   },
   activePaneId: "left",
-  isSidebarCollapsed: true,
+  isSidebarCollapsed: false,
 };
 
 const workspaceSlice = createSlice({

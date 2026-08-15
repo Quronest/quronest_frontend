@@ -23,7 +23,6 @@ import {
   useCreateNoteMutation,
   useEditNoteMutation,
   useDeleteNoteMutation,
-  NoteDto,
 } from "@/store/features/notes/noteApi";
 import { AnchorTypes } from "@/enums/AnchorEnums";
 
@@ -68,23 +67,21 @@ export const NoteTab = ({
   const [isLoadingMore, setIsLoadingMore] = useState(false);
 
   // Map Backend DTO to Frontend NoteType
-  const mapDtoToNoteType = (dto: NoteDto): NoteType => ({
-    id: dto.id,
-    taskId: dto.task_id,
-    content: dto.message,
-    createdAt: dto.creation_timestamp,
-    updatedAt: dto.update_timestamp || undefined,
-    anchor: dto.reference_text
-      ? {
-          id: crypto.randomUUID(),
-          referenceId: dto.task_id,
-          type: AnchorTypes.NOTE,
-          selectedText: dto.reference_text,
-          blockOffset: { start: 0, end: 0 },
-          selectionOffset: { start: 0, end: 0 },
-        }
-      : undefined,
-  });
+  // const mapDtoToNoteType = (dto: NoteType): NoteType => ({
+  //   id: dto.id,
+  //   taskId: dto.task_id,
+  //   content: dto.message,
+  //   createdAt: dto.creation_timestamp,
+  //   updatedAt: dto.update_timestamp || undefined,
+  //   anchor: dto.reference_text
+  //     ? {
+  //         type: AnchorTypes.NOTE,
+  //         selectedText: dto.reference_text,
+  //         blockOffset: { start: 0, end: 0 },
+  //         selectionOffset: { start: 0, end: 0 },
+  //       }
+  //     : undefined,
+  // });
 
   const emptyNoteData: NoteType = {
     id: "",
@@ -112,7 +109,7 @@ export const NoteTab = ({
           sort: "creationTimestamp,desc",
         }).unwrap();
 
-        const mapped = res.content.map(mapDtoToNoteType);
+        const mapped = res.content;
         dispatch(addNotes(mapped));
         setPage(0);
         setHasMore(!res.last);
@@ -150,7 +147,7 @@ export const NoteTab = ({
           sort: "creationTimestamp,desc",
         }).unwrap();
 
-        const mapped = res.content.map(mapDtoToNoteType);
+        const mapped = res.content;
         dispatch(addNotes(mapped));
         setPage(nextPage);
         setHasMore(!res.last);
@@ -185,7 +182,7 @@ export const NoteTab = ({
           message: noteData.content,
         }).unwrap();
 
-        dispatch(updateNote(mapDtoToNoteType(res)));
+        dispatch(updateNote(res));
         setNoteData(emptyNoteData);
       } catch (err) {
         console.error("Failed to edit note:", err);
@@ -196,10 +193,11 @@ export const NoteTab = ({
         const res = await createNoteMutation({
           taskId,
           message: noteData.content,
+          anchor:noteData.anchor,
           reference_text: noteData.anchor?.selectedText,
         }).unwrap();
 
-        const newNote = mapDtoToNoteType(res);
+        const newNote = res;
         dispatch(addNote(newNote));
         setNoteData(emptyNoteData);
 

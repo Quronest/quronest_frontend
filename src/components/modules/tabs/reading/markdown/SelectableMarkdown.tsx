@@ -131,7 +131,6 @@ export const SelectableMarkdown = ({
       document.removeEventListener("selectionchange", handleSelectionChange);
     };
   }, []);
-  console.log("selectable markdown rendered");
   return (
     <SelectableMarkdownContext.Provider value={{ selection: selectionInfo }}>
       <div

@@ -23,7 +23,7 @@ import {
   Code2,
   AlignLeft,
 } from "lucide-react";
-import React from "react";
+import React, { useEffect } from "react";
 import { useParams } from "next/navigation";
 import { RawTabDataType } from "@/utils/tabDataConvertor";
 
@@ -52,16 +52,27 @@ export const WorkspaceSideBar = () => {
 
   const mapTaskSummaryToTab = (task: TaskSummaryType): RawTabDataType => {
     return {
-      id:task.id,
+      id: task.id,
       title: task.title,
       path: taskPathMap[task.task_type],
       payload: task,
     };
   };
 
+  useEffect(() => {
+    const activeTaskData = localStorage.getItem("autoMountTaskData");
+    if (activeTaskData) {
+      const activeTaskSummary = JSON.parse(activeTaskData);
+
+      const activeTaskTabData = mapTaskSummaryToTab(activeTaskSummary);
+      dispatch(openTab({ tab: activeTaskTabData }));
+      localStorage.removeItem("autoMountTaskData");
+    }
+  }, []);
+
   const handleTaskClick = (taskSummary: TaskSummaryType) => {
     const tab = mapTaskSummaryToTab(taskSummary);
-    dispatch(openTab({ tab }));
+    dispatch(openTab({ tab: tab }));
   };
 
   return (

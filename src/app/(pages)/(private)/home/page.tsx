@@ -23,7 +23,6 @@ import { useJobPolling } from "@/hooks/useJobPolling";
 import { DailyPlanDto } from "@/store/features/user/userType";
 import { Tasktype } from "@/types/TaskType";
 
-
 const getCenteredRange = (date: Date) => {
   const dates = Array.from({ length: 7 }, (_, i) => {
     const d = new Date(date);
@@ -90,9 +89,15 @@ const mapDailyTaskToTaskType = (task: any): Tasktype => {
 const HomePage = () => {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
 
-  const { weekStart, weekEnd, weekDates } = useMemo(() => getCenteredRange(selectedDate), [selectedDate]);
+  const { weekStart, weekEnd, weekDates } = useMemo(
+    () => getCenteredRange(selectedDate),
+    [selectedDate],
+  );
 
-  const startDateStr = useMemo(() => formatToLocalDateString(weekStart), [weekStart]);
+  const startDateStr = useMemo(
+    () => formatToLocalDateString(weekStart),
+    [weekStart],
+  );
 
   // Profile and Journey Queries
   const { data: profile } = useGetProfileQuery();
@@ -123,7 +128,11 @@ const HomePage = () => {
   }, [journey, today]);
 
   // Daily Plans Queries
-  const { data: dailyPlans = [], isLoading, isFetching } = useGetDailyPlansByRangeQuery({
+  const {
+    data: dailyPlans = [],
+    isLoading,
+    isFetching,
+  } = useGetDailyPlansByRangeQuery({
     startDate: queryRange.startDateStr,
     endDate: queryRange.endDateStr,
   });
@@ -132,7 +141,9 @@ const HomePage = () => {
   const [generateDailyPlans] = useGenerateDailyPlansMutation();
 
   // Job Polling for generation
-  const { start: handleGenerate, status: pollingStatus } = useJobPolling<DailyPlanDto[]>({
+  const { start: handleGenerate, status: pollingStatus } = useJobPolling<
+    DailyPlanDto[]
+  >({
     startTrigger: () => generateDailyPlans().unwrap(),
     fetchFinalTrigger: async () => {
       const result = await triggerGetDailyPlans({
@@ -217,13 +228,16 @@ const HomePage = () => {
     return selectedPlan.tasks.find((t) => t.status !== "COMPLETED") || null;
   }, [selectedPlan]);
 
-  const isGenerating = pollingStatus === "review" || pollingStatus === "creating";
+  const isGenerating =
+    pollingStatus === "review" || pollingStatus === "creating";
 
   if (isLoading || (isFetching && dailyPlans.length === 0)) {
     return (
       <PageContainer className="flex flex-col items-center justify-center pt-20">
         <LoaderCircle className="h-10 w-10 animate-spin text-primary" />
-        <span className="text-neutral mt-4 font-medium">Loading your schedule...</span>
+        <span className="text-neutral mt-4 font-medium">
+          Loading your schedule...
+        </span>
       </PageContainer>
     );
   }
@@ -241,7 +255,9 @@ const HomePage = () => {
             <LoaderCircle className="h-10 w-10 animate-spin text-primary" />
             <div>
               <h2 className="text-xl font-semibold text-foreground">
-                {pollingStatus === "review" ? "Analyzing Goals..." : "Generating Plans..."}
+                {pollingStatus === "review"
+                  ? "Analyzing Goals..."
+                  : "Generating Plans..."}
               </h2>
               <p className="text-neutral mt-2 text-sm max-w-xs mx-auto leading-relaxed">
                 {pollingStatus === "review"
@@ -256,11 +272,15 @@ const HomePage = () => {
               <Calendar className="h-8 w-8 text-primary" />
             </div>
             <div className="space-y-2">
-              <h2 className="text-xl font-bold text-foreground">No Daily Plans Scheduled</h2>
+              <h2 className="text-xl font-bold text-foreground">
+                No Daily Plans Scheduled
+              </h2>
               <p className="text-neutral text-sm max-w-md mx-auto leading-relaxed">
                 You don't have any daily plans generated for the week of{" "}
-                <span className="text-primary font-semibold">{startDateStr}</span>.
-                Let's generate your learning roadmap using our AI engine!
+                <span className="text-primary font-semibold">
+                  {startDateStr}
+                </span>
+                . Let's generate your learning roadmap using our AI engine!
               </p>
             </div>
             <Button
@@ -308,7 +328,7 @@ const HomePage = () => {
                     {selectedPlan.tasks && selectedPlan.tasks.length > 0 ? (
                       selectedPlan.tasks.map((task) => (
                         <TasklistItemComponent
-                          task={mapDailyTaskToTaskType(task)}
+                          task={task}
                           dailyPlanId={selectedPlan.id}
                           key={task.id}
                         />
@@ -327,10 +347,14 @@ const HomePage = () => {
                   <Calendar className="h-8 w-8 text-primary" />
                 </div>
                 <div className="space-y-2">
-                  <h2 className="text-xl font-bold text-foreground">No Daily Plans Scheduled</h2>
+                  <h2 className="text-xl font-bold text-foreground">
+                    No Daily Plans Scheduled
+                  </h2>
                   <p className="text-neutral text-sm max-w-md mx-auto leading-relaxed">
-                    No daily plan generated for this specific day ({formatToLocalDateString(selectedDate)}).
-                    {selectedDate.getTime() === today.getTime() && " Let's generate your learning roadmap using our AI engine!"}
+                    No daily plan generated for this specific day (
+                    {formatToLocalDateString(selectedDate)}).
+                    {selectedDate.getTime() === today.getTime() &&
+                      " Let's generate your learning roadmap using our AI engine!"}
                   </p>
                 </div>
                 {selectedDate.getTime() === today.getTime() && (

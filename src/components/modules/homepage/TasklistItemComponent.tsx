@@ -2,19 +2,22 @@ import Button from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { CircularProgress } from "@/components/ui/CircularProgress";
 import { Tag } from "@/components/ui/Tag";
-import { Tasktype } from "@/types/TaskType";
+import { TaskSummaryType } from "@/types/TaskType";
 
 import React from "react";
 import Link from "next/link";
 
 type TaskItemType = {
-  task: Tasktype;
+  task: TaskSummaryType;
   dailyPlanId: string;
 };
 
 export const TasklistItemComponent = ({ task, dailyPlanId }: TaskItemType) => {
-  const durationInMins = task?.duration / 60;
-  const progresslabel = task.progress.toString();
+  const durationInMins = task?.expected_total_time ;
+  const progresslabel = task.progress_percent.toString();
+  const storeTabDataLocally = () => {
+    localStorage.setItem("autoMountTaskData", JSON.stringify(task));
+  };
   return (
     <Card>
       <div>
@@ -28,11 +31,11 @@ export const TasklistItemComponent = ({ task, dailyPlanId }: TaskItemType) => {
         </div>
 
         {/* tags */}
-        <div className="flex items-center gap-3 my-3">
+        {/* <div className="flex items-center gap-3 my-3">
           {task?.tags.map((tag) => (
             <Tag label={tag.label} tagType={tag?.type} key={tag.label} />
           ))}
-        </div>
+        </div> */}
       </div>
       {/* Progress and button */}
       <div className="relative w-full flex flex-col justify-center">
@@ -42,9 +45,10 @@ export const TasklistItemComponent = ({ task, dailyPlanId }: TaskItemType) => {
             size="sm"
             hover={true}
             active={true}
+            onClick={storeTabDataLocally}
           >
             <CircularProgress
-              value={task?.progress}
+              value={task?.progress_percent}
               className="absolute -left-3 top-1/2 -translate-y-1/2 flex items-center justify-center p-2 bg-card rounded-full self-start"
               label={progresslabel}
               showLabel={true}

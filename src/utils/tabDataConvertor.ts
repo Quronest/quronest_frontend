@@ -25,7 +25,6 @@ export const tabDataConvertor = ({
     id: tab_id,
     title,
     path,
-    component: routeObj?.component!,
     payload,
   };
 };

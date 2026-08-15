@@ -13,10 +13,10 @@ export const TOC = ({ headings }: TOCProps) => {
   if (!tabContext) {
     throw new Error("Must be used within TabContext.Provider");
   }
-  const { containerRef } = tabContext;
+  const { tabContainerRef } = tabContext;
 
   const handleScroll = (id: string) => {
-    containerRef.current?.querySelector(`#${CSS.escape(id)}`)?.scrollIntoView({
+    tabContainerRef.current?.querySelector(`#${CSS.escape(id)}`)?.scrollIntoView({
       behavior: "smooth",
       block: "start",
     });

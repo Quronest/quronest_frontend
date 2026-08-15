@@ -3,37 +3,19 @@ import {
   addHighlight,
   selectHighlight,
 } from "@/store/features/highlights/highlightSlice";
-import {
-  TextSelection,
-  SelectionAnchor,
-  NoteTabPayloadType,
-  DiscussTabPayloadType,
-} from "@/types/WorkspaceType";
+import { TextSelection } from "@/types/WorkspaceType";
 import { useState } from "react";
 import { useTab } from "@/hooks/useTab";
-import { useWorkspace } from "@/hooks/useWorkspace";
 import { NoteType } from "@/types/NoteType";
-import {
-  openTab,
-  openSplitPane,
-  setActivePane,
-  switchTab,
-  updateTabData,
-} from "@/store/features/workspace/workspaceSlice";
-import { TabTypes } from "@/enums/TabEnums";
-import {
-  DiscussionType,
-  MessageRole,
-  MessageType,
-} from "@/types/DiscussionType";
-import { addDiscussion } from "@/store/features/discussion/discussionSlice";
+
+import { DraftMessageType } from "@/types/DiscussionType";
 import { SelectableMarkdown } from "./markdown/SelectableMarkdown";
 import { SelectionToolBar } from "./SelectionToolBar";
 import { AnchorTypes } from "@/enums/AnchorEnums";
 import { DailyTaskType } from "@/store/features/user/userType";
 import { ReadingTaskContentType, TaskAnchor } from "@/types/TaskType";
-import { NoteTab } from "../note/NoteTab";
-import DiscussTab from "../discussion/DiscussTab";
+import { useTabNavigation } from "@/hooks/useTabNavigation";
+import { RawTabDataType } from "@/utils/tabDataConvertor";
 
 export const DocsRenderer = ({
   readingTaskData,
@@ -52,11 +34,12 @@ export const DocsRenderer = ({
   );
 
   const dispatch = useAppDispatch();
-  const { panes, activePaneId, isSplitView } = useWorkspace();
 
   const [selectionInfo, setSelectionInfo] = useState<TextSelection | null>(
     null,
   );
+
+  const { navigate } = useTabNavigation();
 
   const handleHighlight = (selection: TextSelection | null) => {
     if (!selection) return;
@@ -70,9 +53,9 @@ export const DocsRenderer = ({
   };
 
   const handleAddNote = (selection: TextSelection | null) => {
+    console.log("Selection: ", selection)
     if (!selection) return;
     const anchor = selection?.createAnchor(taskId, AnchorTypes.NOTE);
-    let targetPane = panes["right"] ?? undefined;
     const draftNote: NoteType = {
       id: "",
       taskId: taskId,
@@ -80,126 +63,36 @@ export const DocsRenderer = ({
       content: "",
       createdAt: new Date().toISOString(),
     };
-    if (isSplitView) {
-      if (activePaneId == "right") {
-        dispatch(setActivePane({ paneId: "left" }));
-        targetPane = panes["left"];
-      } else {
-        dispatch(setActivePane({ paneId: "right" }));
-        targetPane = panes["right"];
-      }
-    } else {
-      dispatch(openSplitPane());
-      targetPane = panes["right"];
-    }
-    const notesTab = targetPane?.tabs.find(
-      (tab) =>
-        tab.type === TabTypes.NOTE &&
-        (tab.payload as NoteTabPayloadType).taskId === anchor.referenceId,
-    );
-    if (notesTab) {
-      dispatch(
-        updateTabData({
-          tabId: notesTab.id,
-          data: {
-            activeNoteId: draftNote.id,
-            draftNote,
-          },
-        }),
-      );
-
-      dispatch(
-        switchTab({
-          tabId: notesTab.id,
-        }),
-      );
-    } else {
-      dispatch(
-        openTab({
-          tab: {
-            id: crypto.randomUUID(),
-            path: "/note",
-            component: <NoteTab />,
-            title: "Notes",
-            type: TabTypes.NOTE,
-            payload: {
-              taskId: anchor.referenceId,
-              activeNoteId: draftNote.id,
-              draftNote,
-            },
-          },
-        }),
-      );
-    }
+    const noteTabData: RawTabDataType = {
+      id: "note-" + readingTaskData.id,
+      path: "/note",
+      title: "Note- " + readingTaskData.title,
+      payload: {
+        taskId: readingTaskData.id,
+        activeNoteId: draftNote.id,
+        draftNote,
+      },
+    };
+    navigate({ target: "blank", tabData: noteTabData });
   };
 
   const handleAskDoubt = (selection: TextSelection | null) => {
     if (!selection) return;
     const anchor = selection?.createAnchor(taskId, AnchorTypes.DOUBT);
-    let targetPane = panes["right"] ?? undefined;
-    if (isSplitView) {
-      if (activePaneId == "right") {
-        dispatch(setActivePane({ paneId: "left" }));
-        targetPane = panes["left"];
-      } else {
-        dispatch(setActivePane({ paneId: "right" }));
-        targetPane = panes["right"];
-      }
-    } else {
-      dispatch(openSplitPane());
-      targetPane = undefined;
-    }
-
-    const newDiscussion: DiscussionType = {
-      id: crypto.randomUUID(),
-      title: anchor.selectedText!,
-      taskId: taskId,
-      messages: [],
-      createdAt: new Date().toISOString(),
-    };
-    dispatch(addDiscussion(newDiscussion));
-    const draftMessage: MessageType = {
-      id: "",
-      discussionId: newDiscussion.id,
+    const draftMessage: DraftMessageType = {
       anchor,
-      content: "",
-      createdAt: new Date().toISOString(),
-      role: "user" as MessageRole,
     };
-    const discussionTab = targetPane?.tabs.find(
-      (tab) =>
-        tab.type === TabTypes.DISCUSS &&
-        (tab.payload as DiscussTabPayloadType).taskId === anchor.referenceId,
-    );
-    if (discussionTab) {
-      dispatch(
-        updateTabData({
-          tabId: discussionTab.id,
-          data: {
-            taskId: anchor.referenceId,
-            activeDiscussionId: newDiscussion.id,
-            draftMessage,
-          },
-        }),
-      );
-    } else {
-      dispatch(
-        openTab({
-          tab: {
-            id: newDiscussion.id,
-            path: "/discuss",
-            component: <DiscussTab />,
-            title: "Discussion Tab",
-            type: TabTypes.DISCUSS,
-            payload: {
-              taskId: taskId,
-              draftMessage,
-              activeDiscussionId: newDiscussion.id,
-            },
-          },
-        }),
-      );
-    }
+    const discussTabData = {
+      id: "discuss-" + readingTaskData.id,
+      title: "Discuss- " + readingTaskData.title,
+      path: "/discuss",
+      payload: {
+        taskId: readingTaskData.id,
+        draftMessage: draftMessage,
+        activeDiscussionId: "",
+      },
+    };
+    navigate({ target: "blank", tabData: discussTabData });
   };
 
   return (

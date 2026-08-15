@@ -45,7 +45,6 @@ export default function PersonalForm({ onNext }: Props) {
   const personalDescription = watch("personal_description") ?? "";
 
   const onSubmit = async (data: PersonalFormSchemaType) => {
-    console.log("Personal:", data);
     await asyncHandler(() => setPersonalData(data).unwrap());
     onNext();
   };

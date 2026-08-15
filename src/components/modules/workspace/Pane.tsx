@@ -14,6 +14,7 @@ import { TabItem } from "./TabItem";
 import { useWorkspace } from "@/hooks/useWorkspace";
 import { TabContext } from "@/context/Tabcontext";
 import { TabResponsiveContainer } from "@/components/ui/TabResponsiveContainer";
+import { TabsRenderer } from "./TabsRenderer";
 
 type PaneProps = {
   paneId: "left" | "right";
@@ -21,8 +22,6 @@ type PaneProps = {
 
 export const Pane = ({ paneId }: PaneProps) => {
   const dispatch = useAppDispatch();
-
-  const containerRef = useRef<HTMLDivElement>(null);
 
   const { panes, isSidebarCollapsed, activePaneId } = useWorkspace();
 
@@ -92,19 +91,11 @@ export const Pane = ({ paneId }: PaneProps) => {
         )}
       </div>
 
-      <div className="flex-1 min-h-0">
-        {activeTab ? (
-          <TabContext.Provider value={{ tabData: activeTab, containerRef }}>
-            <TabResponsiveContainer className="h-full">
-              <TabPanel tab={activeTab} ref={containerRef} />
-            </TabResponsiveContainer>
-          </TabContext.Provider>
-        ) : (
-          <div className="flex items-center justify-center h-full text-neutral">
-            No tabs open
-          </div>
-        )}
-      </div>
+      {tabList ? (
+        <TabsRenderer activeTabId={activeTabId!} tabList={tabList} />
+      ) : (
+        <div>"No Tabs to Open</div>
+      )}
     </div>
   );
 };

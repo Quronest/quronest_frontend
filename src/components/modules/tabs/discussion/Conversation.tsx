@@ -1,28 +1,31 @@
 import { ScrollArea } from "@/components/ui/ScrollArea";
 import { Message } from "./Message";
-import { MessageType } from "@/types/DiscussionType";
+import { DiscussionType, MessageType } from "@/types/DiscussionType";
 import { CornerDownRight, MailQuestion, Send, X } from "lucide-react";
 import Button from "@/components/ui/Button";
 import { QuestionOutline } from "./QuestionOutLine";
 import { useEffect, useRef, useState } from "react";
 import { TextArea } from "@/components/ui/TextArea";
 import { useTab } from "@/hooks/useTab";
-import { DiscussTabDataType } from "@/types/WorkspaceType";
+import { DiscussTabPayloadType, TabData } from "@/types/WorkspaceType";
 import { useAppDispatch, useAppSelector } from "@/store/store";
-import { addMessage } from "@/store/features/discussion/discussionSlice";
+import {
+  addDiscussion,
+  addMessage,
+} from "@/store/features/discussion/discussionSlice";
 import { mockDiscussion } from "@/mockData/mockDiscussion";
 import clsx from "clsx";
 
 export const Conversation = () => {
   // store and TabContext operations
   const dispatch = useAppDispatch();
-  const { tabData, taskId, tabRef } = useTab();
-
-  const { activeDiscussionId, draftMessage } = tabData as DiscussTabDataType;
+  const { tabData, tabRef } = useTab();
+  const tabDataPayload = tabData.payload as DiscussTabPayloadType;
+  const { activeDiscussionId, draftMessage } = tabDataPayload;
 
   const discussions = useAppSelector((state) =>
     state.discussion.discussions.filter(
-      (discussion) => discussion?.taskId === taskId,
+      (discussion) => discussion?.taskId === tabDataPayload.taskId,
     ),
   );
 
@@ -48,13 +51,18 @@ export const Conversation = () => {
   // Refs, states and effects
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-  const [messageData, setMessageData] = useState<MessageType | null>(
-    draftMessageData,
-  );
-  const [showQuestion, setShowQuestion] = useState(false);
+  const [messageData, setMessageData] = useState<MessageType | null>(null);
   useEffect(() => {
     if (draftMessage) {
-      setMessageData(draftMessage);
+      setMessageData((prev) => ({ ...prev, anchor: draftMessage.anchor }));
+
+      const newDiscussion: DiscussionType = {
+        id: "discuss-" + tabDataPayload.taskId,
+        title: tabData.title,
+        taskId: tabDataPayload.taskId,
+        messages: [],
+      };
+      dispatch(addDiscussion(newDiscussion));
     }
     textareaRef.current?.focus();
   }, [draftMessage]);
@@ -147,7 +155,7 @@ export const Conversation = () => {
               size="sm"
               className="gap-2 shadow-[0_10px_25px_rgba(29,173,192,0.2)]"
               onClick={handleAddMessage}
-              disabled={!messageData?.content.trim()}
+              disabled={!messageData?.content!.trim()}
             >
               <Send size={16} />
               <span>Send</span>

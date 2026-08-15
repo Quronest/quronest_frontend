@@ -1,13 +1,15 @@
+import { NoteType } from "@/types/NoteType";
 import { baseApi } from "../baseApi";
+import { SelectionAnchor } from "@/types/WorkspaceType";
 
-export interface NoteDto {
-  id: string;
-  task_id: string;
-  reference_text: string | null;
-  message: string;
-  creation_timestamp: string;
-  update_timestamp: string | null;
-}
+// export interface NoteType {
+//   id: string;
+//   task_id: string;
+//   reference_text: string | null;
+//   message: string;
+//   creation_timestamp: string;
+//   update_timestamp: string | null;
+// }
 
 export interface PageResponse<T> {
   content: T[];
@@ -22,7 +24,7 @@ export const noteApi = baseApi.injectEndpoints({
   overrideExisting: true,
   endpoints: (builder) => ({
     getNotes: builder.query<
-      PageResponse<NoteDto>,
+      PageResponse<NoteType>,
       { taskId: string; page: number; size?: number; sort?: string }
     >({
       query: ({ taskId, page, size = 20, sort = "creationTimestamp,desc" }) => ({
@@ -31,8 +33,8 @@ export const noteApi = baseApi.injectEndpoints({
       }),
     }),
     createNote: builder.mutation<
-      NoteDto,
-      { taskId: string; reference_text?: string; message: string }
+      NoteType,
+      { taskId: string; reference_text?: string; message: string, anchor?:SelectionAnchor }
     >({
       query: ({ taskId, reference_text, message }) => ({
         url: `notes/${taskId}`,
@@ -40,7 +42,7 @@ export const noteApi = baseApi.injectEndpoints({
         body: { reference_text, message },
       }),
     }),
-    editNote: builder.mutation<NoteDto, { noteId: string; message: string }>({
+    editNote: builder.mutation<NoteType, { noteId: string; message: string }>({
       query: ({ noteId, message }) => ({
         url: `notes/${noteId}`,
         method: "PATCH",

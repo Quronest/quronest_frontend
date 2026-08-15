@@ -12,7 +12,7 @@ import { X } from "lucide-react";
 import React from "react";
 
 type TabItemProps = {
-  tab: TabData<any>;
+  tab: TabData;
   activeTabId: string | null;
   paneId: "left" | "right";
 };
@@ -41,7 +41,7 @@ export const TabItem = ({ tab, activeTabId, paneId }: TabItemProps) => {
       )}
       onClick={() => handleSwitchTab(tab.id!)}
     >
-      <span className="text-sm ml-2 line-clamp-1">{tab.label}</span>
+      <span className="text-sm ml-2 line-clamp-1">{tab.title}</span>
       <Button
         variant="nav"
         className="w-fit! h-fit! bg-transparent! rounded-full! p-0.5! hover:bg-card-hover! mr-2"

@@ -2,22 +2,26 @@ import { SelectionAnchor } from "./WorkspaceType";
 
 export type MessageRole = "user" | "assistant";
 
+export type DraftMessageType = {
+  anchor: SelectionAnchor;
+};
+
 export type MessageType = {
-  id: string;
+  id?: string;
 
-  discussionId: string;
+  discussionId?: string;
 
-  role: MessageRole;
+  role?: MessageRole;
 
-  content: string;
+  content?: string;
 
-  createdAt: string;
+  createdAt?: string;
 
   anchor?: SelectionAnchor;
 };
 
 export type DiscussionType = {
-  id: string;
+  id?: string;
 
   title: string;
 
@@ -27,7 +31,6 @@ export type DiscussionType = {
 
   messages: MessageType[];
 
-  createdAt: string;
+  createdAt?: string;
   updatedAt?: string;
 };
-

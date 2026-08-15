@@ -6,12 +6,12 @@ export type QuizQuestionType = {
   options: McqQuestionOption[];
 };
 
-export type QuizTaskContentDto = {
+export type QuizTaskContentType = {
   questionnaires: QuizQuestionType[];
 };
 
-export type QuizSubmitRequestDto = {
-  answers: Record<number, number>;
+export type QuizSubmitRequestType = {
+  answers: Record<number, number>[];
   total_time_spent: number;
 };
 

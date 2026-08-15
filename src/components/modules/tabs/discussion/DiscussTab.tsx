@@ -5,7 +5,7 @@ import { Conversation } from "./Conversation";
 import { Menu } from "lucide-react";
 import Button from "@/components/ui/Button";
 
-const DiscussTab = () => {
+export const DiscussTab = () => {
   const [isDiscussionSidebarCollapsed, setDiscussionSidebarCollapsed] =
     useState(true);
 
@@ -32,4 +32,3 @@ const DiscussTab = () => {
   );
 };
 
-export default DiscussTab;

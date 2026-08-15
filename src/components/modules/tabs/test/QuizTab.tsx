@@ -9,13 +9,14 @@ import { useLazyGetQuizTaskQuery } from "@/store/features/task/taskApi";
 import { useTaskGeneration } from "@/hooks/useTaskGeneration";
 import { TestOverviewSection } from "./TestOverviewSection";
 import { QuizResultSection } from "./QuizResultSection";
+import { QuizSubmitResponseType } from "@/types/QuizTaskType";
 
 export const QuizTab = () => {
   const { tabData } = useTab();
   const { id: taskId } = tabData.payload as TaskTabPayloadType;
 
   const [triggerQuizTaskGeneration] = useLazyGetQuizTaskQuery();
-  const { loadTask, status, task } = useTaskGeneration({
+  const { loadTask, status, task, reset } = useTaskGeneration({
     triggerGetTask: (taskId: string) =>
       triggerQuizTaskGeneration(taskId, false).unwrap(),
   });
@@ -23,11 +24,14 @@ export const QuizTab = () => {
   useEffect(() => {
     if (!taskId) return;
     loadTask(taskId);
+    return () => reset();
   }, [taskId]);
 
   const [quizStage, setQuizStage] = useState<"overview" | "attempt" | "result">(
     "overview",
   );
+  const [quizSubmitResponse, setQuizSubmitResponse] =
+    useState<QuizSubmitResponseType | null>(null);
 
   if (status === "success" && task?.content) {
     return (
@@ -35,16 +39,20 @@ export const QuizTab = () => {
         {quizStage === "overview" && (
           <TestOverviewSection
             quizTaskData={task}
-            onStart={() => console.log("route to /quiz/attempt")}
+            onStart={() => setQuizStage("attempt")}
           />
         )}
         {quizStage === "attempt" && (
           <TestRoom
             quizTaskData={task}
-            onExit={() => console.log("route to /quiz/overview")}
+            onQuizSubmit={(quizSubmitResponse) => {
+              setQuizSubmitResponse(quizSubmitResponse);
+              setQuizStage("result");
+            }}
+            taskId={taskId}
           />
         )}
-        {quizStage === "result" && <QuizResultSection/>}
+        {quizStage === "result" && <QuizResultSection quizSubmitResponseData={quizSubmitResponse!} quizTask={task}/>}
       </TabContainer>
     );
   } else {

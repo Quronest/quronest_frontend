@@ -14,7 +14,7 @@ export const ReadingTab = () => {
   const { id: taskId } = tabData.payload as TaskTabPayloadType;
 
   const [triggerReadingTaskGeneration] = useLazyGetReadingTaskQuery();
-  const { loadTask, status, task } = useTaskGeneration({
+  const { loadTask, status, task, reset } = useTaskGeneration({
     triggerGetTask: (taskId: string) =>
       triggerReadingTaskGeneration(taskId, false).unwrap(),
   });
@@ -22,11 +22,13 @@ export const ReadingTab = () => {
   useEffect(() => {
     if (!taskId) return;
     loadTask(taskId);
+    return () => reset();
   }, [taskId]);
 
-  const headings = extractHeadings((task?.content as ReadingTaskContentType).markdown_content);
-
   if (status === "success" && task?.content) {
+    const headings = extractHeadings(
+      (task?.content as ReadingTaskContentType)?.markdown_content,
+    );
     return (
       <>
         <TabContainer className="">
@@ -41,12 +43,11 @@ export const ReadingTab = () => {
         </TabContainer>
       </>
     );
-  }
-  else{
-    return(
+  } else {
+    return (
       <div className="flex items-center justify-center h-full text-3xl">
         Task Loading
       </div>
-    )
+    );
   }
 };

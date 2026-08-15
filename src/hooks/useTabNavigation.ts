@@ -1,10 +1,9 @@
 import CodingTab from "@/components/modules/tabs/coding/CodingTab";
-import DiscussTab from "@/components/modules/tabs/discussion/DiscussTab";
+import { DiscussTab } from "@/components/modules/tabs/discussion/DiscussTab";
 import { NoteTab } from "@/components/modules/tabs/note/NoteTab";
 import { ReadingTab } from "@/components/modules/tabs/reading/ReadingTab";
 import { QuizTab } from "@/components/modules/tabs/test/QuizTab";
-import { TabData } from "@/types/WorkspaceType";
-import { JSX } from "react";
+import { ComponentType, JSX } from "react";
 import { useWorkspace } from "./useWorkspace";
 import { useAppDispatch } from "@/store/store";
 import {
@@ -17,12 +16,12 @@ import {
 import { RawTabDataType } from "@/utils/tabDataConvertor";
 type RouteObjectType = {
   path: string;
-  component: () => JSX.Element;
+  component: ComponentType;
 };
 
 export const routes: RouteObjectType[] = [
   {
-    path: "/reading-task",
+    path: "/reading",
     component: ReadingTab,
   },
   {
@@ -44,6 +43,7 @@ export const routes: RouteObjectType[] = [
 ];
 
 export const useTabNavigation = () => {
+  console.log("ReadingTab: ", ReadingTab);
   const { panes, activePaneId, isSplitView } = useWorkspace();
   const dispatch = useAppDispatch();
   const navigate = ({
@@ -77,11 +77,14 @@ export const useTabNavigation = () => {
           (tab) => tab.id === tabData.id,
         );
         if (existingTab) {
-          dispatch(updateTabData({ tabId: tabData.id!, data: tabData.payload }));
+          dispatch(
+            updateTabData({ tabId: tabData.id!, data: tabData.payload }),
+          );
           dispatch(switchTab({ tabId: tabData.id! }));
         } else {
           dispatch(openTab({ tab: tabData }));
         }
     }
   };
+  return { navigate };
 };

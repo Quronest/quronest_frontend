@@ -24,7 +24,11 @@ const getTagType = (status: string) => {
   }
 };
 
-export const CurrentTaskComponent = ({ task, dayNumber, dailyPlanId }: CurrentTaskProps) => {
+export const CurrentTaskComponent = ({
+  task,
+  dayNumber,
+  dailyPlanId,
+}: CurrentTaskProps) => {
   if (!task) {
     return (
       <Card className="w-full flex flex-col justify-center items-center h-48 relative border-green-500/20 bg-green-500/5 text-center p-6">
@@ -35,16 +39,21 @@ export const CurrentTaskComponent = ({ task, dayNumber, dailyPlanId }: CurrentTa
           All Tasks Completed! 🎉
         </h2>
         <p className="text-neutral text-sm mt-1 max-w-sm">
-          {dayNumber 
+          {dayNumber
             ? `Great job! You've finished all the scheduled learning tasks for Day ${dayNumber}.`
             : "No active or pending tasks for this day."}
         </p>
       </Card>
     );
   }
-
+  const storeTabDataLocally = () => {
+    localStorage.setItem("autoMountTaskData", JSON.stringify(task));
+  };
   const innerButton = (
-    <Button className="font-bold shrink-0 bg-accent2/80! hover:bg-accent2! transition-colors">
+    <Button
+      className="font-bold shrink-0 bg-accent2/80! hover:bg-accent2! transition-colors"
+      onClick={storeTabDataLocally}
+    >
       {task.status === "COMPLETED" ? "Review Work" : "Resume Work"}
     </Button>
   );
@@ -53,7 +62,9 @@ export const CurrentTaskComponent = ({ task, dayNumber, dailyPlanId }: CurrentTa
     <Card className="w-full flex flex-col justify-between h-48 relative p-6">
       <div>
         <h1 className="text-xl md:text-2xl font-semibold text-foreground flex items-baseline gap-2">
-          <span className="text-accent2 font-bold whitespace-nowrap">Task {task.order}:</span> 
+          <span className="text-accent2 font-bold whitespace-nowrap">
+            Task {task.order}:
+          </span>
           <span className="truncate max-w-md">{task.title}</span>
         </h1>
         <div className="flex items-center gap-2 mt-3">
@@ -68,9 +79,7 @@ export const CurrentTaskComponent = ({ task, dayNumber, dailyPlanId }: CurrentTa
       <div className="flex items-center gap-5 mt-4">
         <ProgressBar value={task.progress_percent || 0} />
         {dailyPlanId ? (
-          <Link href={`/workspace/${dailyPlanId}`}>
-            {innerButton}
-          </Link>
+          <Link href={`/workspace/${dailyPlanId}`}>{innerButton}</Link>
         ) : (
           innerButton
         )}

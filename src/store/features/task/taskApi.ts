@@ -2,6 +2,11 @@ import { baseApi } from "../baseApi";
 import { DailyTaskType } from "@/types/TaskType";
 
 import { JobStatusResponse } from "../user/userType";
+import {
+  QuizSubmitRequestType,
+  QuizSubmitResponseType,
+} from "@/types/QuizTaskType";
+import { url } from "inspector";
 
 export const taskApi = baseApi.injectEndpoints({
   overrideExisting: true,
@@ -39,6 +44,23 @@ export const taskApi = baseApi.injectEndpoints({
         },
       ],
     }),
+
+    submitQuiz: builder.mutation<
+      QuizSubmitResponseType,
+      { quizAnswerData: QuizSubmitRequestType; taskId: string }
+    >({
+      query: ({ quizAnswerData, taskId }) => ({
+        url: `/tasks/${taskId}/quiz/submit`,
+        method: "POST",
+        body: quizAnswerData,
+      }),
+      invalidatesTags: (result, error, arg, meta) => [
+        {
+          type: "Daily_Task",
+          id: arg.taskId,
+        },
+      ],
+    }),
   }),
 });
 
@@ -50,4 +72,5 @@ export const {
   useLazyGetQuizTaskQuery,
   useLazyGetReadingTaskQuery,
   useCreateTaskGenerateJobMutation,
+  useSubmitQuizMutation
 } = taskApi;

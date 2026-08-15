@@ -17,10 +17,6 @@ export const TestOverviewSection = ({
   quizTaskData,
   onStart,
 }: TestOverviewSectionProps) => {
-  const finalTitle = quizTaskData.title || "Quiz";
-  const finalDescription =
-    quizTaskData.description || "Test your understanding with this quiz.";
-  const finalLevel = quizTaskData.level || "easy";
   const topicsCovered = quizTaskData.domain
     ? [quizTaskData.domain]
     : ["General Quiz"];
@@ -28,9 +24,9 @@ export const TestOverviewSection = ({
   return (
     <div className="w-full max-w-7xl mx-auto space-y-4 mt-8">
       <TestOverviewHeader
-        level={finalLevel}
-        title={finalTitle}
-        description={finalDescription}
+        level={quizTaskData.level}
+        title={quizTaskData.title}
+        description={quizTaskData.description}
       />
       <div className="grid grid-cols-3 gap-5">
         {/* Details and instruction */}
@@ -41,7 +37,7 @@ export const TestOverviewSection = ({
               (quizTaskData.content as QuizTaskContentType).questionnaires
                 .length
             }
-            level={finalLevel}
+            level={quizTaskData.level}
           />
           <TestInstructions />
         </div>

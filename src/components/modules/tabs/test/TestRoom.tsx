@@ -5,20 +5,25 @@ import { Layers } from "lucide-react";
 import { TestRoomHeader } from "./TestRoomHeader";
 import { Question } from "./Question";
 import { TestSubmissionModal } from "./TestSubmissionModal";
-import { QuizResultSection } from "./QuizResultSection";
 import clsx from "clsx";
 import { ScrollArea } from "@/components/ui/ScrollArea";
-import {
-  DailyTaskType,
-  QuizTaskContentType,
-} from "@/types/TaskType";
+import { DailyTaskType, QuizTaskContentType } from "@/types/TaskType";
+import { QuizSubmitResponseType } from "@/types/QuizTaskType";
+import { useSubmitQuizMutation } from "@/store/features/task/taskApi";
 
 type TestRoomProps = {
   quizTaskData: DailyTaskType;
-  onExit: () => void;
+  onQuizSubmit: (quizSubmitResponse: QuizSubmitResponseType) => void;
+  taskId: string;
 };
 
-export const TestRoom = ({ quizTaskData, onExit }: TestRoomProps) => {
+export const TestRoom = ({
+  quizTaskData,
+  onQuizSubmit,
+  taskId,
+}: TestRoomProps) => {
+  const [triggerQuizSubmit, { isLoading: isSubmittingQuiz }] =
+    useSubmitQuizMutation();
 
   const quizTaskContent = quizTaskData.content as QuizTaskContentType;
   // --- STATE ---
@@ -29,6 +34,9 @@ export const TestRoom = ({ quizTaskData, onExit }: TestRoomProps) => {
   const [timeRemaining, setTimeRemaining] = useState(totalSeconds);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [answersRecord, setAnswersRecord] = useState<Record<number, number>[]>(
+    [],
+  );
 
   // Sync initial timer value if duration changes
   useEffect(() => {
@@ -54,16 +62,35 @@ export const TestRoom = ({ quizTaskData, onExit }: TestRoomProps) => {
   }, [isSubmitted]);
 
   // --- ACTIONS ---
-  const handleSelectOption = (questionIndex: number, optionIndex: number) => {
-    setAnswers((prev) => ({
-      ...prev,
-      [questionIndex]: optionIndex,
-    }));
+  const handleSelectOption = (questionId: number, optionId: number) => {
+    const exists = answersRecord.some((record) => questionId in record);
+    if (exists) {
+      setAnswersRecord((prev) =>
+        prev.map((record) =>
+          questionId in record ? { [questionId]: optionId } : record,
+        ),
+      );
+    } else {
+      setAnswersRecord((prev) => [...prev, { [questionId]: optionId }]);
+    }
   };
 
-  const handleSubmit = () => {
-    setIsModalOpen(false);
-    setIsSubmitted(true);
+  const handleSubmit = async () => {
+    try {
+      const response = await triggerQuizSubmit({
+        quizAnswerData: {
+          answers: answersRecord,
+          total_time_spent: totalSeconds - timeRemaining,
+        },
+        taskId,
+      }).unwrap();
+      onQuizSubmit(response);
+    } catch {
+      console.log("Quiz submission failed");
+    } finally {
+      setIsModalOpen(false);
+      setIsSubmitted(true);
+    }
   };
 
   const handleRetake = () => {
@@ -73,8 +100,7 @@ export const TestRoom = ({ quizTaskData, onExit }: TestRoomProps) => {
   };
 
   // --- COMPUTED STATS ---
-  const totalQuestions = (quizTaskContent)
-    .questionnaires.length;
+  const totalQuestions = quizTaskContent.questionnaires.length;
 
   const answeredCount = Object.keys(answers).filter(
     (key) =>
@@ -86,26 +112,12 @@ export const TestRoom = ({ quizTaskData, onExit }: TestRoomProps) => {
   // Format time elapsed
   const timeTaken = totalSeconds - timeRemaining;
 
-  const scrollToQuestion = (index: number) => {
-    const element = document.getElementById(`question-${index}`);
+  const scrollToQuestion = (questionId: number) => {
+    const element = document.getElementById(`${questionId}`);
     if (element) {
       element.scrollIntoView({ behavior: "smooth", block: "center" });
     }
   };
-
-  // --- SUBMITTED / RESULTS DASHBOARD ---
-  if (isSubmitted) {
-    return (
-      <QuizResultSection
-        questions={(quizTaskContent).questionnaires}
-        answers={answers}
-        timeTaken={timeTaken}
-        onRetake={handleRetake}
-        onExit={onExit}
-        topic={quizTaskData.domain}
-      />
-    );
-  }
 
   // --- ACTIVE EXAM ENVIRONMENT ---
   return (
@@ -125,17 +137,21 @@ export const TestRoom = ({ quizTaskData, onExit }: TestRoomProps) => {
         <div className="col-span-1 lg:col-span-3 space-y-6 flex flex-col">
           {quizTaskContent.questionnaires.map((question, index) => (
             <div
-              key={question.id || index}
-              id={`question-${index}`}
+              key={question.id}
+              id={`${question.id}`}
               className="scroll-mt-6"
             >
               <Question
                 question={question}
                 questionNumber={index + 1}
                 totalQuestions={totalQuestions}
-                selectedOptionIndex={answers[index] ?? null}
-                onSelectOption={(optionIndex) =>
-                  handleSelectOption(index, optionIndex)
+                selectedOptionId={
+                  answersRecord?.find((record) => question.id in record)?.[
+                    question.id
+                  ] ?? null
+                }
+                onSelectOption={(optionId) =>
+                  handleSelectOption(question.id, optionId)
                 }
                 topic={quizTaskData.domain}
               />
@@ -156,14 +172,15 @@ export const TestRoom = ({ quizTaskData, onExit }: TestRoomProps) => {
 
             {/* Palette Grid */}
             <div className="grid grid-cols-5 gap-2">
-              {quizTaskContent.questionnaires.map((_, index) => {
-                const isAnswered =
-                  answers[index] !== null && answers[index] !== undefined;
+              {quizTaskContent.questionnaires.map((question, index) => {
+                const isAnswered = answersRecord.some(
+                  (record) => question.id in record,
+                );
 
                 return (
                   <button
                     key={index}
-                    onClick={() => scrollToQuestion(index)}
+                    onClick={() => scrollToQuestion(question.id)}
                     className={clsx(
                       "w-10 h-10 rounded-lg flex items-center justify-center font-semibold text-sm transition-all duration-300 border cursor-pointer",
                       isAnswered
@@ -209,6 +226,7 @@ export const TestRoom = ({ quizTaskData, onExit }: TestRoomProps) => {
           answered: answeredCount,
           left: leftCount,
         }}
+        disabled={isSubmittingQuiz}
       />
     </ScrollArea>
   );

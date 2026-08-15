@@ -5,12 +5,11 @@ import clsx from "clsx";
 import { MarkdownRenderer } from "../reading/MarkdownRenderer";
 import { McqQuestion, QuizQuestionType } from "@/types/TaskType";
 
-
 type QuestionProps = {
   question: QuizQuestionType;
   questionNumber: number;
   totalQuestions: number;
-  selectedOptionIndex: number | null;
+  selectedOptionId: number | null;
   onSelectOption: (optionIndex: number) => void;
   topic?: string;
 };
@@ -19,7 +18,7 @@ export const Question = ({
   question,
   questionNumber,
   totalQuestions,
-  selectedOptionIndex,
+  selectedOptionId,
   onSelectOption,
   topic,
 }: QuestionProps) => {
@@ -49,12 +48,12 @@ export const Question = ({
 
       {/* Options Stack */}
       <div className="flex flex-col gap-3">
-        {question.options.map((option, index) => (
+        {question.options.map((option) => (
           <Option
             key={option.id}
             text={option.text}
-            isSelected={selectedOptionIndex === index}
-            onClick={() => onSelectOption(index)}
+            isSelected={selectedOptionId === option.id}
+            onClick={() => onSelectOption(option.id)}
           />
         ))}
       </div>

@@ -54,7 +54,6 @@ export const useTaskGeneration = ({
       let jobId = taskResult.job_id;
 
       if (!jobId) {
-        // Create task generate job
         const genResult = await triggerGenerateTask(taskId).unwrap();
         jobId = genResult.job_id;
       }
@@ -70,8 +69,10 @@ export const useTaskGeneration = ({
 
       let completed = false;
       let failed = false;
+      let attempt = 0;
 
       while (!completed && !failed) {
+        attempt++;
         // Check if user clicked another task in the meantime
         if (activeTaskIdRef.current !== taskId) {
           return null;
@@ -106,7 +107,6 @@ export const useTaskGeneration = ({
       setStatus("success");
       return finalTask;
     } catch (err) {
-      console.error("Task loading/polling error:", err);
       setError(err);
       setStatus("error");
       return null;

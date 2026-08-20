@@ -86,7 +86,7 @@ export const Note = ({
             " group-hover:bg-background/45",
           )}
         >
-          <p className="whitespace-pre-wrap text-md">{note.content}</p>
+          <p className="whitespace-pre-wrap text-md">{note.message}</p>
         </div>
       </NoteCard>
     </div>

@@ -4,7 +4,7 @@ export type NoteType = {
   id: string;
   task_id: string;
   anchor?: SelectionAnchor;
-  content: string;
+  message: string;
 
   creation_timestamp: string;
   updated_timestamp?: string;

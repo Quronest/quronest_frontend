@@ -72,7 +72,7 @@ export const NoteTab = ({
 
   const emptyNoteData: NoteType = {
     id: "",
-    content: "",
+    message: "",
     creation_timestamp: new Date().toISOString(),
     task_id: taskId,
   };
@@ -163,14 +163,14 @@ export const NoteTab = ({
   };
 
   const handleSaveNote = async () => {
-    if (!noteData.content.trim()) return;
+    if (!noteData.message.trim()) return;
 
     if (noteData.id) {
       // Edit Mode
       try {
         const res = await editNoteMutation({
           noteId: noteData.id,
-          message: noteData.content,
+          message: noteData.message,
         }).unwrap();
 
         const updatedNote = res;
@@ -186,7 +186,7 @@ export const NoteTab = ({
       try {
         const res = await createNoteMutation({
           taskId,
-          message: noteData.content,
+          message: noteData.message,
           anchor: noteData.anchor
             ? {
                 type: noteData.anchor.type,
@@ -199,6 +199,7 @@ export const NoteTab = ({
         }).unwrap();
 
         const newNote = res;
+        console.log("newNote ", newNote);
         setNotes((prevNotes) => [...prevNotes, newNote]);
         setNoteData(emptyNoteData);
 
@@ -217,7 +218,8 @@ export const NoteTab = ({
   const handleDeleteNote = async (noteId: string) => {
     try {
       await deleteNoteMutation({ noteId }).unwrap();
-      dispatch(deleteNote({ id: noteId }));
+      const updatedNotes = notes.filter((note) => note.id !== noteId);
+      setNotes(updatedNotes);
     } catch (err) {
       console.error("Failed to delete note:", err);
     }
@@ -274,10 +276,10 @@ export const NoteTab = ({
 
           <TextArea
             ref={textareaRef}
-            value={noteData?.content ?? ""}
+            value={noteData?.message ?? ""}
             onChange={(event) =>
               setNoteData((noteData) => {
-                return { ...noteData!, content: event.target.value };
+                return { ...noteData!, message: event.target.value };
               })
             }
             placeholder="Write a note, thought, or reminder..."
@@ -298,7 +300,7 @@ export const NoteTab = ({
               size="sm"
               className="gap-2 shadow-[0_10px_25px_rgba(29,173,192,0.2)]"
               onClick={handleSaveNote}
-              disabled={!noteData?.content.trim()}
+              disabled={!noteData?.message?.trim()}
             >
               {noteData.id ? <Check size={16} /> : <Plus size={16} />}
               <span>{noteData.id ? "Update Note" : "Save Note"}</span>
